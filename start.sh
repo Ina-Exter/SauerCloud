@@ -1,8 +1,13 @@
 #!/bin/bash
 
-if [[ $# -ne 2 ]]
+if [[ 2 -ne "$#" ]]
 then
-	exit
+	echo -n "Illegal argument error. start.sh requires exactly 2 arguments."
+	echo " Supplied $# argument(s)."
+	echo "Structure: ./start.sh command mission"
+	echo "Command is either create or destroy."
+	echo "Mission is either mission1, mission2, ... for create, or the mission folder for destroy."
+	exit 2
 fi
 ## $1 is first argument, $2 is second
 
