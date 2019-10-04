@@ -67,7 +67,7 @@ then
 	#Generate unique id for this session (only lowercase and numbers)
 	export SECGAME_USER_ID=$(head /dev/urandom | tr -dc a-z0-9 | head -c 10)
 	#Check that a startup script can be found. If not, assume mistype.
-	if [[ ! -e ./../$2/$2-deploy.sh ]]
+	if [[ ! -e ./$2/$2-deploy.sh ]]
 	then
 		echo "Cannot find startup script for mission $2. Please check syntax and reiterate."
 		exit 2
@@ -104,8 +104,20 @@ then
 		echo "Invalid session ID, please do not attempt to destroy any folder."
 		exit 2
 	fi
+
+	#If trash doesn't exist, make it
+	if [[ ! -d "trash" ]]
+	then
+        	mkdir trash
+	fi
+
+
+	#Move folder into trash folder
+	mv $folder_name trash/
+	cd trash/$folder_name
+
 	#Run the mission destroy script from the ressource folder (path subject to change)
-	source ./$mission/$mission-destroy.sh
+	source ./../../$mission/$mission-destroy.sh
 else #User can't use a keyboard to save their lives
 	echo "Invalid command. Command should either be create or destroy. See ./start.sh help for further information."
 	exit 2
