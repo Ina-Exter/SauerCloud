@@ -86,6 +86,12 @@ then
 	export mission=${folder_name%-*}
 	#Export constants for use in destroy script
 	export SECGAME_USER_ID=${folder_name##*-}
+	#Check if the folder actually exists
+	if [[ ! -e $folder_name ]]
+	then
+		echo "Cannot find destroy target. Please make sure you typed the correct folder name."
+		exit 2
+	fi
 	#Check if mission name is legal. If not, assume mistype
 	if [[ ! -e ./$mission/$mission-destroy.sh ]]
 	then
