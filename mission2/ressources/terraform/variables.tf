@@ -17,3 +17,8 @@ variable "id" {
 variable "ip" {
 
 }
+
+#SSH key
+variable "sshprivatekey" {
+
+}

@@ -158,7 +158,7 @@ resource "aws_instance" "AWS-secgame-mission2-ec2-Evil-bastion-for-evil-access" 
 	sudo sed -i '/PasswordAuthentication no/c\PasswordAuthentication yes' /etc/ssh/sshd_config
 	sudo service sshd restart
 		
-	echo "PRIVATEKEY" >> /home/ec2-user/AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-${var.id}.pem
+	echo "${var.sshprivatekey}" >> /home/ec2-user/AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-${var.id}.pem
 	EOF
     tags = {
         Name = "AWS-secgame-mission2-ec2-Evil-bastion-for-evil-access-${var.id}"
