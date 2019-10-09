@@ -23,25 +23,25 @@
 #If user requests help, do not send him packing
 if [[ "$1" = "help" ]]
 then
-	echo "This text is helpful." #work in progress, insert more coffee
+	echo "[AWS-Secgame] This text is helpful." #work in progress, insert more coffee
 	exit 2
 fi
 
 #If user failed a configuration step, kindly remind him to go do it
 if [ ! -e profile ] || [ ! -e whitelist ]
 then
-	echo "Please configure your default profile and whitelist ip before starting missions. Run ./config in order to write these files."
+	echo "[AWS-Secgame] Please configure your default profile and whitelist ip before starting missions. Run ./config in order to write these files."
 	exit 2
 fi
 
 #If user wrote more than 2 arguments, or less than 2 (excluding the one case with just "help", explain the error.
 if [[ 2 -ne "$#" ]]
 then
-	echo -n "Illegal argument error. start.sh requires exactly 2 arguments."
+	echo -n "[AWS-Secgame] Illegal argument error. start.sh requires exactly 2 arguments."
 	echo " Supplied $# argument(s)."
-	echo "Structure: ./start.sh command mission"
-	echo "Command is either create or destroy."
-	echo "Mission is either mission1, mission2, ... for create, or the mission folder for destroy."
+	echo "[AWS-Secgame] Structure: ./start.sh command mission"
+	echo "[AWS-Secgame] Command is either create or destroy."
+	echo "[AWS-Secgame] Mission is either mission1, mission2, ... for create, or the mission folder for destroy."
 	exit 2
 fi
 
@@ -69,7 +69,7 @@ then
 	#Check that a startup script can be found. If not, assume mistype.
 	if [[ ! -e ./$2/$2-deploy.sh ]]
 	then
-		echo "Cannot find startup script for mission $2. Please check syntax and reiterate."
+		echo "[AWS-Secgame] Cannot find startup script for mission $2. Please check syntax and reiterate."
 		exit 2
 	fi
 	#Make a mission directory, copy the contents of the ressources in it, and get in
@@ -87,22 +87,28 @@ then
 	export mission=${folder_name%-*}
 	#Export constants for use in destroy script
 	export SECGAME_USER_ID=${folder_name##*-}
+	#Since this gave me one hell of a headache, if the last / of the folder name remains, remove it.
+	export c=${SECGAME_USER_ID: -1}
+	if [[ $c = "/" ]]
+	then
+		export SECGAME_USER_ID=${SECGAME_USER_ID::-1}
+	fi
 	#Check if the folder actually exists
 	if [[ ! -e $folder_name ]]
 	then
-		echo "Cannot find destroy target. Please make sure you typed the correct folder name."
+		echo "[AWS-Secgame] Cannot find destroy target. Please make sure you typed the correct folder name."
 		exit 2
 	fi
 	#Check if mission name is legal. If not, assume mistype
 	if [[ ! -e ./$mission/$mission-destroy.sh ]]
 	then
-		echo "Cannot find destroy script for mission $mission. Please check syntax and reiterate."
+		echo "[AWS-Secgame] Cannot find destroy script for mission $mission. Please check syntax and reiterate."
 		exit 2
 	fi
 	#Check that the user is not trying to run it on the mission (ressource) folder
 	if [[ $mission = $SECGAME_USER_ID ]]
 	then
-		echo "Invalid session ID, please do not attempt to destroy any folder."
+		echo "[AWS-Secgame] Invalid session ID, please do not attempt to destroy any folder."
 		exit 2
 	fi
 
@@ -118,8 +124,8 @@ then
 	cd trash/$folder_name
 
 	#Run the mission destroy script from the ressource folder (path subject to change)
-	source ./$mission-$SECGAME_USER_ID/$mission-destroy.sh
+	source $mission-destroy.sh
 else #User can't use a keyboard to save their lives
-	echo "Invalid command. Command should either be create or destroy. See ./start.sh help for further information."
+	echo "[AWS-Secgame] Invalid command. Command should either be create or destroy. See ./start.sh help for further information."
 	exit 2
 fi

@@ -2,21 +2,21 @@
 
 ##Sanity check: print user profile, id, ip
 ##May delete it afterwards
-echo $SECGAME_USER_PROFILE
-echo $SECGAME_USER_ID
-echo $USER_IP
+echo "[AWS-Secgame] Master account profile: $SECGAME_USER_PROFILE"
+echo "[AWS-Secgame] Session ID: $SECGAME_USER_ID"
+echo "[AWS-Secgame] User IP: $USER_IP"
 
 #ALWAYS assume that this script will run in the mission folder mission2-user_id
 
 #A ssh private key should also be generated and passed as parameter.
-export sshkey=$(aws --profile $SECGAME_USER_PROFILE ec2 create-key-pair --key-name AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID --query 'KeyMaterial' --output text)
-
-#Consider saving the private key juuuuuuuuuust in case.
-echo AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID >> ressources/ssh_key
+echo "[AWS-Secgame] Generating ssh key for ec2"
+aws --profile $SECGAME_USER_PROFILE ec2 create-key-pair --key-name AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID --query 'KeyMaterial' --output text >> ressources/ssh_key
+export sshkey=$(<ressources/ssh_key)
 chmod 400 ressources/ssh_key
 
 #Initialize terraform
 cd ressources/terraform
+echo "[AWS-Secgame] Initializing terraform."
 terraform init
 
 #Pass the required variables (profile, region?, id, key) to terraform and plan
@@ -51,5 +51,5 @@ It uses a bastion for easy and \"secure\" access, but they enabled SSH login wit
 They also neglected to protect the instance against SSH bruteforce, so our servers in Russia and China were able to find it. \
 Log in as eviluser on $bastion_ip, with password ConquerTheWorld, and see what you can find."  >> briefing.txt
 
-echo "Mission 2 deployment complete. Read the briefing.txt file to begin."
+echo "[AWS-Secgame] Mission 2 deployment complete. Read the briefing.txt file to begin."
 

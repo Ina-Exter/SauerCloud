@@ -18,10 +18,36 @@ resource "aws_iam_role" "AWS-secgame-mission2-ec2adminrole" {
 POLICY
 }
 
+resource "aws_iam_role" "AWS-secgame-mission2-ec2listrole" {
+    name               = "AWS-secgame-mission2-ec2listrole-${var.id}"
+    path               = "/"
+    assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
+}
+
+
+
 #IAMIP
-resource "aws_iam_instance_profile" "AWS-secgame-mision2-ec2instanceprofile" {
-  name = "AWS-secgame-mision2-ec2instanceprofile-${var.id}"
+resource "aws_iam_instance_profile" "AWS-secgame-mission2-ec2admininstanceprofile" {
+  name = "AWS-secgame-mission2-ec2admininstanceprofile-${var.id}"
   role = "${aws_iam_role.AWS-secgame-mission2-ec2adminrole.name}"
+}
+
+resource "aws_iam_instance_profile" "AWS-secgame-mission2-ec2listinstanceprofile" {
+  name = "AWS-secgame-mission2-ec2listinstanceprofile-${var.id}"
+  role = "${aws_iam_role.AWS-secgame-mission2-ec2listrole.name}"
 }
 
 #SG
@@ -64,7 +90,7 @@ resource "aws_instance" "AWS-secgame-mission2-ec2-Evil-server-for-evil-data" {
     availability_zone           = "us-east-1a"
     ebs_optimized               = false
     instance_type               = "t2.micro"
-    iam_instance_profile = "${aws_iam_instance_profile.AWS-secgame-mision2-ec2instanceprofile.name}"
+    iam_instance_profile = "${aws_iam_instance_profile.AWS-secgame-mission2-ec2admininstanceprofile.name}"
     monitoring                  = false
     key_name                    = "AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-${var.id}"
     subnet_id                   = "${aws_subnet.AWS-secgame-mission2-subnet.id}"
@@ -137,6 +163,7 @@ resource "aws_instance" "AWS-secgame-mission2-ec2-Evil-bastion-for-evil-access" 
     availability_zone           = "us-east-1a"
     ebs_optimized               = false
     instance_type               = "t2.micro"
+    iam_instance_profile = "${aws_iam_instance_profile.AWS-secgame-mission2-ec2listinstanceprofile.name}"
     monitoring                  = false
     key_name                    = "AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-${var.id}"
     subnet_id                   = "${aws_subnet.AWS-secgame-mission2-subnet.id}"
@@ -154,7 +181,7 @@ resource "aws_instance" "AWS-secgame-mission2-ec2-Evil-bastion-for-evil-access" 
 	#!/bin/bash
 	sudo adduser eviluser
 	echo "eviluser:ConquerTheWorld" |sudo chpasswd
-	sudo usermod -aG sudo eviluser
+	sudo echo "eviluser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/90-cloud-init-users
 	sudo sed -i '/PasswordAuthentication no/c\PasswordAuthentication yes' /etc/ssh/sshd_config
 	sudo service sshd restart
 		
