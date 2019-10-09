@@ -45,6 +45,8 @@ then
 	exit 2
 fi
 
+#TODO: MAKE SURE USER HAS TERRAFORM
+
 ############################################################
 #                                                          #
 #                  ENVIRONMENT HANDLING                    #
