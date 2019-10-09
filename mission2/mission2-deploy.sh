@@ -49,7 +49,8 @@ echo "Wonderful job on that Evilcorp bucket, agent. I am glad you are on our sid
 Word has it that Evilcorp started building a proof-of-concept data maintainment structure on AWS. \
 It uses a bastion for easy and \"secure\" access, but they enabled SSH login with a password under some pressure from management. \
 They also neglected to protect the instance against SSH bruteforce, so our servers in Russia and China were able to find it. \
-Log in as eviluser on $bastion_ip, with password ConquerTheWorld, and see what you can find."  >> briefing.txt
+Log in as eviluser on $bastion_ip, with password ConquerTheWorld. There might be other instances on the network, accessible from the bastion. \
+With hope, you will be able to find the blueprints for their latest evil project on one such server. Good luck, agent..."  >> briefing.txt
 
 echo "[AWS-Secgame] Mission 2 deployment complete. Mission folder is ./mission2-$SECGAME_USER_ID. Read the briefing.txt file to begin."
 

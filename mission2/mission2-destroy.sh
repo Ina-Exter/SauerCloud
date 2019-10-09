@@ -27,7 +27,6 @@ terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$S
 
 #destroy key pair
 echo "[AWS-Secgame] Deleting key pair."
-echo "aws --profile $SECGAME_USER_PROFILE ec2 delete-key-pair --key-name AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
 aws --profile $SECGAME_USER_PROFILE ec2 delete-key-pair --key-name AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID
 
 
