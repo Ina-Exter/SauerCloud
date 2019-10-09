@@ -51,5 +51,5 @@ It uses a bastion for easy and \"secure\" access, but they enabled SSH login wit
 They also neglected to protect the instance against SSH bruteforce, so our servers in Russia and China were able to find it. \
 Log in as eviluser on $bastion_ip, with password ConquerTheWorld, and see what you can find."  >> briefing.txt
 
-echo "[AWS-Secgame] Mission 2 deployment complete. Read the briefing.txt file to begin."
+echo "[AWS-Secgame] Mission 2 deployment complete. Mission folder is ./mission2-$SECGAME_USER_ID. Read the briefing.txt file to begin."
 
