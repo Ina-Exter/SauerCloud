@@ -72,11 +72,12 @@ then
 		echo "Cannot find startup script for mission $2. Please check syntax and reiterate."
 		exit 2
 	fi
-	#Make a mission directory and get in
+	#Make a mission directory, copy the contents of the ressources in it, and get in
 	mkdir $2-$SECGAME_USER_ID
+	cp -r ./$2/* ./$2-$SECGAME_USER_ID/
 	cd $2-$SECGAME_USER_ID
 	#Run the mission startup script from the ressources folder (may have to change path ultimately)
-	source ./../$2/$2-deploy.sh
+	source ./$2-deploy.sh
 
 elif [[ "destroy" = "$1" ]] #User requests a mission destruction
 then
@@ -117,7 +118,7 @@ then
 	cd trash/$folder_name
 
 	#Run the mission destroy script from the ressource folder (path subject to change)
-	source ./../../$mission/$mission-destroy.sh
+	source ./$mission-$SECGAME_USER_ID/$mission-destroy.sh
 else #User can't use a keyboard to save their lives
 	echo "Invalid command. Command should either be create or destroy. See ./start.sh help for further information."
 	exit 2

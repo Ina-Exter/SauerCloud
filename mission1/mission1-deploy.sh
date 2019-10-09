@@ -6,10 +6,10 @@ echo $SECGAME_USER_PROFILE
 echo $SECGAME_USER_ID
 echo $USER_IP
 
-#Given the extremely light nature of this script, the deployment will be fully handled with bash script and AWS cli, and not with CloudFormation.
+#Given the extremely light nature of this script, the deployment will be fully handled with bash script and AWS cli, and not with terraform.
 #Note that ALL commands are run with --quiet so as to avoid spoiling the user.
 
-#"ALWAYS assume that this script will run in the mission folder \"mission1-user_id\""
+#ALWAYS assume that this script will run in the mission folder mission1-user_id
 
 #This first command makes a new bucket called evilcorp-evilbucket-user_id.
 aws --profile $SECGAME_USER_PROFILE s3 mb s3://evilcorp-evilbucket-$SECGAME_USER_ID
