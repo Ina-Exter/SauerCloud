@@ -50,19 +50,20 @@ resource "aws_route_table_association" "AWS-secgame-mission2-rta" {
 }
 
 #NIF
-resource "aws_network_interface" "AWS-secgame-mission2-nif" {
-    subnet_id         = "${aws_subnet.AWS-secgame-mission2-subnet.id}"
-    private_ips       = ["192.168.0.219"]
-    security_groups   = ["${aws_security_group.AWS-secgame-mission2-sg.id}"]
-    source_dest_check = true
-    attachment {
-        instance     = "${aws_instance.AWS-secgame-mission2-ec2-Evil-bastion-for-evil-access.id}"
-        device_index = 0
-    }
-    tags = {
-        Name = "AWS-secgame-mission2-nif-server-${var.id}"
-    }
-}
+##LEGACY but kept as an in-case
+#resource "aws_network_interface" "AWS-secgame-mission2-nif" {
+#    subnet_id         = "${aws_subnet.AWS-secgame-mission2-subnet.id}"
+#    private_ips       = ["192.168.0.219"]
+#    security_groups   = ["${aws_security_group.AWS-secgame-mission2-sg.id}"]
+#    source_dest_check = true
+#    attachment {
+#        instance     = "${aws_instance.AWS-secgame-mission2-ec2-Evil-server-for-evil-data.id}"
+#        device_index = 1
+#    }
+#    tags = {
+#        Name = "AWS-secgame-mission2-nif-server-${var.id}"
+#    }
+#}
 
 #NACL
 resource "aws_network_acl" "AWS-secgame-mission2-acl" {

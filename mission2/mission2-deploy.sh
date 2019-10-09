@@ -13,31 +13,33 @@ export sshkey=$(aws --profile $SECGAME_USER_PROFILE ec2 create-key-pair --key-na
 
 #Consider saving the private key juuuuuuuuuust in case.
 echo AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID >> ressources/ssh_key
-chmod 400 ssh_key
+chmod 400 ressources/ssh_key
 
 #Initialize terraform
 cd ressources/terraform
 terraform init
 
 #Pass the required variables (profile, region?, id, key) to terraform and plan
-terraform plan -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$SECGAME_USER_IP" -var="sshprivatekey=$sshkey"
+terraform plan -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 
 #IF AND ONLY IF user consents, deploy
 echo "[AWS-Secgame] Is this setup acceptable? (yes/no)"
 echo "[AWS-Secgame] Only \"yes\" will be accepted as confirmation."
 read answer
-if [[ ! answer == "yes" ]]
+if [[ ! $answer == "yes" ]]
+then
 	echo "Abort requested. Destroying target folder."
 	cd ../../..
 	mv ./mission2-$SECGAME_USER_ID ./trash/
+	aws --profile $SECGAME_USER_PROFILE ec2 delete-key-pair --key-name AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID
 	exit 2
 fi
 
 #DEPLOYYYYYYYYYYYYYYYYYYYY
-terraform apply -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$SECGAME_USER_IP" -var="sshprivatekey=$sshkey"
+terraform apply -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 
 #Get the bastion's IP address as output
-export bastion_ip = $(terraform output bastion_ip_addr)
+export bastion_ip=$(terraform output bastion_ip_addr)
 
 #Return in mission dir
 cd ../..

@@ -1,6 +1,6 @@
 #AWS default profile name
 variable "profile" {
-  default = "altaccount"
+
 }
 
 #AWS region
@@ -20,5 +20,5 @@ variable "ip" {
 
 #SSH key
 variable "sshprivatekey" {
-
+  default = "error"
 }
