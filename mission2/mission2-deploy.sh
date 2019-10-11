@@ -30,6 +30,11 @@ if [[ ! $answer == "yes" ]]
 then
 	echo "Abort requested. Destroying target folder."
 	cd ../../..
+	#If trash doesn't exist, make it
+	if [[ ! -d "trash" ]]
+	then
+        	mkdir trash
+	fi
 	mv ./mission2-$SECGAME_USER_ID ./trash/
 	aws --profile $SECGAME_USER_PROFILE ec2 delete-key-pair --key-name AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID
 	exit 2

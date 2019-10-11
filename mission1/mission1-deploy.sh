@@ -11,6 +11,23 @@ echo "[AWS-Secgame] User IP: $USER_IP"
 
 #ALWAYS assume that this script will run in the mission folder mission1-user_id
 
+#Request consent, deploy only if given
+echo "[AWS-Secgame] This will setup the first mission's bucket and associated ressources. Is this acceptable? (yes/no)"
+echo "[AWS-Secgame] Only \"yes\" will be accepted as confirmation."
+read answer
+if [[ ! $answer == "yes" ]]
+then
+	echo "Abort requested. Destroying target folder."
+	cd ..
+	#If trash doesn't exist, make it
+	if [[ ! -d "trash" ]]
+	then
+	       	mkdir trash
+	fi
+	mv mission1-$SECGAME_USER_ID ./trash/
+	exit 2
+fi
+
 #This first command makes a new bucket called evilcorp-evilbucket-user_id.
 aws --profile $SECGAME_USER_PROFILE s3 mb s3://evilcorp-evilbucket-$SECGAME_USER_ID
 echo "[AWS-Secgame] Bucket created"

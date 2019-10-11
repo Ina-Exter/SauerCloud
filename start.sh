@@ -23,7 +23,13 @@
 #If user requests help, do not send him packing
 if [[ "$1" = "help" ]]
 then
-	echo "[AWS-Secgame] This text is helpful." #work in progress, insert more coffee
+	echo "[AWS-Secgame] AWS-Secgame (name subject to change) is a bash-and-terraform deployment framework in order to setup \"nice\" and \"fun\" challenges to sensbilize to AWS vulnerabilities caused by misconfigurations." #work in progress, insert more coffee
+	echo "[AWS-Secgame] Usage: ./start.sh command mission"
+	echo "[AWS-Secgame] Commands: create => deploy the specified mission infrastructure on AWS."
+	echo "[AWS-Secgame] Commands: destroy => delete the specified mission infrastructure from AWS."
+	echo "[AWS-Secgame] Commands: help => Display this helptext. No, it won't work with a \"mission\" argument :^)"
+	echo "[AWS-Secgame] Missions: Range from mission1 to mission5. Missions 1 to 4 are small missions for training. Mission 5 is a large framework for a real CTF game. It is SIGNIFICANTLY longer than the others."
+	echo "[AWS-Secgame] You may have to execute ./config.sh beforehand in order to specify your AWS CLI account, and whitelist your IP address."
 	exit 2
 fi
 
@@ -39,9 +45,12 @@ if [[ 2 -ne "$#" ]]
 then
 	echo -n "[AWS-Secgame] Illegal argument error. start.sh requires exactly 2 arguments."
 	echo " Supplied $# argument(s)."
+	echo "[AWS-Secgame] See ./start.sh help to display helptext."
+<< ////
 	echo "[AWS-Secgame] Structure: ./start.sh command mission"
 	echo "[AWS-Secgame] Command is either create or destroy."
 	echo "[AWS-Secgame] Mission is either mission1, mission2, ... for create, or the mission folder for destroy."
+////
 	exit 2
 fi
 

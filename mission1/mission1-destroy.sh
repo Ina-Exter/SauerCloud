@@ -8,6 +8,19 @@ echo "[AWS-Secgame] User IP: $USER_IP"
 
 #ALWAYS assume this will run from the mission dir!
 
+#Request consent, restore if not given
+echo "[AWS-Secgame] This will destroy all mission1-associated ressources. Is this acceptable? (yes/no)"
+echo "[AWS-Secgame] Only \"yes\" will be accepted as confirmation."
+read answer
+if [[ ! $answer == "yes" ]]
+then
+	echo "Abort requested. Restoring target folder."
+	cd ../..
+	mv ./trash/mission1-$SECGAME_USER_ID .
+	exit 2
+fi
+
+
 #Destroy the bucket based on user ID. User ID should be passed by start.sh
 echo "[AWS-Secgame] Force-destroying bucket"
 aws --profile $SECGAME_USER_PROFILE s3 rb s3://evilcorp-evilbucket-$SECGAME_USER_ID --force
