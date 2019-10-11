@@ -1,0 +1,15 @@
+#!/bin/bash
+
+echo "
+Bob, you big great pillock,
+
+Try to act like you did not forge your IT certification, and setup this extremely critical data server. It contains key data for our future world domination plan using pictures of fat cats (codename CH0-NK3R5) to brainwash the people.
+So yeah, this is important. Make it SAFE. The data here should STAY HERE. The server should STAY UP and not be a COMPLETE AND TOTAL CYBER-CHEESE WITH HOLES IN IT.
+I hope I impressed upon you why you should not f*** this up. If you do I'll have your hide for dinner.
+
+Yours sincerely, 
+IT.
+
+PS: Just in case, remember to set the policies correctly, and in case you lock yourself out, you can regenerate an admin key. DO NOT LEAVE THIS PERMISSION ON!" >> bob_todo.txt
+
+rm startup_script.sh

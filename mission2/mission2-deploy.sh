@@ -10,9 +10,9 @@ echo "[AWS-Secgame] User IP: $USER_IP"
 
 #A ssh private key should also be generated and passed as parameter.
 echo "[AWS-Secgame] Generating ssh key for ec2"
-aws --profile $SECGAME_USER_PROFILE ec2 create-key-pair --key-name AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID --query 'KeyMaterial' --output text >> ressources/ssh_key
-export sshkey=$(<ressources/ssh_key)
-chmod 400 ressources/ssh_key
+aws --profile $SECGAME_USER_PROFILE ec2 create-key-pair --key-name AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID --query 'KeyMaterial' --output text >> ressources/ssh_key.pem
+export sshkey=$(<ressources/ssh_key.pem)
+chmod 400 ressources/ssh_key.pem
 
 #Initialize terraform
 cd ressources/terraform

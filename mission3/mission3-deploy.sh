@@ -10,9 +10,9 @@ echo "[AWS-Secgame] User IP: $USER_IP"
 
 #A ssh private key should also be generated and passed as parameter.
 echo "[AWS-Secgame] Generating ssh key for ec2"
-aws --profile $SECGAME_USER_PROFILE ec2 create-key-pair --key-name AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID --query 'KeyMaterial' --output text >> ressources/ssh_key
-export sshkey=$(<ressources/ssh_key)
-chmod 400 ressources/ssh_key
+aws --profile $SECGAME_USER_PROFILE ec2 create-key-pair --key-name AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID --query 'KeyMaterial' --output text >> ressources/ssh_key.pem
+export sshkey=$(<ressources/ssh_key.pem)
+chmod 400 ressources/ssh_key.pem
 
 #Initialize terraform
 cd ressources/terraform
@@ -43,20 +43,40 @@ fi
 #DEPLOYYYYYYYYYYYYYYYYYYYY
 terraform apply -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 
-#Get the obtained keys.
+#Get terraform's outputs
+export ec2_ip=$(terraform output ec2_ip_addr)
+
+#Instance setup as defined in the workflow in ressources
+cd .. #now in ressources
+
+#scp all the required data in
+scp -i "ssh_key.pem" ./chonks ec2-user@$ec2_ip:/home/ec2-user/
+scp -i "ssh_key.pem" startup_script.sh ec2-user@$ec2_ip:/home/ec2-user/
+ssh -i "ssh_key.pem" ec2-user@$ec2_ip 'chmod u+x startup_script.sh; ./startup_script.sh; exit'
+
+#Snapshot
+##TODO
+
+#scp cleanup script and execute it
+scp -i "ssh_key.pem" cleanup_script.sh ec2-user@$ec2_ip:/home/ec2-user/
+ssh -i "ssh_key.pem" ec2-user@$ec2_ip 'chmod u+x cleanup_script.sh; ./cleanup_script.sh; exit'
+
+#Give user the ssh key
+cp ssh_key.pem ./../
 
 #Return in mission dir
-cd ../..
+cd ..
 
 #Write briefing
 echo "Agent, you are a godsent. Well done fetching those blueprints on that other server. The brass were delighted. You will find the usual pay on your usual account. \
 We have another task for you. Our insider told us about a suspicious instance. Apparently, they intend to use it for a powerful wave of cyber-attacks. \
 It was also brought to our attention that the instance contained sensitive data, but they have been redacted after some time. \
-We have provided you with leaked AWS keys to their account, but they have little to no privilege. Your job is to access the instance, do some forensics on it in order to get the sensitive data out, then escalate your privileges and take it down.
+We have provided you with leaked AWS keys to their account, but they have little to no privilege. Your job is to access the instance, then escalate your privileges and do some forensics on it in order to get the sensitive data out, and after that, take it down.
 We have great hopes for you.
 
-AWS key =
-AWS secret key =
+The ssh key you need is in ssh_key.pem.
+Instance ip address: $ec2_ip
+
 " >> briefing.txt
 
 echo "[AWS-Secgame] Mission 3 deployment complete. Mission folder is ./mission3-$SECGAME_USER_ID. Read the briefing.txt file to begin."

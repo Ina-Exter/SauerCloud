@@ -1,0 +1,7 @@
+#Note: this is intended for the programmer. :)
+
+1) Start the EC2
+2) scp startup_script.sh, cleanup_script.sh and the chonk folder in it. chmod them!!
+3) Snapshot
+4) ssh cleanup script
+5) make available
