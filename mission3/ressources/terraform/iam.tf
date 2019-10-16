@@ -36,7 +36,12 @@ resource "aws_iam_policy" "AWS-secgame-mission3-ec2rolepolicy" {
                 "iam:SimulateCustomPolicy",
                 "iam:SimulatePrincipalPolicy",
                 "iam:CreatePolicyVersion",
-                "iam:CreateAccessKey"
+                "iam:CreateAccessKey",
+                "ec2:RunInstances",
+                "ec2:DescribeSnapshots",
+                "ec2:DescribeInstances",
+                "ec2:AttachVolume",
+                "ec2:CreateVolume"
             ],
             "Resource": "*"
         }
@@ -74,7 +79,6 @@ resource "aws_iam_policy" "AWS-secgame-mission3-eviladminpolicy" {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "calrissian",
             "Effect": "Allow",
             "Action": "*",
             "Resource": "*"

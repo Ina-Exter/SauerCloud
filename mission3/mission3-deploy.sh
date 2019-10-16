@@ -45,21 +45,27 @@ terraform apply -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SEC
 
 #Get terraform's outputs
 export ec2_ip=$(terraform output ec2_ip_addr)
+export ec2_id=$(terraform output ec2_instance_id)
 
 #Instance setup as defined in the workflow in ressources
 cd .. #now in ressources
 
+#wait, else scp will get all pissy on me
+sleep 5
+
 #scp all the required data in
-scp -i "ssh_key.pem" ./chonks ec2-user@$ec2_ip:/home/ec2-user/
-scp -i "ssh_key.pem" startup_script.sh ec2-user@$ec2_ip:/home/ec2-user/
-ssh -i "ssh_key.pem" ec2-user@$ec2_ip 'chmod u+x startup_script.sh; ./startup_script.sh; exit'
+scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q -r ./chonks ec2-user@$ec2_ip:/home/ec2-user/
+scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q startup_script.sh ec2-user@$ec2_ip:/home/ec2-user/
+ssh -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q ec2-user@$ec2_ip 'chmod u+x startup_script.sh; ./startup_script.sh; exit'
 
 #Snapshot
-##TODO
+export volumeID=$(aws --profile $SECGAME_USER_PROFILE ec2 describe-instance-attribute --attribute blockDeviceMapping --instance-id $ec2_id --query 'BlockDeviceMappings[0].Ebs.VolumeId' --output text)
+export snapshotID=$(aws --profile $SECGAME_USER_PROFILE ec2 create-snapshot --volume-id $volumeID --query 'SnapshotId' --output text)
+echo $snapshotID >> snapshotid.txt
 
 #scp cleanup script and execute it
-scp -i "ssh_key.pem" cleanup_script.sh ec2-user@$ec2_ip:/home/ec2-user/
-ssh -i "ssh_key.pem" ec2-user@$ec2_ip 'chmod u+x cleanup_script.sh; ./cleanup_script.sh; exit'
+scp -i "ssh_key.pem" -q cleanup_script.sh ec2-user@$ec2_ip:/home/ec2-user/
+ssh -i "ssh_key.pem" -q  ec2-user@$ec2_ip 'chmod u+x cleanup_script.sh; ./cleanup_script.sh; exit'
 
 #Give user the ssh key
 cp ssh_key.pem ./../
