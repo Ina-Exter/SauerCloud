@@ -12,4 +12,14 @@ IT.
 
 PS: Just in case, remember to set the policies correctly, and in case you lock yourself out, you can regenerate an admin key. DO NOT LEAVE THIS PERMISSION ON!" >> bob_todo.txt
 
-rm startup_script.sh
+echo "
+An EC2 EBS disk is usually an xfs partition.
+When a snapshot is made, it needs to be built into either an image, or a volume in order to be used.
+You start a new EC2 with an image, or attach a volume to an existing EC2 and give it a name (for instance, /dev/sdh)
+
+An xfs partition has a unique uuid that serves to prevent users from mounting the same filesystem twice. This may sometimes cause superblock problems, especially when mounting a snapshot on the same instance.
+To circumvent this, mount has a -o nouuid option that allows users to still mount the filesystem.
+Remember to specify that the filesystem is xfs with -t xfs.
+
+Now you know the basics! Go out there and be evil!" >> mounting_on_linux_for_evil_dummies.txt
+

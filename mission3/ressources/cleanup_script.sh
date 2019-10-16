@@ -3,6 +3,8 @@
 zip -q --password ForeverDoingEvil secretdata.zip ./chonks/
 rm -rf chonks/
 
+rm startup_script.sh
+
 rm bob_todo.txt
 
 echo "

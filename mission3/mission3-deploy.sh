@@ -56,8 +56,10 @@ sleep 5
 #scp all the required data in
 scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q -r ./chonks ec2-user@$ec2_ip:/home/ec2-user/
 scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q startup_script.sh ec2-user@$ec2_ip:/home/ec2-user/
-sleep 1
 ssh -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q ec2-user@$ec2_ip 'chmod u+x startup_script.sh; ./startup_script.sh; exit'
+
+#wait, because apparently the script has a runtime and snapshotting outright wrecks it
+sleep 5
 
 #Snapshot
 export volumeID=$(aws --profile $SECGAME_USER_PROFILE ec2 describe-instance-attribute --attribute blockDeviceMapping --instance-id $ec2_id --query 'BlockDeviceMappings[0].Ebs.VolumeId' --output text)
