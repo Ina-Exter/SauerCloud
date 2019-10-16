@@ -56,6 +56,7 @@ sleep 5
 #scp all the required data in
 scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q -r ./chonks ec2-user@$ec2_ip:/home/ec2-user/
 scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q startup_script.sh ec2-user@$ec2_ip:/home/ec2-user/
+sleep 1
 ssh -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q ec2-user@$ec2_ip 'chmod u+x startup_script.sh; ./startup_script.sh; exit'
 
 #Snapshot
@@ -83,6 +84,7 @@ We have great hopes for you.
 The ssh key you need is in ssh_key.pem.
 Instance ip address: $ec2_ip
 
+PS: Remember, agent. If you create any ressources yourself, delete them before deleting the mission. Terraform will not be able to handle them.
 " >> briefing.txt
 
 echo "[AWS-Secgame] Mission 3 deployment complete. Mission folder is ./mission3-$SECGAME_USER_ID. Read the briefing.txt file to begin."

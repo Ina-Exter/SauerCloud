@@ -1,6 +1,6 @@
 #!/bin/bash
 
-zip --password ForeverDoingEvil secretdata.zip ./chonks/
+zip -q --password ForeverDoingEvil secretdata.zip ./chonks/
 rm -rf chonks/
 
 rm bob_todo.txt
