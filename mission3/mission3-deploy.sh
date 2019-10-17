@@ -51,22 +51,23 @@ export ec2_id=$(terraform output ec2_instance_id)
 cd .. #now in ressources
 
 #wait, else scp will get all pissy on me
-sleep 5
+echo "[AWS-Secgame] Waiting for completion of EC2 startup (8s)."
+sleep 8
 
 #scp all the required data in
+echo "[AWS-Secgame] Importing instance data."
 scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q -r ./chonks ec2-user@$ec2_ip:/home/ec2-user/
-scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q startup_script.sh ec2-user@$ec2_ip:/home/ec2-user/
-ssh -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q ec2-user@$ec2_ip 'chmod u+x startup_script.sh; ./startup_script.sh; exit'
-
-#wait, because apparently the script has a runtime and snapshotting outright wrecks it
-sleep 5
+scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q bob_todo.txt ec2-user@$ec2_ip:/home/ec2-user/
+scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q mounting_on_linux_for_evil_dummies.txt ec2-user@$ec2_ip:/home/ec2-user/
 
 #Snapshot
+echo "[AWS-Secgame] Snapshotting instance."
 export volumeID=$(aws --profile $SECGAME_USER_PROFILE ec2 describe-instance-attribute --attribute blockDeviceMapping --instance-id $ec2_id --query 'BlockDeviceMappings[0].Ebs.VolumeId' --output text)
 export snapshotID=$(aws --profile $SECGAME_USER_PROFILE ec2 create-snapshot --volume-id $volumeID --query 'SnapshotId' --output text)
 echo $snapshotID >> snapshotid.txt
 
 #scp cleanup script and execute it
+echo "[AWS-Secgame] Setting up instance environment"
 scp -i "ssh_key.pem" -q cleanup_script.sh ec2-user@$ec2_ip:/home/ec2-user/
 ssh -i "ssh_key.pem" -q  ec2-user@$ec2_ip 'chmod u+x cleanup_script.sh; ./cleanup_script.sh; exit'
 
