@@ -68,8 +68,8 @@ echo $snapshotID >> snapshotid.txt
 
 #scp cleanup script and execute it
 echo "[AWS-Secgame] Setting up instance environment"
-scp -i "ssh_key.pem" -q cleanup_script.sh ec2-user@$ec2_ip:/home/ec2-user/
-ssh -i "ssh_key.pem" -q  ec2-user@$ec2_ip 'chmod u+x cleanup_script.sh; ./cleanup_script.sh; exit'
+scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q cleanup_script.sh ec2-user@$ec2_ip:/home/ec2-user/
+ssh -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q  ec2-user@$ec2_ip 'chmod u+x cleanup_script.sh; ./cleanup_script.sh; exit'
 
 #Give user the ssh key
 cp ssh_key.pem ./../
