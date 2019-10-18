@@ -97,7 +97,27 @@ The server just makes a flag file. That you are supposed to "cat" ;).
 
 #### Objectives
 
+This mission is actually very close to its design counterpart. It does, however, have subtilities.
+
+Users are given access to an ec2 instance for investigation. It has minimal privileges, but IAM list everywhere. Its privileges are a bit too granular for realism, but this is rather to prevent the user from breaking down anything...
+
+A document informs the user that a snapshot of the instance exists.
+
+The aim of this mission is to get the owner id, use it to look for the snapshot, make a volume from it and mount the volume on the ec2 to investigate it. It allows users to find a flag, and a way to complete the objective: Make an admin key, take down the instance after exfiltring the data.
+
 #### Setup
+
+This one is a doozy. Terraform is used up to the point of making the VPC and the instance (again the key is handled with bash).
+
+Then, the script has to scp all data (quietly) in the instance, wait a couple seconds in order to get the eventual consistency of the snapshot, then snapshot it, then RE-ssh on it in order to run a "cleanup script" to obfuscate the instance for the user.
+
+A document on how to mount on linux is added on the instance, in order to facilitate this step for users that are not absolute doctors in xfs file systems. Actually, xfs file systems have an unique id, which cannot be changed while mounted, and thus the snapshot and the current partition have the same one.
+
+This makes linux go bonkers when trying to mount the volume made from the snapshot. One work-around would be to change the uuid, but I opted for an instruction to tell linux to ignore it, which allows for the mount.
+
+After this, two entrypoints exist for privilage escalation (PrivEsc). The first one is the ec2's permission to generate a new CLI key for any user, including the admin. The second is the capacity to update a policy (which has a --set-as-default flag that you do not need extra permissions to set), and can be used to set the ec2's profile as admin.
+
+Both of those are easily setup: simply add the permission in the ec2's instance profile. Much easier than the snapshotting mess.
 
 ### Big game
 
