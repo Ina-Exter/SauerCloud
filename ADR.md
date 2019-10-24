@@ -25,7 +25,7 @@ I found it easier to use and modify, and here it went. Be it said: Terraforming 
 
 Terraform also has a big advantage which I did not find (perhaps I did not look enough) and that is being able to put variables in your code. Thanks to that, I don't have to sed the deployment code each time anyone starts a new mission.
 
-Also: I found that CloudFormation is incredibly silent in terminal (I might have missed the --verbose option but eh), where Terraform keeps you up-to-date on what it is doing, even popping reminders every 10 seconds. I find that this is better, especially for the user that is curretly deploying potentially costy infrastructure on his account and would rather know not everything is being f***ed-up.
+Also: I found that CloudFormation is incredibly silent in terminal (I might have missed the --verbose option but eh), where Terraform keeps you up-to-date on what it is doing, even popping reminders every 10 seconds. I find that this is better, especially for the user that is curretly deploying potentially costy infrastructure on his account and would rather know not everything is being f\*\*\*ed-up.
 
 ### Terraform file architecture
 
