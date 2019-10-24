@@ -10,7 +10,7 @@
 #by society Stack Labs. Its future uses are not limited to 
 #this and should not be considered a company exclusivity.
 
-#These scripts and most of the ressources were made by
+#These scripts and most of the resources were made by
 #Xavier Goffin (xaviergoffin42@gmail.com, xavier.goffin@stack-labs.com)
 #I am not responsible for any billing charges incurred when using this program.
 
@@ -34,7 +34,7 @@ then
 fi
 
 #If user failed a configuration step, kindly remind him to go do it
-if [ ! -e profile ] || [ ! -e whitelist ]
+if [ ! -e profile.txt ] || [ ! -e whitelist.txt ]
 then
 	echo "[AWS-Secgame] Please configure your default profile and whitelist ip before starting missions. Run ./config in order to write these files."
 	exit 2
@@ -62,9 +62,9 @@ fi
 #                                                          #
 ############################################################
 
-#Load environment variables from files profile and whitelist
-export SECGAME_USER_PROFILE=$(head -n 1 profile)
-export USER_IP=$(head -n 1 whitelist)
+#Load environment variables from files profile.txt and whitelist.txt
+export SECGAME_USER_PROFILE=$(head -n 1 profile.txt)
+export USER_IP=$(head -n 1 whitelist.txt)
 
 
 ############################################################
@@ -83,11 +83,11 @@ then
 		echo "[AWS-Secgame] Cannot find startup script for mission $2. Please check syntax and reiterate."
 		exit 2
 	fi
-	#Make a mission directory, copy the contents of the ressources in it, and get in
+	#Make a mission directory, copy the contents of the resources in it, and get in
 	mkdir $2-$SECGAME_USER_ID
 	cp -r ./$2/* ./$2-$SECGAME_USER_ID/
 	cd $2-$SECGAME_USER_ID
-	#Run the mission startup script from the ressources folder (may have to change path ultimately)
+	#Run the mission startup script from the resources folder (may have to change path ultimately)
 	source ./$2-deploy.sh
 
 elif [[ "destroy" = "$1" ]] #User requests a mission destruction
@@ -116,7 +116,7 @@ then
 		echo "[AWS-Secgame] Cannot find destroy script for mission $mission. Please check syntax and reiterate."
 		exit 2
 	fi
-	#Check that the user is not trying to run it on the mission (ressource) folder
+	#Check that the user is not trying to run it on the mission (resource) folder
 	if [[ $mission = $SECGAME_USER_ID ]]
 	then
 		echo "[AWS-Secgame] Invalid session ID, please do not attempt to destroy any folder."
@@ -134,7 +134,7 @@ then
 	mv $folder_name trash/
 	cd trash/$folder_name
 
-	#Run the mission destroy script from the ressource folder (path subject to change)
+	#Run the mission destroy script from the resource folder (path subject to change)
 	source $mission-destroy.sh
 else #User can't use a keyboard to save their lives
 	echo "[AWS-Secgame] Invalid command. Command should either be create or destroy. See ./start.sh help for further information."

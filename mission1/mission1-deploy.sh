@@ -12,7 +12,7 @@ echo "[AWS-Secgame] User IP: $USER_IP"
 #ALWAYS assume that this script will run in the mission folder mission1-user_id
 
 #Request consent, deploy only if given
-echo "[AWS-Secgame] This will setup the first mission's bucket and associated ressources. Is this acceptable? (yes/no)"
+echo "[AWS-Secgame] This will setup the first mission's bucket and associated resources. Is this acceptable? (yes/no)"
 echo "[AWS-Secgame] Only \"yes\" will be accepted as confirmation."
 read answer
 if [[ ! $answer == "yes" ]]
@@ -32,8 +32,8 @@ fi
 aws --profile $SECGAME_USER_PROFILE s3 mb s3://evilcorp-evilbucket-$SECGAME_USER_ID
 echo "[AWS-Secgame] Bucket created"
 
-#Imports ressources from the original mission1 folder, and copies them onto the bucket.
-aws --profile $SECGAME_USER_PROFILE s3 --quiet cp ./../mission1/ressources/evilcorp-evilbucket-data s3://evilcorp-evilbucket-$SECGAME_USER_ID --recursive
+#Imports resources from the original mission1 folder, and copies them onto the bucket.
+aws --profile $SECGAME_USER_PROFILE s3 --quiet cp ./../mission1/resources/evilcorp-evilbucket-data s3://evilcorp-evilbucket-$SECGAME_USER_ID --recursive
 echo "[AWS-Secgame] Ressources copied on bucket"
 
 #Sets the bucket's ACL (access control list) to public for maximum vulnerability

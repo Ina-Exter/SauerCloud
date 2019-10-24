@@ -10,12 +10,12 @@ echo "[AWS-Secgame] User IP: $USER_IP"
 
 #A ssh private key should also be generated and passed as parameter.
 echo "[AWS-Secgame] Generating ssh key for ec2"
-aws --profile $SECGAME_USER_PROFILE ec2 create-key-pair --key-name AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID --query 'KeyMaterial' --output text >> ressources/ssh_key.pem
-export sshkey=$(<ressources/ssh_key.pem)
-chmod 400 ressources/ssh_key.pem
+aws --profile $SECGAME_USER_PROFILE ec2 create-key-pair --key-name AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID --query 'KeyMaterial' --output text >> resources/ssh_key.pem
+export sshkey=$(<resources/ssh_key.pem)
+chmod 400 resources/ssh_key.pem
 
 #Initialize terraform
-cd ressources/terraform
+cd resources/terraform
 echo "[AWS-Secgame] Initializing terraform."
 terraform init
 
@@ -47,8 +47,8 @@ terraform apply -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SEC
 export ec2_ip=$(terraform output ec2_ip_addr)
 export ec2_id=$(terraform output ec2_instance_id)
 
-#Instance setup as defined in the workflow in ressources
-cd .. #now in ressources
+#Instance setup as defined in the workflow in resources
+cd .. #now in resources
 
 #wait, else scp will get all pissy on me
 echo "[AWS-Secgame] Waiting for completion of EC2 startup (8s)."
@@ -87,7 +87,7 @@ We have great hopes for you.
 The ssh key you need is in ssh_key.pem.
 Instance ip address: $ec2_ip
 
-PS: Remember, agent. If you create any ressources yourself, delete them before deleting the mission. Terraform will not be able to handle them.
+PS: Remember, agent. If you create any resources yourself, delete them before deleting the mission. Terraform will not be able to handle them.
 " >> briefing.txt
 
 echo "[AWS-Secgame] Mission 3 deployment complete. Mission folder is ./mission3-$SECGAME_USER_ID. Read the briefing.txt file to begin."

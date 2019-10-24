@@ -21,8 +21,8 @@ then
 fi
 
 #destroy terraform
-echo "[AWS-Secgame] Destroying terraform ressources"
-cd ressources/terraform
+echo "[AWS-Secgame] Destroying terraform resources"
+cd resources/terraform
 terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP"
 
 #destroy key pair

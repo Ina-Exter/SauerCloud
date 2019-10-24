@@ -9,7 +9,7 @@ echo "[AWS-Secgame] User IP: $USER_IP"
 #ALWAYS assume this will run from the mission dir!
 
 #Request consent, restore if not given
-echo "[AWS-Secgame] This will destroy all mission1-associated ressources. Is this acceptable? (yes/no)"
+echo "[AWS-Secgame] This will destroy all mission1-associated resources. Is this acceptable? (yes/no)"
 echo "[AWS-Secgame] Only \"yes\" will be accepted as confirmation."
 read answer
 if [[ ! $answer == "yes" ]]
