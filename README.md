@@ -91,7 +91,7 @@ This, in turn, gives rise to a host of services hosted "on the cloud" (i.e. on g
 And that "way" usually involves the biggest flaw in the system, usually located between the chair and the screen, i.e. the user.
 
 So in layman's term, this program is an automated way to request virtual machines on a remote AWS server for you to then experiment with trying to break them or break into them. The vulnerabilities you will learn of here are very specialized, and will mostly only work on AWS infrastructure.
-Give, however, that AWS has around 70% of the market in cloud computing, and that cloud computing is ever on the rise, knowing how to make appliances secure is a very useful skill.
+Given, however, that AWS has around 70% of the market in cloud computing, and that cloud computing is ever on the rise, knowing how to make appliances secure is a very useful skill.
 
 ####How do I make one?
 

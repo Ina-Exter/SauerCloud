@@ -22,7 +22,7 @@ resource "aws_internet_gateway" "AWS-secgame-mission5-igw" {
 #Subnets
 resource "aws_subnet" "AWS-secgame-mission5-subnet" {
     vpc_id                  = "${aws_vpc.AWS-secgame-mission5-vpc.id}"
-    cidr_block              = "192.168.0.0/24"
+    cidr_block              = "192.168.0.0/23" #Netmask here is 23. Usual subnet will be 192.168.0.0/24, RDS will be 192.168.1.0/24
     availability_zone       = "us-east-1a"
     map_public_ip_on_launch = false
 
@@ -33,20 +33,20 @@ resource "aws_subnet" "AWS-secgame-mission5-subnet" {
 
 #RTB
 resource "aws_route_table" "AWS-secgame-mission5-routing-table" {
-  route {
-      cidr_block = "0.0.0.0/0"
-      gateway_id = "${aws_internet_gateway.AWS-secgame-mission5-igw.id}"
-  }
-  vpc_id = "${aws_vpc.AWS-secgame-mission5-vpc.id}"
-  tags = {
-      Name = "AWS-secgame-mission5-routing-table-${var.id}"
-  }
+    route {
+        cidr_block = "0.0.0.0/0"
+       gateway_id = "${aws_internet_gateway.AWS-secgame-mission5-igw.id}"
+    }
+    vpc_id = "${aws_vpc.AWS-secgame-mission5-vpc.id}"
+    tags = {
+        Name = "AWS-secgame-mission5-routing-table-${var.id}"
+    }
 }
 
 #RTA
 resource "aws_route_table_association" "AWS-secgame-mission5-rta" {
-  subnet_id = "${aws_subnet.AWS-secgame-mission5-subnet.id}"
-  route_table_id = "${aws_route_table.AWS-secgame-mission5-routing-table.id}"
+    subnet_id = "${aws_subnet.AWS-secgame-mission5-subnet.id}"
+    route_table_id = "${aws_route_table.AWS-secgame-mission5-routing-table.id}"
 }
 
 #NACL
