@@ -9,10 +9,10 @@ echo "[AWS-Secgame] User IP: $USER_IP"
 #ALWAYS assume that this script will run in the mission folder mission5-user_id
 
 #A ssh private key should also be generated and passed as parameter.
-#echo "[AWS-Secgame] Generating ssh key for ec2"
-#aws --profile $SECGAME_USER_PROFILE ec2 create-key-pair --key-name AWS-secgame-mission5-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID --query 'KeyMaterial' --output text >> resources/ssh_key.pem
-#export sshkey=$(<resources/ssh_key.pem)
-#chmod 400 resources/ssh_key.pem
+echo "[AWS-Secgame] Generating ssh key for ec2"
+aws --profile $SECGAME_USER_PROFILE ec2 create-key-pair --key-name AWS-secgame-mission5-keypair-$SECGAME_USER_ID --query 'KeyMaterial' --output text >> resources/ssh_key.pem
+export sshkey=$(<resources/ssh_key.pem)
+chmod 400 resources/ssh_key.pem
 
 #Initialize terraform
 cd resources/terraform
@@ -36,7 +36,7 @@ then
         	mkdir trash
 	fi
 	mv ./mission5-$SECGAME_USER_ID ./trash/
-	aws --profile $SECGAME_USER_PROFILE ec2 delete-key-pair --key-name AWS-secgame-mission5-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID
+	aws --profile $SECGAME_USER_PROFILE ec2 delete-key-pair --key-name AWS-secgame-mission5-keypair-$SECGAME_USER_ID
 	exit 2
 fi
 
@@ -44,13 +44,13 @@ fi
 terraform apply -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 
 #Get the output
-#export bastion_ip=$(terraform output bastion_ip_addr)
+export instance_id=$(terraform output ec2_instance_id)
 
 #Return in mission dir
 cd ../..
 
 #Write briefing
-echo ""  >> briefing.txt
+echo "$instance_id"  >> briefing.txt
 
 echo "[AWS-Secgame] Mission 5 deployment complete. Mission folder is ./mission5-$SECGAME_USER_ID. Read the briefing.txt file to begin."
 

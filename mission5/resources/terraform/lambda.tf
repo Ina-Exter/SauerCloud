@@ -1,8 +1,8 @@
 #Lambda file
 data "archive_file" "AWS-secgame-mission5-lambda-file-dump-logs" {
     type = "zip"
-    source_file = "../assets/lambda-dump-logs.py"
-    output_path = "../assets/lambda-dump-logs.zip"
+    source_file = "../code/lambda-dump-logs.py"
+    output_path = "../code/lambda-dump-logs.zip"
 }
 
 #Lambda assume role permissions
@@ -29,7 +29,7 @@ EOF
 }
 
 #Lambda role permissions
-resource "iam_role_policy" "AWS-secgame-mission5-role-lambda-write-logs" {
+resource "aws_iam_role_policy" "AWS-secgame-mission5-role-lambda-write-logs" {
     name = "AWS-secgame-mission5-role-lambda-write-logs-${var.id}"
     role = "${aws_iam_role.AWS-secgame-mission5-lambda-role.id}"
     policy = <<EOF
@@ -56,7 +56,7 @@ resource "aws_lambda_function" "AWS-secgame-mission5-lambda-dump-logs" {
     filename = "../code/lambda-dump-logs.zip"
     function_name = "AWS-secgame-mission5-lambda-${var.id}"
     role = "${aws_iam_role.AWS-secgame-mission5-lambda-role.arn}"
-    handler = "lambda.handler"
+    handler = "lambda-dump-logs.handler"
     runtime = "python3.7"
     tags = {
         Name = "AWS-secgame-mission5-lambda-${var.id}"
@@ -64,8 +64,8 @@ resource "aws_lambda_function" "AWS-secgame-mission5-lambda-dump-logs" {
 }
 
 #Cloudwatch Rule
-resource "aws_cloudwatch_event_rule" "AWS-secgame-mission5-cloudwatch-rule-trigger-on-ec2-termination" {
-    name        = "AWS-secgame-mission5-cloudwatch-rule-trigger-on-ec2-termination-${var.id}"
+resource "aws_cloudwatch_event_rule" "AWS-secgame-mission5-cw-rule-trigger-ec2-termination" {
+    name        = "AWS-secgame-mission5-cw-rule-trigger-ec2-termination-${var.id}"
 
     event_pattern = <<PATTERN
 {
@@ -89,7 +89,7 @@ PATTERN
 
 #Event target (this assures the tether between lambda and cloudwatch)
 resource "aws_cloudwatch_event_target" "AWS-secgame-mission5-event-target-ec2-termination" {
-    rule = "${aws_cloudwatch_event_rule.AWS-secgame-mission5-cloudwatch-rule-trigger-on-ec2-termination.name}"
+    rule = "${aws_cloudwatch_event_rule.AWS-secgame-mission5-cw-rule-trigger-ec2-termination.name}"
     target_id = "AWS-secgame-mission5-lambda-dump-logs"
     arn = "${aws_lambda_function.AWS-secgame-mission5-lambda-dump-logs.arn}"
 }
@@ -100,5 +100,5 @@ resource "aws_lambda_permission" "AWS-secgame-mission5-permission-cloudwatch-lam
     action = "lambda:InvokeFunction"
     function_name = "${aws_lambda_function.AWS-secgame-mission5-lambda-dump-logs.function_name}"
     principal = "events.amazonaws.com"
-    source_arn = "${aws_cloudwatch_event_rule.AWS-secgame-mission5-cloudwatch-rule-trigger-on-ec2-termination.arn}"
+    source_arn = "${aws_cloudwatch_event_rule.AWS-secgame-mission5-cw-rule-trigger-ec2-termination.arn}"
 }
