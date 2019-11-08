@@ -17,7 +17,7 @@ echo "[AWS-Secgame] Only \"yes\" will be accepted as confirmation."
 read answer
 if [[ ! $answer == "yes" ]]
 then
-	echo "Abort requested. Destroying target folder."
+	echo "[AWS-Secgame] Abort requested. Destroying target folder."
 	cd ..
 	#If trash doesn't exist, make it
 	if [[ ! -d "trash" ]]
@@ -30,20 +30,68 @@ fi
 
 #This first command makes a new bucket called evilcorp-evilbucket-user_id.
 aws --profile $SECGAME_USER_PROFILE s3 mb s3://evilcorp-evilbucket-$SECGAME_USER_ID
+if [[ ! $? == 0 ]]
+then
+	echo "[AWS-Secgame] Non-zero return code on operation. Return code $? Abort."
+	cd ..
+	#If trash doesn't exist, make it
+	if [[ ! -d "trash" ]]
+	then
+	       	mkdir trash
+	fi
+	mv mission1-$SECGAME_USER_ID ./trash/
+	exit 2
+fi
 echo "[AWS-Secgame] Bucket created"
 
 #Imports resources from the original mission1 folder, and copies them onto the bucket.
 aws --profile $SECGAME_USER_PROFILE s3 --quiet cp ./resources/evilcorp-evilbucket-data s3://evilcorp-evilbucket-$SECGAME_USER_ID --recursive
+if [[ ! $? == 0 ]]
+then
+	echo "[AWS-Secgame] Non-zero return code on operation. Return code $? Abort."
+	cd ..
+	#If trash doesn't exist, make it
+	if [[ ! -d "trash" ]]
+	then
+	       	mkdir trash
+	fi
+	mv mission1-$SECGAME_USER_ID ./trash/
+	exit 2
+fi
 echo "[AWS-Secgame] Ressources copied on bucket"
 
 #Sets the bucket's ACL (access control list) to public for maximum vulnerability
 aws --profile $SECGAME_USER_PROFILE s3api put-bucket-acl --acl public-read --bucket evilcorp-evilbucket-$SECGAME_USER_ID
+if [[ ! $? == 0 ]]
+then
+	echo "[AWS-Secgame] Non-zero return code on operation. Return code $? Abort."
+	cd ..
+	#If trash doesn't exist, make it
+	if [[ ! -d "trash" ]]
+	then
+	       	mkdir trash
+	fi
+	mv mission1-$SECGAME_USER_ID ./trash/
+	exit 2
+fi
 echo "[AWS-Secgame] Bucket ACL set"
 
 #This gets a bit tacky. All files also have to have public access, and I found no better way than to pipe it all together and pray.
 #This essentially lists bucket content, then for each, sets ACL as public-read. Since .git folders a a bit large, this may take up to 30 seconds.
-echo "Setting file ACL, please wait (expected wait under 1 minute)."
+echo "[AWS-Secgame] Setting file ACL, please wait (expected wait under 1 minute)."
 aws --profile $SECGAME_USER_PROFILE s3 ls s3://evilcorp-evilbucket-$SECGAME_USER_ID --recursive|awk '{cmd="aws --profile $SECGAME_USER_PROFILE s3api put-object-acl --acl public-read --bucket evilcorp-evilbucket-$SECGAME_USER_ID --key "$4; system(cmd)}'
+if [[ ! $? == 0 ]]
+then
+	echo "[AWS-Secgame] Non-zero return code on operation. Return code $? Abort."
+	cd ..
+	#If trash doesn't exist, make it
+	if [[ ! -d "trash" ]]
+	then
+	       	mkdir trash
+	fi
+	mv mission1-$SECGAME_USER_ID ./trash/
+	exit 2
+fi
 echo "[AWS-Secgame] File ACL set"
 
 # A briefing serves as a starting point for the user, now with extra hacky flavour!
