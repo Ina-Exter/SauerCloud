@@ -44,7 +44,12 @@ then
 fi
 echo "[AWS-Secgame] Bucket created"
 
-#Imports resources from the original mission1 folder, and copies them onto the bucket.
+#Git data is zipped. Unzip it before the transfer
+cd resources
+unzip -qq evilcorp-evilbucket-data.zip
+cd ..
+
+#Copy the files onto the bucket.
 aws --profile $SECGAME_USER_PROFILE s3 --quiet cp ./resources/evilcorp-evilbucket-data s3://evilcorp-evilbucket-$SECGAME_USER_ID --recursive
 if [[ ! $? == 0 ]]
 then
