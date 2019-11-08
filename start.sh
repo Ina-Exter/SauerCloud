@@ -54,8 +54,6 @@ then
 	exit 2
 fi
 
-#TODO: MAKE SURE USER HAS TERRAFORM
-
 ############################################################
 #                                                          #
 #                  ENVIRONMENT HANDLING                    #
@@ -65,6 +63,22 @@ fi
 #Load environment variables from files profile.txt and whitelist.txt
 export SECGAME_USER_PROFILE=$(head -n 1 profile.txt)
 export USER_IP=$(head -n 1 whitelist.txt)
+
+#Check whether the provided user profile is valid, i.e. if it is not mistyped.
+aws --profile $SECGAME_USER_PROFILE sts get-caller-identity > /dev/null 2>&1
+if [[ $? != 0 ]]
+then
+	echo "[AWS-Secgame] Unable to confirm validity of AWS keys, please make sure you configured the correct profile."
+	exit 2
+fi
+
+#Check whether the user has terraform
+export terraform_path=$(command -v terraform)
+if [[ $terraform_path == "" ]]
+then
+	echo "[AWS-Secgame] Cannot locate terraform. Please make sure terraform is installed and in a location in your PATH."
+	exit 2
+fi
 
 
 ############################################################

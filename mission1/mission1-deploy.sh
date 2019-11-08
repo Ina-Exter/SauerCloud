@@ -32,7 +32,7 @@ fi
 aws --profile $SECGAME_USER_PROFILE s3 mb s3://evilcorp-evilbucket-$SECGAME_USER_ID
 if [[ ! $? == 0 ]]
 then
-	echo "[AWS-Secgame] Non-zero return code on operation. Return code $? Abort."
+	echo "[AWS-Secgame] Non-zero return code on operation. Abort."
 	cd ..
 	#No resource has been created, just delete the folder
 	if [[ ! -d "trash" ]]
@@ -53,14 +53,9 @@ cd ..
 aws --profile $SECGAME_USER_PROFILE s3 --quiet cp ./resources/evilcorp-evilbucket-data s3://evilcorp-evilbucket-$SECGAME_USER_ID --recursive
 if [[ ! $? == 0 ]]
 then
-	echo "[AWS-Secgame] Non-zero return code on operation. Return code $? Abort."
-	cd ..
+	echo "[AWS-Secgame] Non-zero return code on operation. Abort."
 	#If this fails, then the delete script has to be ran...
-	if [[ ! -d "trash" ]]
-	then
-	       	mkdir trash
-	fi
-	mv mission1-$SECGAME_USER_ID ./trash/
+	source ./mission1-destroy.sh --abort
 	exit 2
 fi
 echo "[AWS-Secgame] Ressources copied on bucket"
@@ -69,14 +64,9 @@ echo "[AWS-Secgame] Ressources copied on bucket"
 aws --profile $SECGAME_USER_PROFILE s3api put-bucket-acl --acl public-read --bucket evilcorp-evilbucket-$SECGAME_USER_ID
 if [[ ! $? == 0 ]]
 then
-	echo "[AWS-Secgame] Non-zero return code on operation. Return code $? Abort."
-	cd ..
-	#If trash doesn't exist, make it
-	if [[ ! -d "trash" ]]
-	then
-	       	mkdir trash
-	fi
-	mv mission1-$SECGAME_USER_ID ./trash/
+	echo "[AWS-Secgame] Non-zero return code on operation. Abort."
+	#If this fails, then the delete script has to be ran...
+	source ./mission1-destroy.sh --abort
 	exit 2
 fi
 echo "[AWS-Secgame] Bucket ACL set"
@@ -87,14 +77,9 @@ echo "[AWS-Secgame] Setting file ACL, please wait (expected wait under 1 minute)
 aws --profile $SECGAME_USER_PROFILE s3 ls s3://evilcorp-evilbucket-$SECGAME_USER_ID --recursive|awk '{cmd="aws --profile $SECGAME_USER_PROFILE s3api put-object-acl --acl public-read --bucket evilcorp-evilbucket-$SECGAME_USER_ID --key "$4; system(cmd)}'
 if [[ ! $? == 0 ]]
 then
-	echo "[AWS-Secgame] Non-zero return code on operation. Return code $? Abort."
-	cd ..
-	#If trash doesn't exist, make it
-	if [[ ! -d "trash" ]]
-	then
-	       	mkdir trash
-	fi
-	mv mission1-$SECGAME_USER_ID ./trash/
+	echo "[AWS-Secgame] Non-zero return code on operation. Abort."
+	#If this fails, then the delete script has to be ran...
+	source ./mission1-destroy.sh --abort
 	exit 2
 fi
 echo "[AWS-Secgame] File ACL set"
@@ -106,4 +91,18 @@ Word has it that they are plotting something. Something bad. However, our inform
 Our guy working at Amazon Web Services reported seeing the name of Evilcorp passing by in an S3 report. There may be something to see. \
 Look up their evilcorp-evilbucket-$SECGAME_USER_ID bucket. There should be interesting files on there, and a hint regarding their plans..." >> briefing.txt
 
-echo "[AWS-Secgame] Mission 1 deployment complete. Mission folder is ./mission1-$SECGAME_USER_ID. Read the briefing.txt file to begin."
+echo "[AWS-Secgame] Mission 1 deployment complete. Mission folder is ./mission1-$SECGAME_USER_ID. Read the briefing to begin, a copy can be found in the mission folder."
+
+echo "##############################################################################################"
+echo "#                                                                                            #"
+echo "#                                   INCOMING TRANSMISSION                                    #"
+echo "#                                                                                            #"
+echo "##############################################################################################"
+
+cd ..
+cat mission1-$SECGAME_USER_ID/briefing.txt
+
+
+
+
+
