@@ -1,10 +1,10 @@
-#AWS Offensive Security Game
+# AWS Offensive Security Game
 
 **DISCLAMER: DO NOT USE THESE IN PRODUCTION, THEY ARE VULNERABLE BY DESIGN!**
 
-##FAQ
+## FAQ
 
-###What is this?
+### What is this?
 
 This program is a deployment framework made to allow users to deploy vulnerable-by-design AWS infrastructures on their own private account, and penetration-test it in a secure fashion.
 
@@ -12,15 +12,15 @@ The aim is to teach users about both penetration testing (pen-test for short), a
 
 Most of the time, there are one (or two) go-to ways to go through each mission, but if you find another, good for you! It's a "feature".
 
-###Who made it?
+### Who made it?
 
 
-###Inspirations
+### Inspirations
 
 The programmer would like to thank CloudGoat (by RhinoSecurityLabs) and flaws.cloud. This is a free inspiration of their work, technically devoid of plagiarism.
 Those two also make great learning resources and I recommand them warmly.
 
-###How do I use it?
+### How do I use it?
 
 First of all, this will require, for CLI access reasons, either MacOS or Linux. For now, it remains untested on MacOS, so Linux. Also, you will need the AWS CLI installed and access keys with sufficient privileges to create and destroy IAM, EC2, S3, RDS and Lambda resources.
 
@@ -73,7 +73,7 @@ Once you have created a mission, you will be prompted to read the briefing in th
 
 Nb: Most of the time, using anything else than CLI is considered cheating. ;)
 
-###What is an AWS account/What is AWS?
+### What is an AWS account/What is AWS?
 
 This part is oriented towards people who do not really know of cloud computing and are hoping to get started with this program.
 
@@ -81,7 +81,7 @@ Please note, however, that the challenges proposed here may be a bit complex for
 
 **It is possible to undertake "mission 0" in order to get more familiar with AWS as a whole (subject to change and deployment).**
 
-####What is cloud computing (in a nutshell)?
+#### What is cloud computing (in a nutshell)?
 
 Paying for servers is expensive. Setting them up is a doozy. It takes room, heats a lot, and you cannot adjust your consumption easily.
 
@@ -93,7 +93,7 @@ And that "way" usually involves the biggest flaw in the system, usually located 
 So in layman's term, this program is an automated way to request virtual machines on a remote AWS server for you to then experiment with trying to break them or break into them. The vulnerabilities you will learn of here are very specialized, and will mostly only work on AWS infrastructure.
 Given, however, that AWS has around 70% of the market in cloud computing, and that cloud computing is ever on the rise, knowing how to make appliances secure is a very useful skill.
 
-####How do I make one?
+#### How do I make one?
 
 Go to the website and subscribe. You will be asked for a credit card but should not be charged at first (see next section for details).
 
@@ -105,7 +105,7 @@ After that, you have two means of interacting with your AWS account:
 
 We will mostly use the CLI. You will have to generate CLI keys to use your account with.
  
-####What are those "CLI keys" you spoke of? Is this Klingon?
+#### What are those "CLI keys" you spoke of? Is this Klingon?
 
 CLI stands for command-line-interface. It essentially means you are going to work in a terminal-like environment (sorry Windows Users).
 
@@ -121,7 +121,7 @@ For the default region, this program currently only supports "us-east-1". For th
 
 Once this is configured (remember well your profile name), you should be good to go.
 
-###Will I be charged?
+### Will I be charged?
 
 Short answer: No.
 

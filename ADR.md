@@ -1,18 +1,18 @@
-# Architecture Decision Records
+# Architecture Decision Records
 
 ## Program
 
-### Why bash?
+### Why bash?
 
 Short answer: It is fun and I wanted to flex.
 
 Long answer: Python is nice, but bash is less cumbersome (in my modest opinion) and allows for direct integration of the AWS CLI, without having to use a packet and an API.
 
-### Folder architecture
+### Folder architecture
 
 SUBJECT TO CHANGE!!!!1!!1!!1!ONE!
 
-## Deployment
+## Deployment
 
 ### Terraform vs CloudFormation
 
@@ -52,7 +52,7 @@ This caused a number of problems. Namely, DNS reservation could not be set-up on
 
 Because of this, the beginning of the first mission got cut. Now, you only have to deal with bucket rollback.
 
-#### Setup
+#### Setup
 
 This mission consists of a single bucket and some data. I thought terraform would be heavily overkill for such a deployment (and I might have been wrong; it is possible that I will change it to check).
 
@@ -67,7 +67,7 @@ Side notes:
 
 -This challenge does not use the whitelist. Since it's a read-only bucket with no sensible data, I deemed that it was not worth giving a damn. Might go back on it.
 
-### Mission 2
+### Mission 2
 
 #### Objectives
 
@@ -82,7 +82,7 @@ The AWS part is added when you have to exploit instance credentials to find the 
 
 Side note: the user does not know the bastion is a bastion (except in name).
 
-#### Setup
+#### Setup
 
 Like all the following ones (most likely), this is deployed using Terraform.
 
