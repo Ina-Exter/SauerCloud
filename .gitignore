@@ -1,0 +1,6 @@
+profile.txt
+whitelist.txt
+/trash/*
+mission1/resources/evilcorp-evilbucket-data/
+/mission0/*
+*.swp

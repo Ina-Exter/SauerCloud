@@ -43,6 +43,23 @@ fi
 #DEPLOYYYYYYYYYYYYYYYYYYYY
 terraform apply -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 
+#check terraform apply's return code, act depending on it. 0 is for a flawless execution, 1 means an error has arisen
+if [[ $? != 0 ]]
+then
+	echo "[AWS-Secgame] Non-zero return code on terraform apply. Rolling back."
+	terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
+	cd ../../..
+	#If trash doesn't exist, make it
+	if [[ ! -d "trash" ]]
+	then
+        	mkdir trash
+	fi
+	mv ./mission3-$SECGAME_USER_ID ./trash/
+	aws --profile $SECGAME_USER_PROFILE ec2 delete-key-pair --key-name AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID
+	exit 2
+fi
+
+
 #Get terraform's outputs
 export ec2_ip=$(terraform output ec2_ip_addr)
 export ec2_id=$(terraform output ec2_instance_id)
@@ -90,5 +107,15 @@ Instance ip address: $ec2_ip
 PS: Remember, agent. If you create any resources yourself, delete them before deleting the mission. Terraform will not be able to handle them.
 " >> briefing.txt
 
-echo "[AWS-Secgame] Mission 3 deployment complete. Mission folder is ./mission3-$SECGAME_USER_ID. Read the briefing.txt file to begin."
+echo "[AWS-Secgame] Mission 3 deployment complete. Mission folder is ./mission3-$SECGAME_USER_ID. Read the briefing to begin, a copy can be found in the mission folder."
+
+echo "##############################################################################################"
+echo "#                                                                                            #"
+echo "#                                   INCOMING TRANSMISSION                                    #"
+echo "#                                                                                            #"
+echo "##############################################################################################"
+
+cd ..
+cat mission3-$SECGAME_USER_ID/briefing.txt
+
 
