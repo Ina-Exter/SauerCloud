@@ -34,7 +34,7 @@ if [[ ! $? == 0 ]]
 then
 	echo "[AWS-Secgame] Non-zero return code on operation. Return code $? Abort."
 	cd ..
-	#If trash doesn't exist, make it
+	#No resource has been created, just delete the folder
 	if [[ ! -d "trash" ]]
 	then
 	       	mkdir trash
@@ -50,7 +50,7 @@ if [[ ! $? == 0 ]]
 then
 	echo "[AWS-Secgame] Non-zero return code on operation. Return code $? Abort."
 	cd ..
-	#If trash doesn't exist, make it
+	#If this fails, then the delete script has to be ran...
 	if [[ ! -d "trash" ]]
 	then
 	       	mkdir trash
