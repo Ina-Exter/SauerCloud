@@ -20,7 +20,7 @@ then
 	then
 	       	mkdir trash
 	fi
-i	mv mission2-$SECGAME_USER_ID ./trash/
+	mv mission2-$SECGAME_USER_ID ./trash/
 	exit 2
 fi
 export sshkey=$(<resources/ssh_key.pem)

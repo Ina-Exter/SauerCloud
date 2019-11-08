@@ -11,6 +11,18 @@ echo "[AWS-Secgame] User IP: $USER_IP"
 #A ssh private key should also be generated and passed as parameter.
 echo "[AWS-Secgame] Generating ssh key for ec2"
 aws --profile $SECGAME_USER_PROFILE ec2 create-key-pair --key-name AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID --query 'KeyMaterial' --output text >> resources/ssh_key.pem
+if [[ ! $? == 0 ]]
+then
+	echo "[AWS-Secgame] Non-zero return code on operation. Abort."
+	cd ..
+	#No resource has been created, just delete the folder
+	if [[ ! -d "trash" ]]
+	then
+	       	mkdir trash
+	fi
+	mv mission3-$SECGAME_USER_ID ./trash/
+	exit 2
+fi
 export sshkey=$(<resources/ssh_key.pem)
 chmod 400 resources/ssh_key.pem
 
