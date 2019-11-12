@@ -4,3 +4,4 @@ whitelist.txt
 mission1/resources/evilcorp-evilbucket-data/
 /mission0/*
 *.swp
+mission1/resources/evilcorp-evilbucket-data-backup/
