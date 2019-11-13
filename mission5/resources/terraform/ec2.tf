@@ -107,12 +107,9 @@ resource "aws_instance" "AWS-secgame-mission5-ec2-dynamo-handler" {
     }
     user_data = <<-EOF
 #!/bin/bash
-sudo addusr ddb-user
-echo "ec2-user:foobarbazwololoyolo" |sudo chpasswd
-echo "ddb-user:foobarbazwololoyolo" |sudo chpasswd
+echo "ec2-user:foobarbazevil" |sudo chpasswd
 sudo sed -i '/PasswordAuthentication no/c\PasswordAuthentication yes' /etc/ssh/sshd_config
 sudo service sshd restart
-sudo route add 169.254.169.254 reject
 	    EOF
     tags = {
         Name = "AWS-secgame-mission5-ec2-dynamo-handler-${var.id}"
