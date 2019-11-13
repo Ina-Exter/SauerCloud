@@ -1,6 +1,6 @@
 #VPC
 resource "aws_vpc" "AWS-secgame-mission5-vpc" {
-    cidr_block           = "192.168.0.0/22" #Netmask here is 22 to allow for more subnets. Usual subnet will be 192.168.0.0/24, RDS (needs 2) will be 192.168.1.0/24 and 192.168.2.0/24
+    cidr_block           = "192.168.0.0/24" 
     enable_dns_hostnames = false
     enable_dns_support   = true
     instance_tenancy     = "default"

@@ -1,3 +1,55 @@
+#IAMR
+resource "aws_iam_role" "AWS-secgame-mission5-role-ec2accessddb" {
+    name               = "AWS-secgame-mission5-role-ec2accessddb-${var.id}"
+    path               = "/"
+    assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
+}
+
+#IAMP
+resource "aws_iam_policy" "AWS-secgame-mission5-rolepolicy-ec2accessddb" {
+  name        = "AWS-secgame-mission5-rolepolicy-ec2accessddb-${var.id}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "dynamodb:*"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+#IAMPR
+resource "aws_iam_role_policy_attachment" "AWS-secgame-mission5-rolepolicyattachment-ec2accessddb" {
+  role       = "${aws_iam_role.AWS-secgame-mission5-role-ec2accessddb.name}"
+  policy_arn = "${aws_iam_policy.AWS-secgame-mission5-rolepolicy-ec2accessddb.arn}"
+}
+
+#IAMIP
+resource "aws_iam_instance_profile" "AWS-secgame-mission5-instanceprofile-ec2accessddb" {
+  name = "AWS-secgame-mission5-instanceprofile-ec2accessddb-${var.id}"
+  role = "${aws_iam_role.AWS-secgame-mission5-role-ec2accessddb.name}"
+}
+
 #SG
 resource "aws_security_group" "AWS-secgame-mission5-sg" {
     name        = "AWS-secgame-mission5-sg-${var.id}"
@@ -30,20 +82,55 @@ resource "aws_security_group" "AWS-secgame-mission5-sg" {
 }
 
 #KP
-#Key pair is handled with bash.
+#Key pairs are handled with bash.
 
 #EC2
-resource "aws_instance" "AWS-secgame-mission5-ec2-rds-handler" {
-    ami                         = "ami-04b9e92b5572fa0d1" #ubuntu server 18.04
-    availability_zone           = "us-east-1d"
+#Dynamo-handler, server which has the rights to access the DDB
+resource "aws_instance" "AWS-secgame-mission5-ec2-dynamo-handler" {
+    ami                         = "ami-0b69ea66ff7391e80" #amazon linux 2
+    availability_zone           = "us-east-1a"
+    ebs_optimized               = false
+    instance_type               = "t2.micro"
+    iam_instance_profile        = "${aws_iam_instance_profile.AWS-secgame-mission5-instanceprofile-ec2accessddb.name}"
+    monitoring                  = false
+    key_name                    = "AWS-secgame-mission5-keypair-${var.id}"
+    subnet_id                   = "${aws_subnet.AWS-secgame-mission5-subnet.id}"
+    vpc_security_group_ids      = ["${aws_security_group.AWS-secgame-mission5-sg.id}"]
+    associate_public_ip_address = true #DEBUG
+    private_ip                  = "192.168.0.89"
+    source_dest_check           = true
+
+    root_block_device {
+        volume_type           = "gp2"
+        volume_size           = 8
+        delete_on_termination = true
+    }
+    user_data = <<-EOF
+#!/bin/bash
+sudo addusr ddb-user
+echo "ec2-user:foobarbazwololoyolo" |sudo chpasswd
+echo "ddb-user:foobarbazwololoyolo" |sudo chpasswd
+sudo sed -i '/PasswordAuthentication no/c\PasswordAuthentication yes' /etc/ssh/sshd_config
+sudo service sshd restart
+sudo route add 169.254.169.254 reject
+	    EOF
+    tags = {
+        Name = "AWS-secgame-mission5-ec2-dynamo-handler-${var.id}"
+    }
+}
+
+#Security server. Taking it down dumps logs about the dynamo-handler
+resource "aws_instance" "AWS-secgame-mission5-ec2-security-server" {
+    ami                         = "ami-0b69ea66ff7391e80" #amazon linux 2
+    availability_zone           = "us-east-1a"
     ebs_optimized               = false
     instance_type               = "t2.micro"
     monitoring                  = false
     key_name                    = "AWS-secgame-mission5-keypair-${var.id}"
-    subnet_id                   = "${aws_subnet.AWS-secgame-mission5-subnet-rds-1.id}"
-    vpc_security_group_ids      = ["${aws_security_group.AWS-secgame-mission5-sg-rds.id}"]
+    subnet_id                   = "${aws_subnet.AWS-secgame-mission5-subnet.id}"
+    vpc_security_group_ids      = ["${aws_security_group.AWS-secgame-mission5-sg.id}"]
     associate_public_ip_address = false
-    private_ip                  = "192.168.1.111"
+    private_ip                  = "192.168.0.137"
     source_dest_check           = true
 
     root_block_device {
@@ -53,41 +140,11 @@ resource "aws_instance" "AWS-secgame-mission5-ec2-rds-handler" {
     }
     user_data = <<-EOF
         sudo apt-get update
-        sudo apt-get install default-mysql-client -y
-        mysql --host=${aws_db_instance.AWS-secgame-mission5-evil-password-database.endpoint} --user=admin --password=foobarbaz --execute="CREATE DATABASE evilcorpPasswordDatabase;"
-        mysql --host=${aws_db_instance.AWS-secgame-mission5-evil-password-database.endpoint} --user=admin --password=foobarbaz evilcorpPasswordDatabase --execute="CREATE TABLE AWSkeys ( accessKey VARCHAR(100) PRIMARY KEY, secretAccessKey VARCHAR(100) NOT NULL ); INSERT INTO AWSkeys (accessKey, secretAccessKey) VALUES ('${aws_iam_access_key.AWS-secgame-mission5-iam-admin-hades-keys.id}', '${aws_iam_access_key.AWS-secgame-mission5-iam-admin-hades-keys.secret}');"
         sudo route add 169.254.169.254 reject
         sudo rm /etc/sudoers.d/90-cloud-init-users
 	    EOF
     tags = {
-        Name = "AWS-secgame-mission5-ec2-rds-handler-${var.id}"
+        Name = "AWS-secgame-mission5-ec2-security-server-${var.id}"
     }
 }
-
-#resource "aws_instance" "AWS-secgame-mission5-ec2-Evil-bastion-for-evil-access" {
-#    ami                         = "ami-0b69ea66ff7391e80"
-#    availability_zone           = "us-east-1a"
-#    ebs_optimized               = false
-#    instance_type               = "t2.micro"
-#    iam_instance_profile = "${aws_iam_instance_profile.AWS-secgame-mission5-ec2listinstanceprofile.name}"
-#    monitoring                  = false
-#    key_name                    = "AWS-secgame-mission5-keypair-Evilcorp-Evilkeypair-${var.id}"
-#    subnet_id                   = "${aws_subnet.AWS-secgame-mission5-subnet.id}"
-#    vpc_security_group_ids      = ["${aws_security_group.AWS-secgame-mission5-sg.id}"]
-#    associate_public_ip_address = true
-#    private_ip                  = "192.168.0.188"
-#    source_dest_check           = true
-#
-#    root_block_device {
-#        volume_type           = "gp2"
-#        volume_size           = 8
-#        delete_on_termination = true
-#    }
-#    user_data = <<-EOF
-#	
-#	EOF
-#    tags = {
-#        Name = "AWS-secgame-mission5-ec2-Evil-bastion-for-evil-access-${var.id}"
-#    }
-#}
 

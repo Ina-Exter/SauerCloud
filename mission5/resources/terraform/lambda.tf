@@ -80,7 +80,7 @@ resource "aws_cloudwatch_event_rule" "AWS-secgame-mission5-cw-rule-trigger-ec2-t
       "terminated"
     ],
     "instance-id": [
-      "${aws_instance.AWS-secgame-mission5-ec2-rds-handler.id}"
+      "${aws_instance.AWS-secgame-mission5-ec2-security-server.id}"
     ]
   }
 }

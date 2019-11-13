@@ -1,8 +1,8 @@
 import json
 #WORK IN PROGRESS
 def handler(event, context):
-    print('mysql -h hostname -u user -ppassword database')
-    print('THIS IS A LOG FOR CLOUDWATCH DAMMIT')
+    print('Unexpected termination of dynamo handler instance, dumping logs for post-mortem.')
+    print('testestwololoyolo')
     return {
         'statusCode': 200,
         'body': json.dumps('Hello from Lambda!')

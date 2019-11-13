@@ -29,5 +29,7 @@ terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$S
 echo "[AWS-Secgame] Deleting key pair."
 aws --profile $SECGAME_USER_PROFILE ec2 delete-key-pair --key-name AWS-secgame-mission5-keypair-$SECGAME_USER_ID
 
+echo "[AWS-Secgame] Deleting log group. This command may fail if you were not that far."
+aws --profile altaccount logs delete-log-group --log-group-name /aws/lambda/AWS-secgame-mission5-lambda-$SECGAME_USER_ID
 
 echo "[AWS-Secgame] Mission 5 destroy complete"
