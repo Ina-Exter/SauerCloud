@@ -33,3 +33,54 @@ EOF
 resource "aws_iam_access_key" "AWS-secgame-mission5-iam-admin-hades-keys"{
 	user = "${aws_iam_user.AWS-secgame-mission5-iam-admin-hades.name}"
 }
+
+#Groups
+resource "aws_iam_group" "AWS-segame-mission5-iam-group-suspects"{
+    name = "suspects-${var.id}"
+}
+
+resource "aws_iam_group" "AWS-segame-mission5-iam-group-privileged"{
+    name = "privileged-${var.id}"
+}
+
+#Group policies
+resource "aws_iam_group_policy" "AWS-segame-mission5-iam-group-policy-suspects" {
+  name  = "AWS-segame-mission5-iam-group-policy-suspects-${var.id}"
+  group = "${aws_iam_group.AWS-segame-mission5-iam-group-suspects.id}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "*"
+      ],
+      "Effect": "Deny",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+} #This policy is a bit restrictive, might want to change it later so as not to force a restart if needed
+
+resource "aws_iam_group_policy" "AWS-segame-mission5-iam-group-policy-privileged" {
+  name  = "AWS-segame-mission5-iam-group-policy-privileged-${var.id}"
+  group = "${aws_iam_group.AWS-segame-mission5-iam-group-privileged.id}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "ec2:Describe*",
+        "lambda:*" #PLACEHOLDER. RESTRICT
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}

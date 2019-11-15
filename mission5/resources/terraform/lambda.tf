@@ -6,8 +6,9 @@ data "archive_file" "AWS-secgame-mission5-lambda-file-dump-logs" {
 }
 
 #Lambda assume role permissions
-resource "aws_iam_role" "AWS-secgame-mission5-lambda-role" {
-    name = "AWS-secgame-mission5-lambda-service-role-${var.id}"
+#Log dumping
+resource "aws_iam_role" "AWS-secgame-mission5-lambda-logs-dump-role" {
+    name = "AWS-secgame-mission5-lambda-logs-dump-service-role-${var.id}"
     assume_role_policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -24,14 +25,38 @@ resource "aws_iam_role" "AWS-secgame-mission5-lambda-role" {
 }
 EOF
     tags = {
-        Name = "AWS-secgame-mission5-lambda-role-${var.id}"
+        Name = "AWS-secgame-mission5-lambda-logs-dump-role-${var.id}"
+    }
+}
+
+#Honeypot suspect group setter
+resource "aws_iam_role" "AWS-secgame-mission5-lambda-set-suspect-role" {
+    name = "AWS-secgame-mission5-lambda-set-suspect-service-role-${var.id}"
+    assume_role_policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+             "Action": "sts:AssumeRole",
+             "Principal": {
+                 "Service": "lambda.amazonaws.com"
+             },
+             "Effect": "Allow",
+             "Sid": ""
+    }
+  ]
+}
+EOF
+    tags = {
+        Name = "AWS-secgame-mission5-lambda-set-suspect-role-${var.id}"
     }
 }
 
 #Lambda role permissions
+#Log dumping
 resource "aws_iam_role_policy" "AWS-secgame-mission5-role-lambda-write-logs" {
     name = "AWS-secgame-mission5-role-lambda-write-logs-${var.id}"
-    role = "${aws_iam_role.AWS-secgame-mission5-lambda-role.id}"
+    role = "${aws_iam_role.AWS-secgame-mission5-lambda-logs-dump-role.id}"
     policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -50,16 +75,50 @@ resource "aws_iam_role_policy" "AWS-secgame-mission5-role-lambda-write-logs" {
 EOF
 }
 
+#Honeypot suspect group setter
+resource "aws_iam_role_policy" "AWS-secgame-mission5-role-lambda-set-suspect" {
+    name = "AWS-secgame-mission5-role-lambda-set-suspect-${var.id}"
+    role = "${aws_iam_role.AWS-secgame-mission5-lambda-set-suspect-role.id}"
+    policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "iam:AddUserToGroup"
+      ],
+      "Effect": "Allow",
+      "Resource": "$(aws_iam_group.AWS-segame-mission5-iam-group-privileged.arn)" 
+    },
+    {
+      "Action": [
+        "iam:RemoveUserFromGroup"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    },
+    {
+      "Action": [
+        "iam:AddUserToGroup"
+      ],
+      "Effect": "Allow",
+      "Resource": "$(aws_iam_group.AWS-segame-mission5-iam-group-suspects.arn)" 
+    }
+  ]
+}
+EOF
+}
+
 #Lambda
 resource "aws_lambda_function" "AWS-secgame-mission5-lambda-dump-logs" {
 #filename subject to edition
     filename = "../code/lambda-dump-logs.zip"
-    function_name = "AWS-secgame-mission5-lambda-${var.id}"
-    role = "${aws_iam_role.AWS-secgame-mission5-lambda-role.arn}"
+    function_name = "AWS-secgame-mission5-lambda-logs-dump-${var.id}"
+    role = "${aws_iam_role.AWS-secgame-mission5-lambda-logs-dump-role.arn}"
     handler = "lambda-dump-logs.handler"
     runtime = "python3.7"
     tags = {
-        Name = "AWS-secgame-mission5-lambda-${var.id}"
+        Name = "AWS-secgame-mission5-lambda-logs-dump-${var.id}"
     }
 }
 
@@ -77,7 +136,8 @@ resource "aws_cloudwatch_event_rule" "AWS-secgame-mission5-cw-rule-trigger-ec2-t
   ],
   "detail": {
     "state": [
-      "terminated"
+      "terminated",
+      "stopped"
     ],
     "instance-id": [
       "${aws_instance.AWS-secgame-mission5-ec2-security-server.id}"

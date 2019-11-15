@@ -119,7 +119,33 @@ After this, two entrypoints exist for privilage escalation (PrivEsc). The first 
 
 Both of those are easily setup: simply add the permission in the ec2's instance profile. Much easier than the snapshotting mess.
 
-### Big game
+### Big game / Mission 5
+
+#### Objectives
+
+This mission is designed to take around two hours, and take you on a trip about all that you have learned and some, as well as giving a notion of how vertical mobility can be achieved. Vertical mobility is shifting from a set of privileges to a broader set of privilieges, by any means necessary: finding a new user with better permissions, using an EC2's instance profile, and so on. PrivEsc is a form of vertical mobility, in which you keep to a single user, however.
+
+#### Setup
+
+The mission could be split in three "layers". From the bottom-up, these are:
+
+Layer 3: the super-secret objective bucket, the DynamoDB containing the admin access keys, its handler, the security server and the lambda that monitors it.
+
+Layer 2: the whole honey-pot group, i.e. the honey-pot itself, the lambda watching it, the mail server
+
+Layer 1: the ingress. How you get the first keys, and the EC2 spoof required to get the second one.
+
+Layer 1 has you use keys with the least possible privileges: a meager describe-instances at best, and slowly, you edge towards better privileges: the layer 2, with permissions on the honeypot lambda, finding ssh keys, accessing the mail server, until you manage to isolate the required attack, prepare it, and privesc to layer 3. Layer 3 has you learn some commands (notably logs and dynamodb), and the flag, but is essentially easier than layer 2.
+
+#### Architecture choices
+
+For the password database, it was originally planned to use a RDS - MySQL database. This decision had a couple of strong points: First, the user had to look for a good old user/password tuple instead of the aws_key/aws_secret_key you got used to during the entire game. Another point was that you would have to access MySQL through the command line, and run your queries in SQL, which, in itself, is a learning experience, and a challenge.
+
+MySQL suffers from some terrible flaws though. The fact that, when you attempt to deploy a RDS database, you need to deploy what can only be called a f\*\*k-ton of resources, i.e. the RDS, two subnets, a subnet group, another SG just for it, yada, yada. The second and most critical is that this process took ten (10) minutes to be ran through on terraform. The delay was deemed unacceptable.
+
+Such delay could have been complensated by using PostGreSQL instead of MySQL, dropping the delay to around 3 minutes. However, installing a PostGreSQL client on a linux shell is an ordeal I would wish on no one. As such, it was decided to opt for a managed database service, and more specifically for DynamoDB.
+
+DynamoDB, after all, is a good choice for this application. First, it is non-relational and thus can bring you out of your comfort zone a little. Next, it also uses aws commands, which require no further tool to access, and last but not least, it is blazingly fast to deploy. The averse effect was that I had to find a way to give the user AWS keys instead of a username and a password. This is why the "DynamoDB handler" EC2 instance exists. The password allows you to access it, and it is cleared to access DynamoDB only. Still, better to deploy another EC2 than a RDS. 
 
 ### Scenario
 

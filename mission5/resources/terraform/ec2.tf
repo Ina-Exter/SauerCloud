@@ -96,7 +96,7 @@ resource "aws_instance" "AWS-secgame-mission5-ec2-dynamo-handler" {
     key_name                    = "AWS-secgame-mission5-keypair-${var.id}"
     subnet_id                   = "${aws_subnet.AWS-secgame-mission5-subnet.id}"
     vpc_security_group_ids      = ["${aws_security_group.AWS-secgame-mission5-sg.id}"]
-    associate_public_ip_address = true #DEBUG
+    associate_public_ip_address = false #Switch to true for direct access to layer 3
     private_ip                  = "192.168.0.89"
     source_dest_check           = true
 
@@ -106,7 +106,7 @@ resource "aws_instance" "AWS-secgame-mission5-ec2-dynamo-handler" {
         delete_on_termination = true
     }
     user_data = <<-EOF
-#!/bin/bash
+#!/bin/bash   
 echo "ec2-user:foobarbazevil" |sudo chpasswd
 sudo sed -i '/PasswordAuthentication no/c\PasswordAuthentication yes' /etc/ssh/sshd_config
 sudo service sshd restart
