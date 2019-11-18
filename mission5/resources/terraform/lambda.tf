@@ -88,7 +88,7 @@ resource "aws_iam_role_policy" "AWS-secgame-mission5-role-lambda-set-suspect" {
         "iam:AddUserToGroup"
       ],
       "Effect": "Allow",
-      "Resource": "$(aws_iam_group.AWS-segame-mission5-iam-group-privileged.arn)" 
+      "Resource": "${aws_iam_group.AWS-secgame-mission5-iam-group-privileged.arn}" 
     },
     {
       "Action": [
@@ -102,7 +102,7 @@ resource "aws_iam_role_policy" "AWS-secgame-mission5-role-lambda-set-suspect" {
         "iam:AddUserToGroup"
       ],
       "Effect": "Allow",
-      "Resource": "$(aws_iam_group.AWS-segame-mission5-iam-group-suspects.arn)" 
+      "Resource": "${aws_iam_group.AWS-secgame-mission5-iam-group-suspects.arn}"
     }
   ]
 }

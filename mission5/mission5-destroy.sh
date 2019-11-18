@@ -24,11 +24,23 @@ fi
 echo "[AWS-Secgame] Destroying terraform resources"
 cd resources/terraform
 terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP"
+if [[ $? != 0 ]]
+then
+	echo "[AWS-Secgame] Non-zero return code on terraform destroy. There might be a problem. Consider destroying by hand (move to /trash/mission5-$SECGAME_USER_ID/resources/terraform and use terraform destroy, or destroy your resources by hand on the console."
+	exit 2
+fi
+
 
 #destroy key pair
 echo "[AWS-Secgame] Deleting key pair."
 aws --profile $SECGAME_USER_PROFILE ec2 delete-key-pair --key-name AWS-secgame-mission5-keypair-$SECGAME_USER_ID
+if [[ $? != 0 ]]
+then
+	echo "[AWS-Secgame] Non-zero return code on keypair destruction. Use aws --profile $USER_SECGAME_PROFILE ec2 describe-key-pairs and delete-key-pair to manually delete the key pair if needed."
+	exit 2
+fi
 
+#destroy log group
 echo "[AWS-Secgame] Deleting log group. This command may fail if you were not that far."
 aws --profile altaccount logs delete-log-group --log-group-name /aws/lambda/AWS-secgame-mission5-lambda-$SECGAME_USER_ID
 

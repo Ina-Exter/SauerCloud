@@ -15,6 +15,20 @@ echo "[AWS-Secgame] User IP: $USER_IP"
 echo "[AWS-Secgame] Unzipping data."
 cd resources
 unzip -qq evilcorp-evilbucket-data.zip
+#check return code
+if [[ $? != 0 ]]
+then
+	echo "[AWS-Secgame] Non-zero return code on file extraction. Abort."
+	cd ../..
+	#If trash doesn't exist, make it
+	if [[ ! -d "trash" ]]
+	then
+        	mkdir trash
+	fi
+	mv ./mission1-$SECGAME_USER_ID ./trash/
+	exit 2
+fi
+
 
 #Initialize terraform
 cd terraform

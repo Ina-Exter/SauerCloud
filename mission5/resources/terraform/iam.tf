@@ -35,18 +35,18 @@ resource "aws_iam_access_key" "AWS-secgame-mission5-iam-admin-hades-keys"{
 }
 
 #Groups
-resource "aws_iam_group" "AWS-segame-mission5-iam-group-suspects"{
+resource "aws_iam_group" "AWS-secgame-mission5-iam-group-suspects"{
     name = "suspects-${var.id}"
 }
 
-resource "aws_iam_group" "AWS-segame-mission5-iam-group-privileged"{
+resource "aws_iam_group" "AWS-secgame-mission5-iam-group-privileged"{
     name = "privileged-${var.id}"
 }
 
 #Group policies
-resource "aws_iam_group_policy" "AWS-segame-mission5-iam-group-policy-suspects" {
-  name  = "AWS-segame-mission5-iam-group-policy-suspects-${var.id}"
-  group = "${aws_iam_group.AWS-segame-mission5-iam-group-suspects.id}"
+resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-suspects" {
+  name = "AWS-secgame-mission5-iam-group-policy-suspects-${var.id}"
+  group = "${aws_iam_group.AWS-secgame-mission5-iam-group-suspects.id}"
 
   policy = <<EOF
 {
@@ -64,9 +64,11 @@ resource "aws_iam_group_policy" "AWS-segame-mission5-iam-group-policy-suspects" 
 EOF
 } #This policy is a bit restrictive, might want to change it later so as not to force a restart if needed
 
-resource "aws_iam_group_policy" "AWS-segame-mission5-iam-group-policy-privileged" {
-  name  = "AWS-segame-mission5-iam-group-policy-privileged-${var.id}"
-  group = "${aws_iam_group.AWS-segame-mission5-iam-group-privileged.id}"
+resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-privileged" {
+  name  = "AWS-secgame-mission5-iam-group-policy-privileged-${var.id}"
+  group = "${aws_iam_group.AWS-secgame-mission5-iam-group-privileged.id}"
+
+#LAMBDA:* IS PLACEHOLDER. RESTRICT
 
   policy = <<EOF
 {
@@ -75,7 +77,7 @@ resource "aws_iam_group_policy" "AWS-segame-mission5-iam-group-policy-privileged
     {
       "Action": [
         "ec2:Describe*",
-        "lambda:*" #PLACEHOLDER. RESTRICT
+        "lambda:*" 
       ],
       "Effect": "Allow",
       "Resource": "*"

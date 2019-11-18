@@ -24,15 +24,31 @@ fi
 echo "[AWS-Secgame] Destroying terraform resources"
 cd resources/terraform
 terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP"
+#check terraform destroy's return code, act depending on it. 0 is for a flawless execution, 1 means an error has arisen
+if [[ $? != 0 ]]
+then
+	echo "[AWS-Secgame] Non-zero return code on terraform destroy. There might be a problem. Consider destroying by hand (move to /trash/mission3-$SECGAME_USER_ID/resources/terraform and use terraform destroy, or destroy your resources by hand on the console."
+	exit 2
+fi
 
 #destroy key pair
 echo "[AWS-Secgame] Deleting key pair."
 aws --profile $SECGAME_USER_PROFILE ec2 delete-key-pair --key-name AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID
+if [[ $? != 0 ]]
+then
+	echo "[AWS-Secgame] Non-zero return code on keypair destruction. Use aws --profile $USER_SECGAME_PROFILE ec2 describe-key-pairs and delete-key-pair to manually delete the key pair if needed."
+	exit 2
+fi
 
 #destroy snapshot
 echo "[AWS-Secgame] Deleting snapshot."
 cd ..
 export snapshotID=$(head -n 1 snapshotid.txt)
 aws --profile $SECGAME_USER_PROFILE ec2 delete-snapshot --snapshot-id $snapshotID
+if [[ $? != 0 ]]
+then
+	echo "[AWS-Secgame] Non-zero return code on snapshot destruction. Use aws --profile $USER_SECGAME_PROFILE ec2 describe-snapshots and delete-snapshot to manually delete it if needed."
+	exit 2
+fi
 
 echo "[AWS-Secgame] Mission 3 destroy complete"

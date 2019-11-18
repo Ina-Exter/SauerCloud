@@ -24,6 +24,12 @@ fi
 echo "[AWS-Secgame] Destroying terraform resources"
 cd resources/terraform
 terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE"
+#check terraform destroy's return code, act depending on it. 0 is for a flawless execution, 1 means an error has arisen
+if [[ $? != 0 ]]
+then
+	echo "[AWS-Secgame] Non-zero return code on terraform destroy. There might be a problem. Consider destroying by hand (move to /trash/mission1-$SECGAME_USER_ID/resources/terraform and use terraform destroy, or destroy your resources by hand on the console."
+	exit 2
+fi
 
 echo "[AWS-Secgame] Mission 1 destroy complete."
 exit 0
