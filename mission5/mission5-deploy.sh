@@ -77,6 +77,10 @@ export instance_id=$(terraform output ec2_instance_id)
 #Return in mission dir
 cd ../..
 
+sleep 3
+
+clear
+
 #Write briefing
 echo "$instance_id"  >> briefing.txt
 

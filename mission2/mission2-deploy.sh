@@ -77,6 +77,10 @@ export bastion_ip=$(terraform output bastion_ip_addr)
 #Return in mission dir
 cd ../..
 
+sleep 3
+
+clear
+
 #Write briefing
 echo "Wonderful job on that Evilcorp bucket, agent. I am glad you are on our side. I have further news for you. \
 Word has it that Evilcorp started building a proof-of-concept data maintainment structure on AWS. \

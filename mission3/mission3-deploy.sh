@@ -204,6 +204,10 @@ cp ssh_key.pem ./../
 #Return in mission dir
 cd ..
 
+sleep 3
+
+clear
+
 #Write briefing
 echo "Agent, you are a godsent. Well done fetching those blueprints on that other server. The brass were delighted. You will find the usual pay on your usual account. \
 We have another task for you. Our insider told us about a suspicious instance. Apparently, they intend to use it for a powerful wave of cyber-attacks. \

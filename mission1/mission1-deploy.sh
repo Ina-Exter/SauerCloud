@@ -61,6 +61,10 @@ fi
 
 cd ../..
 
+sleep 3
+
+clear
+
 # A briefing serves as a starting point for the user, now with extra hacky flavour!
 touch briefing.txt
 echo "Greetings, agent. Our company received strange reports regarding another large-scale, multinational company called EvilCorp \
