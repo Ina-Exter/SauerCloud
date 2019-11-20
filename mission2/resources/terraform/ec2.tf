@@ -275,7 +275,8 @@ resource "aws_instance" "AWS-secgame-mission2-ec2-Evil-server-for-evil-data" {
 	/ᐠ –ꞈ –ᐟ\/ᐠ –ꞈ –ᐟ\/ᐠ –ꞈ –ᐟ\/ᐠ –ꞈ –ᐟ\/ᐠ –ꞈ –ᐟ\/ᐠ –ꞈ –ᐟ\
 	
 	"Well, you did type the command "cat" didn't you? :^)"
-	
+	You may want to enter "catcats" you know where.	
+
 	EOFF 
 	EOF
     tags = {
