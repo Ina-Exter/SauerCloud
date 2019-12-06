@@ -145,3 +145,31 @@ resource "aws_instance" "AWS-secgame-mission5-ec2-security-server" {
     }
 }
 
+#Honey-pot. Taking it down changes user permissions depending on lambda code. Literaly not supposed to be accessed.
+resource "aws_instance" "AWS-secgame-mission5-ec2-hyper-critical-security-hypervisor" {
+    ami                         = "ami-0b69ea66ff7391e80" #amazon linux 2
+    availability_zone           = "us-east-1a"
+    ebs_optimized               = false
+    instance_type               = "t2.micro"
+    monitoring                  = false
+    key_name                    = ""
+    subnet_id                   = "${aws_subnet.AWS-secgame-mission5-subnet.id}"
+    vpc_security_group_ids      = ["${aws_security_group.AWS-secgame-mission5-sg.id}"]
+    associate_public_ip_address = false
+    private_ip                  = "192.168.0.121"
+    source_dest_check           = true
+
+    root_block_device {
+        volume_type           = "gp2"
+        volume_size           = 8
+        delete_on_termination = true
+    }
+    user_data = <<-EOF
+        sudo apt-get update
+        sudo route add 169.254.169.254 reject
+        sudo rm /etc/sudoers.d/90-cloud-init-users
+	    EOF
+    tags = {
+        Name = "AWS-secgame-mission5-ec2-hyper-critical-security-hypervisor-${var.id}"
+    }
+}

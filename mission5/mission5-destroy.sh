@@ -40,8 +40,14 @@ then
 	exit 2
 fi
 
+#confirm destruction of both groups in case a user got placed in them
+echo "[AWS-Secgame] Checking group deletion. If terraform raised an error about groups not being empty, this will get them. Otherwise, this command may fail if you did not go that far."
+aws --profile $SECEGAME_USER_PROFILE iam delete-group --group-name privileged-$SEGAME_USER_ID
+aws --profile $SECEGAME_USER_PROFILE iam delete-group --group-name suspects-$SEGAME_USER_ID
+
 #destroy log group
-echo "[AWS-Secgame] Deleting log group. This command may fail if you were not that far."
-aws --profile altaccount logs delete-log-group --log-group-name /aws/lambda/AWS-secgame-mission5-lambda-$SECGAME_USER_ID
+echo "[AWS-Secgame] Deleting log groups. This command may fail if you did not go that far."
+aws --profile $SECGAME_USER_PROFILE logs delete-log-group --log-group-name /aws/lambda/AWS-secgame-mission5-lambda-logs-dump-$SECGAME_USER_ID
+aws --profile $SECGAME_USER_PROFILE logs delete-log-group --log-group-name /aws/lambda/AWS-secgame-mission5-lambda-change-group-$SECGAME_USER_ID
 
 echo "[AWS-Secgame] Mission 5 destroy complete"

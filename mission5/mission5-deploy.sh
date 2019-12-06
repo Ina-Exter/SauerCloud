@@ -26,6 +26,12 @@ fi
 export sshkey=$(<resources/ssh_key.pem)
 chmod 400 resources/ssh_key.pem
 
+#Initialize code resources
+cd resources/code
+echo "[AWS-Secgame] Setting-up lambda functions' python code."
+source create-lambda-change-group.sh
+cd ../..
+
 #Initialize terraform
 cd resources/terraform
 echo "[AWS-Secgame] Initializing terraform."
@@ -73,6 +79,8 @@ fi
 
 #Get the output
 export instance_id=$(terraform output ec2_instance_id)
+export emetselch_key_id=$(terraform output emetselch_key)
+export emetselch_secret_key=$(terraform output emetselch_secret_key)
 
 #Return in mission dir
 cd ../..
@@ -82,7 +90,7 @@ sleep 3
 clear
 
 #Write briefing
-echo "$instance_id"  >> briefing.txt
+echo "$instance_id \n $emetselch_key_id \n $emetselch_secret_key"  >> briefing.txt
 
 echo "[AWS-Secgame] Mission 5 deployment complete. Mission folder is ./mission5-$SECGAME_USER_ID. Read the briefing to begin, a copy can be found in the mission folder."
 

@@ -50,20 +50,22 @@ The initial objective of mission1 was to allow users to dig from a regular websi
 
 This caused a number of problems. Namely, DNS reservation could not be set-up on-the-fly for users who create and destroy their infrastructure 40 times a day. And it is incredibly costy. (This service is supposed to be free).
 
-Because of this, the beginning of the first mission got cut. Now, you only have to deal with bucket rollback.
+Because of this, the beginning of the first mission got cut. Now, you only have to deal with bucket syncing and rollback.
 
 #### Setup
 
 This mission consists of a single bucket and some data. I thought terraform would be heavily overkill for such a deployment (and I might have been wrong; it is possible that I will change it to check).
 
-As such, deployment is handled sorely using bash script; aws s3 mb, aws s3 cp, and the s3api commands "set-file-alc" and "set-bucket-acl".
+Update: After a while, I ended up switching this mission to terraform for uniformization reasons.
+
+Legacy: As such, deployment is handled sorely using bash script; aws s3 mb, aws s3 cp, and the s3api commands "set-file-alc" and "set-bucket-acl".
 A problem I have encountered is that setting the bucket ACL is not enough to allow users to download files. This requires the big recursive operation with set-file-acl. 
 
 The command is essentially aws s3 lb --recursive piped with set-file-acl, which sets on the entire bucket.
 
 Side notes: 
 
--The .git is in clear on the bucket, but hidden on a linux due to the dot. Heh. Also, the commits are in my name and should/might be changed.
+-The .git is in clear on the bucket, but hidden on a linux due to the dot. Heh. Also, the commits used to be in my name and got changed.
 
 -This challenge does not use the whitelist. Since it's a read-only bucket with no sensible data, I deemed that it was not worth giving a damn. Might go back on it.
 
@@ -84,9 +86,9 @@ Side note: the user does not know the bastion is a bastion (except in name).
 
 #### Setup
 
-Like all the following ones (most likely), this is deployed using Terraform.
+Like all the following ones, this is deployed using Terraform.
 
-I did a singular choice: I would not let terraform handle the keypair, since this requires a public key to be passed. Conversely, I made the keypair before the instance using the AWS CLI, then passed it as parameter to terraform. While this is not very elegant, it is functionnal.
+I did a singular choice: I would not let terraform handle the keypair, since this requires a public key to be passed. Conversely, I made the keypair before the instance using the AWS CLI, then passed it as parameter to terraform. While this is not very elegant, it works.
 
 Aside from this, all of the instance-specific stuff is handled through meta-data script. This means anything the instance does is hard-coded in the ec2.tf files.
 
@@ -104,6 +106,8 @@ Users are given access to an ec2 instance for investigation. It has minimal priv
 A document informs the user that a snapshot of the instance exists.
 
 The aim of this mission is to get the owner id, use it to look for the snapshot, make a volume from it and mount the volume on the ec2 to investigate it. It allows users to find a flag, and a way to complete the objective: Make an admin key, take down the instance after exfiltring the data.
+
+It has to be duly noted that the snapshot must be mounted while ignoring the filesystem's uuid using a mount option. A conspicuous text file has been placed to remind people of this and prevent them from spending days researching the error message.
 
 #### Setup
 
