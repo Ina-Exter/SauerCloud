@@ -9,8 +9,8 @@ echo "[AWS-Secgame] User IP: $USER_IP"
 #ALWAYS assume that this script will run in the mission folder mission5-user_id
 
 #A ssh private key should also be generated and passed as parameter.
-echo "[AWS-Secgame] Generating ssh key for ec2"
-aws --profile $SECGAME_USER_PROFILE ec2 create-key-pair --key-name AWS-secgame-mission5-keypair-$SECGAME_USER_ID --query 'KeyMaterial' --output text >> resources/ssh_key.pem
+echo "[AWS-Secgame] Generating ssh key for dynamo handler"
+aws --profile $SECGAME_USER_PROFILE ec2 create-key-pair --key-name AWS-secgame-mission5-keypair-ddb-handler-$SECGAME_USER_ID --query 'KeyMaterial' --output text >> resources/ssh_key.pem
 if [[ ! $? == 0 ]]
 then
 	echo "[AWS-Secgame] Non-zero return code on operation. Abort."
@@ -54,7 +54,7 @@ then
         	mkdir trash
 	fi
 	mv ./mission5-$SECGAME_USER_ID ./trash/
-	aws --profile $SECGAME_USER_PROFILE ec2 delete-key-pair --key-name AWS-secgame-mission5-keypair-$SECGAME_USER_ID
+	aws --profile $SECGAME_USER_PROFILE ec2 delete-key-pair --key-name AWS-secgame-mission5-keypair-ddb-handler-$SECGAME_USER_ID
 	exit 2
 fi
 
@@ -73,7 +73,7 @@ then
         	mkdir trash
 	fi
 	mv ./mission5-$SECGAME_USER_ID ./trash/
-	aws --profile $SECGAME_USER_PROFILE ec2 delete-key-pair --key-name AWS-secgame-mission5-keypair-$SECGAME_USER_ID
+	aws --profile $SECGAME_USER_PROFILE ec2 delete-key-pair --key-name AWS-secgame-mission5-keypair-ddb-handler-$SECGAME_USER_ID
 	exit 2
 fi
 

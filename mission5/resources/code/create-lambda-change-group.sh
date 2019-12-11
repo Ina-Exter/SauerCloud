@@ -6,7 +6,7 @@ import boto3
 
 #WORK IN PROGRESS
 def handler(event, context):
-    print('Skidaddle skidoodle your dick is now a noodle.')
+    print('Suspicious behaviour detected. Switching off permissions before further investigation.')
     iam = boto3.resource('iam')
     group = iam.Group('standard-$SECGAME_USER_ID')
     print('Group removal:')
@@ -18,6 +18,6 @@ def handler(event, context):
     print(response)
     return {
         'statusCode': 200,
-        'body': json.dumps('Finishing transmission.')
+        'body': json.dumps('')
     }
 END

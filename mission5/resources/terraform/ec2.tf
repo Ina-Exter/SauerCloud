@@ -93,7 +93,7 @@ resource "aws_instance" "AWS-secgame-mission5-ec2-dynamo-handler" {
     instance_type               = "t2.micro"
     iam_instance_profile        = "${aws_iam_instance_profile.AWS-secgame-mission5-instanceprofile-ec2accessddb.name}"
     monitoring                  = false
-    key_name                    = "AWS-secgame-mission5-keypair-${var.id}"
+    key_name                    = "AWS-secgame-mission5-keypair-ddb-handler-${var.id}"
     subnet_id                   = "${aws_subnet.AWS-secgame-mission5-subnet.id}"
     vpc_security_group_ids      = ["${aws_security_group.AWS-secgame-mission5-sg.id}"]
     associate_public_ip_address = false #Switch to true for direct access to layer 3
@@ -123,7 +123,7 @@ resource "aws_instance" "AWS-secgame-mission5-ec2-security-server" {
     ebs_optimized               = false
     instance_type               = "t2.micro"
     monitoring                  = false
-    key_name                    = "AWS-secgame-mission5-keypair-${var.id}"
+    key_name                    = ""
     subnet_id                   = "${aws_subnet.AWS-secgame-mission5-subnet.id}"
     vpc_security_group_ids      = ["${aws_security_group.AWS-secgame-mission5-sg.id}"]
     associate_public_ip_address = false

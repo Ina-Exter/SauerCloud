@@ -8,7 +8,7 @@ resource "aws_s3_bucket" "AWS-secgame-mission5-super-secret-utlimate-s3" {
     }
 }
 
-#S3 OBJECTS (one per pic but same name tag)
+#S3 OBJECTS
 resource "aws_s3_bucket_object" "picture-of-mila-best-cat-1" {
     bucket = "${aws_s3_bucket.AWS-secgame-mission5-super-secret-utlimate-s3.id}"
     key = "mila1.jpg"
@@ -80,3 +80,13 @@ resource "aws_s3_bucket_object" "picture-of-mila-best-cat-8" {
         Name = "AWS-secgame-mission5-super-secret-ultimate-pictures-of-the-developers-cat-${var.id}"
     }
 }
+
+resource "aws_s3_bucket_object" "flag-hey-there-hacker" {
+    bucket = "${aws_s3_bucket.AWS-secgame-mission5-super-secret-utlimate-s3.id}"
+    key = ".hey_there_hacker.txt"
+    source = "../flags/.hey_there_hacker.txt"
+    tags = {
+        Name = "AWS-secgame-mission5-super-secret-ultimate-flag-${var.id}"
+    }
+}
+

@@ -95,9 +95,6 @@ EOF
 resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-privileged" {
   name  = "AWS-secgame-mission5-iam-group-policy-privileged-${var.id}"
   group = "${aws_iam_group.AWS-secgame-mission5-iam-group-privileged.id}"
-
-#LAMBDA:* IS PLACEHOLDER. RESTRICT
-
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -105,10 +102,33 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-privilege
     {
       "Action": [
         "ec2:Describe*",
-        "lambda:*" 
+        "logs:*",
+        "iam:listGroups",
+        "s3:ListAllMyBuckets"
       ],
       "Effect": "Allow",
       "Resource": "*"
+    },
+    {
+      "Action": [
+        "ec2:TerminateInstances"
+      ],
+      "Effect": "Allow",
+      "Resource": "${aws_instance.AWS-secgame-mission5-ec2-security-server.arn}" 
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "lambda:UpdateFunctionCode",
+        "lambda:GetLayerVersion",
+        "lambda:GetFunction",
+        "lambda:ListLayerVersions",
+        "lambda:ListLayers",
+        "lambda:GetFunctionConfiguration",
+        "lambda:GetLayerVersionPolicy",
+        "lambda:GetPolicy"
+       ],
+       "Resource": "*"
     }
   ]
 }
