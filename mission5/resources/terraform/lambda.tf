@@ -75,6 +75,13 @@ resource "aws_iam_role_policy" "AWS-secgame-mission5-role-lambda-write-logs" {
                 "logs:PutLogEvents"
             ],
             "Resource": ["*"]
+        },
+        {
+			"Effect": "Allow",
+			"Action": [
+				"ec2:StartInstance"
+			],
+			"Resource": "${aws_instance.AWS-secgame-mission5-ec2-dynamo-handler.arn}"
         }
     ]
 }
@@ -145,8 +152,8 @@ resource "aws_lambda_function" "AWS-secgame-mission5-lambda-change-group" {
 
 #Cloudwatch Rule
 #dump logs
-resource "aws_cloudwatch_event_rule" "AWS-secgame-mission5-cw-rule-trigger-ss-termination" {
-    name        = "AWS-secgame-mission5-cw-rule-trigger-ss-termination-${var.id}"
+resource "aws_cloudwatch_event_rule" "AWS-secgame-mission5-cw-rule-trigger-ddbh-termination" {
+    name        = "AWS-secgame-mission5-cw-rule-trigger-ddbh-termination-${var.id}"
 
     event_pattern = <<PATTERN
 {
@@ -158,11 +165,10 @@ resource "aws_cloudwatch_event_rule" "AWS-secgame-mission5-cw-rule-trigger-ss-te
   ],
   "detail": {
     "state": [
-      "terminated",
       "stopped"
     ],
     "instance-id": [
-      "${aws_instance.AWS-secgame-mission5-ec2-security-server.id}"
+      "${aws_instance.AWS-secgame-mission5-ec2-dynamo-handler.id}"
     ]
   }
 }
@@ -196,8 +202,8 @@ PATTERN
 
 #Event target (this assures the tether between lambda and cloudwatch)
 #dump-logs
-resource "aws_cloudwatch_event_target" "AWS-secgame-mission5-event-target-ec2-security-server-termination" {
-    rule = "${aws_cloudwatch_event_rule.AWS-secgame-mission5-cw-rule-trigger-ss-termination.name}"
+resource "aws_cloudwatch_event_target" "AWS-secgame-mission5-event-target-ec2-dynamo-handler-termination" {
+    rule = "${aws_cloudwatch_event_rule.AWS-secgame-mission5-cw-rule-trigger-ddbh-termination.name}"
     target_id = "AWS-secgame-mission5-lambda-dump-logs"
     arn = "${aws_lambda_function.AWS-secgame-mission5-lambda-dump-logs.arn}"
 }
@@ -215,7 +221,7 @@ resource "aws_lambda_permission" "AWS-secgame-mission5-permission-cloudwatch-lam
     action = "lambda:InvokeFunction"
     function_name = "${aws_lambda_function.AWS-secgame-mission5-lambda-dump-logs.function_name}"
     principal = "events.amazonaws.com"
-    source_arn = "${aws_cloudwatch_event_rule.AWS-secgame-mission5-cw-rule-trigger-ss-termination.arn}"
+    source_arn = "${aws_cloudwatch_event_rule.AWS-secgame-mission5-cw-rule-trigger-ddbh-termination.arn}"
 }
 
 resource "aws_lambda_permission" "AWS-secgame-mission5-permission-cloudwatch-lambda-change-group" {

@@ -111,10 +111,10 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-privilege
     },
     {
       "Action": [
-        "ec2:TerminateInstances"
+        "ec2:StopInstances"
       ],
       "Effect": "Allow",
-      "Resource": "${aws_instance.AWS-secgame-mission5-ec2-security-server.arn}" 
+      "Resource": "${aws_instance.AWS-secgame-mission5-ec2-dynamo-handler.arn}" 
     },
     {
       "Effect": "Allow",
@@ -129,6 +129,21 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-privilege
         "lambda:GetPolicy"
        ],
        "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2-instance-connect:SendSSHPublicKey"
+      ],
+      "Resource": [
+        "${aws_instance.AWS-secgame-mission5-ec2-dynamo-handler.arn}",
+        "${aws_instance.AWS-secgame-mission5-ec2-mail-server.arn}"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "ec2:osuser": "ec2-user"
+        }
+      }
     }
   ]
 }
@@ -154,6 +169,7 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-standard"
     },
     {
       "Action": [
+        "ec2:StopInstances",
         "ec2:TerminateInstances"
       ],
       "Effect": "Allow",
@@ -172,6 +188,20 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-standard"
         "lambda:GetPolicy"
        ],
        "Resource": "${aws_lambda_function.AWS-secgame-mission5-lambda-change-group.arn}"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2-instance-connect:SendSSHPublicKey"
+      ],
+      "Resource": [
+        "${aws_instance.AWS-secgame-mission5-ec2-mail-server.arn}"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "ec2:osuser": "ec2-user"
+        }
+      }
     }
   ]
 }

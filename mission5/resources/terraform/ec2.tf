@@ -96,7 +96,7 @@ resource "aws_instance" "AWS-secgame-mission5-ec2-dynamo-handler" {
     key_name                    = "AWS-secgame-mission5-keypair-ddb-handler-${var.id}"
     subnet_id                   = "${aws_subnet.AWS-secgame-mission5-subnet.id}"
     vpc_security_group_ids      = ["${aws_security_group.AWS-secgame-mission5-sg.id}"]
-    associate_public_ip_address = false #Switch to true for direct access to layer 3
+    associate_public_ip_address = true #Switch to true for direct access to layer 3
     private_ip                  = "192.168.0.89"
     source_dest_check           = true
 
@@ -105,43 +105,15 @@ resource "aws_instance" "AWS-secgame-mission5-ec2-dynamo-handler" {
         volume_size           = 8
         delete_on_termination = true
     }
-    user_data = <<-EOF
-#!/bin/bash   
+    user_data = <<EOF
+#!/bin/bash
+sudo yum install ec2-instance-connect -y
 echo "ec2-user:foobarbazevil" |sudo chpasswd
 sudo sed -i '/PasswordAuthentication no/c\PasswordAuthentication yes' /etc/ssh/sshd_config
 sudo service sshd restart
 	    EOF
     tags = {
         Name = "AWS-secgame-mission5-ec2-dynamo-handler-${var.id}"
-    }
-}
-
-#Security server. Taking it down dumps logs about the dynamo-handler
-resource "aws_instance" "AWS-secgame-mission5-ec2-security-server" {
-    ami                         = "ami-0b69ea66ff7391e80" #amazon linux 2
-    availability_zone           = "us-east-1a"
-    ebs_optimized               = false
-    instance_type               = "t2.micro"
-    monitoring                  = false
-    key_name                    = ""
-    subnet_id                   = "${aws_subnet.AWS-secgame-mission5-subnet.id}"
-    vpc_security_group_ids      = ["${aws_security_group.AWS-secgame-mission5-sg.id}"]
-    associate_public_ip_address = false
-    private_ip                  = "192.168.0.137"
-    source_dest_check           = true
-
-    root_block_device {
-        volume_type           = "gp2"
-        volume_size           = 8
-        delete_on_termination = true
-    }
-    user_data = <<-EOF
-        sudo apt-get update
-        sudo route add 169.254.169.254 reject
-        sudo rm /etc/sudoers.d/90-cloud-init-users
-	    EOF
-    tags = {
-        Name = "AWS-secgame-mission5-ec2-security-server-${var.id}"
     }
 }
 
@@ -164,12 +136,40 @@ resource "aws_instance" "AWS-secgame-mission5-ec2-hyper-critical-security-hyperv
         volume_size           = 8
         delete_on_termination = true
     }
-    user_data = <<-EOF
-        sudo apt-get update
-        sudo route add 169.254.169.254 reject
-        sudo rm /etc/sudoers.d/90-cloud-init-users
+    user_data = <<EOF
+#!/bin/bash
+sudo route add 169.254.169.254 reject
+sudo rm /etc/sudoers.d/90-cloud-init-users
 	    EOF
     tags = {
+        Name = "AWS-secgame-mission5-ec2-hyper-critical-security-hypervisor-${var.id}"
+    }
+}
+
+#Mail server. Used for info gathering
+resource "aws_instance" "AWS-secgame-mission5-ec2-mail-server" {
+    ami                         = "ami-0b69ea66ff7391e80" #amazon linux 2
+    availability_zone           = "us-east-1a"
+    ebs_optimized               = false
+    instance_type               = "t2.micro"
+    monitoring                  = false
+    key_name                    = ""
+    subnet_id                   = "${aws_subnet.AWS-secgame-mission5-subnet.id}"
+    vpc_security_group_ids      = ["${aws_security_group.AWS-secgame-mission5-sg.id}"]
+    associate_public_ip_address = true
+    private_ip                  = "192.168.0.37"
+    source_dest_check           = true
+
+    root_block_device {
+        volume_type           = "gp2"
+        volume_size           = 8
+        delete_on_termination = true
+    }
+    user_data = <<EOF
+
+	    EOF
+    tags = {
+		Feature = "NEW! Connect now with EC2-INSTANCE-CONNECT!"
         Name = "AWS-secgame-mission5-ec2-hyper-critical-security-hypervisor-${var.id}"
     }
 }

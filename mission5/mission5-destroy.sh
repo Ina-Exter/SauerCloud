@@ -21,13 +21,18 @@ then
 fi
 
 #destroy terraform
+#First, empty the groups in case
+echo "[AWS-Secgame] Emptying groups, may fail."
+aws --profile $SECGAME_USER_PROFILE iam remove-user-from-group --group-name privileged-$SECGAME_USER_ID --user-name emetselch-$SECGAME_USER_ID
+aws --profile $SECGAME_USER_PROFILE iam remove-user-from-group --group-name suspects-$SECGAME_USER_ID --user-name emetselch-$SECGAME_USER_ID
+
 echo "[AWS-Secgame] Destroying terraform resources"
 cd resources/terraform
-terraform refresh
 terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP"
 if [[ $? != 0 ]]
 then
 	echo "[AWS-Secgame] Non-zero return code on terraform destroy. There might be a problem. Consider destroying by hand (move to /trash/mission5-$SECGAME_USER_ID/resources/terraform and use terraform destroy, or destroy your resources by hand on the console."
+	echo "[AWS-Secgame] If this was raised by a group issue, the script will handle it."
 fi
 
 
@@ -39,11 +44,6 @@ then
 	echo "[AWS-Secgame] Non-zero return code on keypair destruction. Use aws --profile $USER_SECGAME_PROFILE ec2 describe-key-pairs and delete-key-pair to manually delete the key pair if needed."
 	exit 2
 fi
-
-#confirm destruction of both groups in case a user got placed in them
-echo "[AWS-Secgame] Checking group deletion. If terraform raised an error about groups not being empty, this will get them. Otherwise, this command may fail if you did not go that far."
-aws --profile $SECEGAME_USER_PROFILE iam delete-group --group-name privileged-$SEGAME_USER_ID
-aws --profile $SECEGAME_USER_PROFILE iam delete-group --group-name suspects-$SEGAME_USER_ID
 
 #destroy log group
 echo "[AWS-Secgame] Deleting log groups. This command may fail if you did not go that far."

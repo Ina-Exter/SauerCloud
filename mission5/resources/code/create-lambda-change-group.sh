@@ -4,7 +4,6 @@ cat <<END> lambda-change-group.py
 import json
 import boto3
 
-#WORK IN PROGRESS
 def handler(event, context):
     print('Suspicious behaviour detected. Switching off permissions before further investigation.')
     iam = boto3.resource('iam')

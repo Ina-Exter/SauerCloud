@@ -1,5 +1,5 @@
-output "ec2_instance_id" {
-    value = "${aws_instance.AWS-secgame-mission5-ec2-security-server.id}"
+output "ec2_ddb_instance_id" {
+    value = "${aws_instance.AWS-secgame-mission5-ec2-dynamo-handler.id}"
 }
 
 output "emetselch_key" {

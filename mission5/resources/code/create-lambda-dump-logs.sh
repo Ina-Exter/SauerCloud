@@ -1,3 +1,6 @@
+#!/bin/bash
+
+cat <<END> lambda-dump-logs.py
 import json
 import time
 import boto3
@@ -16,10 +19,11 @@ def handler(event, context):
     print('Rebooting security server after 1 min.')
     time.sleep(60)
     client = boto3.client('ec2')
-    response = client.start_instances(InstanceIds=[''])
+    response = client.start_instances(InstanceIds=['$DDB_HANDLER_INSTANCE_ID'])
     print(response)
     return {
         'statusCode': 200,
         'body': json.dumps('Finishing transmission.')
     }
 
+END
