@@ -79,6 +79,8 @@ fi
 
 #Get the output
 export DDB_HANDLER_INSTANCE_ID=$(terraform output ec2_ddb_instance_id)
+export MAIL_SERVER_INSTANCE_ID=$(terraform output ec2_mailserver_instance_id)
+export MAIL_SERVER_IP=$(terraform output ec2_mailserver_public_ip)
 export emetselch_key_id=$(terraform output emetselch_key)
 export emetselch_secret_key=$(terraform output emetselch_secret_key)
 
@@ -89,12 +91,26 @@ source create-lambda-dump-logs.sh
 zip lambda-dump-logs.zip lambda-dump-logs.py
 aws --profile $SECGAME_USER_PROFILE lambda update-function-code --function-name AWS-secgame-mission5-lambda-logs-dump-$SECGAME_USER_ID --zip-file fileb://lambda-dump-logs.zip
 
+#mail server setup
+echo "[AWS-Secgame] Mail server setup now running."
+sleep 8
+ssh-keygen -t rsa -f mailserver_temporary_key.pem -q -N ""
+echo "[AWS-Secgame] Key Generated."
+chmod 4OO mailserver_temporary_key.pem
+aws --profile $SECGAME_USER_PROFILE ec2-instance-connect send-ssh-public-key --availability-zone us-east-1a --instance-os-user ec2-user --instance-id $MAIL_SERVER_INSTANCE_ID --ssh-public-key file://mailserver_temporary_key.pem.pub
+echo "[AWS-Secgame] Copying file."
+scp -i "mailserver_temporary_key.pem" -o "StrictHostKeyChecking=no" make_mail_system.sh ec2-user@$MAIL_SERVER_IP:/home/ec2-user/
+echo "[AWS-Secgame] Script startup."
+aws --profile $SECGAME_USER_PROFILE ec2-instance-connect send-ssh-public-key --availability-zone us-east-1a --instance-os-user ec2-user --instance-id $MAIL_SERVER_INSTANCE_ID --ssh-public-key file://mailserver_temporary_key.pem.pub
+ssh -i "mailserver_temporary_key.pem" -o "StrictHostKeyChecking=no" ec2-user@$MAIL_SERVER_IP 'chmod u+x make_mail_system.sh; sudo bash -c "./make_mail_system.sh"; exit'
+
 #Return in mission dir
 cd ../..
 
 sleep 3
 
-clear
+#uncomment in prod
+#clear
 
 #Write briefing
 echo "$DDB_HANDLER_INSTANCE_ID \n $emetselch_key_id \n $emetselch_secret_key"  >> briefing.txt

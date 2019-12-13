@@ -166,10 +166,9 @@ resource "aws_instance" "AWS-secgame-mission5-ec2-mail-server" {
         delete_on_termination = true
     }
     user_data = <<EOF
-
 	    EOF
     tags = {
 		Feature = "NEW! Connect now with EC2-INSTANCE-CONNECT!"
-        Name = "AWS-secgame-mission5-ec2-hyper-critical-security-hypervisor-${var.id}"
+        Name = "AWS-secgame-mission5-ec2-mail-server-${var.id}"
     }
 }

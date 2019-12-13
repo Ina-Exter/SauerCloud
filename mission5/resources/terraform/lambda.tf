@@ -79,7 +79,7 @@ resource "aws_iam_role_policy" "AWS-secgame-mission5-role-lambda-write-logs" {
         {
 			"Effect": "Allow",
 			"Action": [
-				"ec2:StartInstance"
+				"ec2:StartInstances"
 			],
 			"Resource": "${aws_instance.AWS-secgame-mission5-ec2-dynamo-handler.arn}"
         }
@@ -133,6 +133,7 @@ resource "aws_lambda_function" "AWS-secgame-mission5-lambda-dump-logs" {
     role = "${aws_iam_role.AWS-secgame-mission5-lambda-logs-dump-role.arn}"
     handler = "lambda-dump-logs.handler"
     runtime = "python3.7"
+    timeout = 10
     tags = {
         Name = "AWS-secgame-mission5-lambda-logs-dump-${var.id}"
     }
