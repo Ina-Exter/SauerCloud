@@ -8,6 +8,15 @@ resource "aws_s3_bucket" "AWS-secgame-mission5-super-secret-utlimate-s3" {
     }
 }
 
+resource "aws_s3_bucket" "AWS-secgame-mission5-s3-es" {
+    bucket = "aws-secgame-mission5-s3-es-${var.id}"
+    acl = "private"
+    force_destroy = true
+    tags = {
+        Name = "AWS-secgame-mission5-s3-es-${var.id}"
+    }
+}
+
 #S3 OBJECTS
 resource "aws_s3_bucket_object" "picture-of-mila-best-cat-1" {
     bucket = "${aws_s3_bucket.AWS-secgame-mission5-super-secret-utlimate-s3.id}"

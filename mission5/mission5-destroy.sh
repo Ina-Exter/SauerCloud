@@ -44,6 +44,12 @@ then
 	echo "[AWS-Secgame] Non-zero return code on keypair destruction. Use aws --profile $USER_SECGAME_PROFILE ec2 describe-key-pairs and delete-key-pair to manually delete the key pair if needed."
 	exit 2
 fi
+aws --profile $SECGAME_USER_PROFILE ec2 delete-key-pair --key-name AWS-secgame-mission5-keypair-service-$SECGAME_USER_ID
+if [[ $? != 0 ]]
+then
+	echo "[AWS-Secgame] Non-zero return code on keypair destruction. Use aws --profile $USER_SECGAME_PROFILE ec2 describe-key-pairs and delete-key-pair to manually delete the key pair if needed."
+	exit 2
+fi
 
 #destroy log group
 echo "[AWS-Secgame] Deleting log groups. This command may fail if you did not go that far."

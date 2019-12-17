@@ -17,3 +17,11 @@ output "emetselch_key" {
 output "emetselch_secret_key" {
 	value = "${aws_iam_access_key.AWS-secgame-mission5-iam-user-emetselch-keys.secret}"
 }
+
+output "solus_key" {
+	value = "${aws_iam_access_key.AWS-secgame-mission5-iam-user-solus-keys.id}"
+}
+
+output "solus_secret_key" {
+	value = "${aws_iam_access_key.AWS-secgame-mission5-iam-user-solus-keys.secret}"
+}

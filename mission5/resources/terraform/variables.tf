@@ -13,6 +13,11 @@ variable "id" {
     default = "1123581321"
 }
 
+#Account ID
+variable "accountid" {
+	default = "1123581321"
+}
+
 #Whitelisted IP
 variable "ip" {
     
@@ -20,5 +25,9 @@ variable "ip" {
 
 #SSH key
 variable "sshprivatekey" {
+    default = "error"
+}
+
+variable "sshservicekey" {
     default = "error"
 }

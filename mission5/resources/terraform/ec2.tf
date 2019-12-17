@@ -18,6 +18,24 @@ resource "aws_iam_role" "AWS-secgame-mission5-role-ec2accessddb" {
 POLICY
 }
 
+resource "aws_iam_role" "AWS-secgame-mission5-role-ec2proxy" {
+    name               = "AWS-secgame-mission5-role-ec2proxy-${var.id}"
+    assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow"
+    }
+  ]
+}
+POLICY
+}
+
 #IAMP
 resource "aws_iam_policy" "AWS-secgame-mission5-rolepolicy-ec2accessddb" {
   name        = "AWS-secgame-mission5-rolepolicy-ec2accessddb-${var.id}"
@@ -38,16 +56,62 @@ resource "aws_iam_policy" "AWS-secgame-mission5-rolepolicy-ec2accessddb" {
 EOF
 }
 
-#IAMPR
+resource "aws_iam_policy" "AWS-secgame-mission5-rolepolicy-ec2proxy" {
+  name        = "AWS-secgame-mission5-rolepolicy-ec2proxy-${var.id}"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeInstances",
+                "s3:ListAllMyBuckets"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket"
+            ],
+            "Resource": "${aws_s3_bucket.AWS-secgame-mission5-s3-es.arn}"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject"
+            ],
+            "Resource": "${aws_s3_bucket.AWS-secgame-mission5-s3-es.arn}/*"
+        }
+    ]
+}
+EOF
+}
+
+#IAMRPA
 resource "aws_iam_role_policy_attachment" "AWS-secgame-mission5-rolepolicyattachment-ec2accessddb" {
   role       = "${aws_iam_role.AWS-secgame-mission5-role-ec2accessddb.name}"
   policy_arn = "${aws_iam_policy.AWS-secgame-mission5-rolepolicy-ec2accessddb.arn}"
+}
+
+#IAMPA
+resource "aws_iam_policy_attachment" "AWS-secgame-mission5-policyattachment-ec2proxy" {
+  name       = "AWS-Secgame-mission5-policy-attachment-ec2-proxy-${var.id}"
+  roles      = ["${aws_iam_role.AWS-secgame-mission5-role-ec2proxy.name}"]
+  policy_arn = "${aws_iam_policy.AWS-secgame-mission5-rolepolicy-ec2proxy.arn}"
 }
 
 #IAMIP
 resource "aws_iam_instance_profile" "AWS-secgame-mission5-instanceprofile-ec2accessddb" {
   name = "AWS-secgame-mission5-instanceprofile-ec2accessddb-${var.id}"
   role = "${aws_iam_role.AWS-secgame-mission5-role-ec2accessddb.name}"
+}
+
+resource "aws_iam_instance_profile" "AWS-secgame-mission5-instanceprofile-ec2proxy" {
+  name = "AWS-secgame-mission5-instanceprofile-ec2proxy-${var.id}"
+  role = "${aws_iam_role.AWS-secgame-mission5-role-ec2proxy.name}"
 }
 
 #SG
@@ -70,7 +134,6 @@ resource "aws_security_group" "AWS-secgame-mission5-sg" {
         security_groups = []
         self            = true
     }
-
 
     egress {
         from_port       = 0
@@ -170,5 +233,52 @@ resource "aws_instance" "AWS-secgame-mission5-ec2-mail-server" {
     tags = {
 		Feature = "NEW! Connect now with EC2-INSTANCE-CONNECT!"
         Name = "AWS-secgame-mission5-ec2-mail-server-${var.id}"
+    }
+}
+
+#Entrypoint 1: SSRF server. Permissions required: read a bucket
+resource "aws_instance" "AWS-secgame-mission5-ec2-proxy" {
+    ami                         = "ami-00d4e9ff62bc40e03" #ubuntu 14.04
+    availability_zone           = "us-east-1a"
+    ebs_optimized               = false
+    instance_type               = "t2.micro"
+    iam_instance_profile        = "${aws_iam_instance_profile.AWS-secgame-mission5-instanceprofile-ec2proxy.name}"
+    monitoring                  = false
+    key_name                    = "AWS-secgame-mission5-keypair-service-${var.id}"
+    subnet_id                   = "${aws_subnet.AWS-secgame-mission5-subnet.id}"
+    vpc_security_group_ids      = ["${aws_security_group.AWS-secgame-mission5-sg.id}"]
+    associate_public_ip_address = true
+    private_ip                  = "192.168.0.12"
+    source_dest_check           = true
+    root_block_device {
+        volume_type           = "gp2"
+        volume_size           = 8
+        delete_on_termination = true
+    }
+    provisioner "file" {
+      source = "../code/ssrf.zip"
+      destination = "/home/ubuntu/ssrf.zip"
+      connection {
+        type = "ssh"
+        user = "ubuntu"
+        private_key = "${file("../ssh_service_key.pem")}"
+        host = self.public_ip
+      }
+    }
+    user_data = <<EOF
+#!/bin/bash
+sudo apt-get update
+sudo apt-get install -y awscli unzip
+curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+sudo apt-get install -y nodejs
+sudo npm install http express needle command-line-args
+cd /home/ubuntu
+unzip ssrf.zip -d ./ssrf
+cd ssrf
+sudo node ssrf-demo-app.js &
+EOF
+    tags = {
+        Name = "AWS-secgame-mission5-ec2-proxy-${var.id}"
+        Type = "Proxy"
     }
 }

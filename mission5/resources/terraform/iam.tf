@@ -14,7 +14,16 @@ resource "aws_iam_user" "AWS-secgame-mission5-iam-user-emetselch" {
     name = "emetselch-${var.id}"
     
     tags = {
-		name = "AWS-secgame-mission5-iam-admin-emetselch-${var.id}"
+		name = "AWS-secgame-mission5-iam-user-emetselch-${var.id}"
+    }
+}
+
+#User1 (entrypoint segment)
+resource "aws_iam_user" "AWS-secgame-mission5-iam-user-solus" {
+    name = "solus-${var.id}"
+    
+    tags = {
+		name = "AWS-secgame-mission5-iam-user-solus-${var.id}"
     }
 }
 
@@ -38,6 +47,25 @@ resource "aws_iam_user_policy" "AWS-secgame-mission5-iam-admin-hades-policy"{
 EOF
 }
 
+#User policy for entrypoint
+resource "aws_iam_user_policy" "AWS-secgame-mission5-iam-user-solus-policy"{
+    name = "solus-policy-${var.id}"
+    user = "${aws_iam_user.AWS-secgame-mission5-iam-user-solus.id}"
+    
+    policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "ec2:DescribeInstances",
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+}
+
 #Generate keys
 resource "aws_iam_access_key" "AWS-secgame-mission5-iam-admin-hades-keys"{
 	user = "${aws_iam_user.AWS-secgame-mission5-iam-admin-hades.name}"
@@ -45,6 +73,10 @@ resource "aws_iam_access_key" "AWS-secgame-mission5-iam-admin-hades-keys"{
 
 resource "aws_iam_access_key" "AWS-secgame-mission5-iam-user-emetselch-keys"{
 	user = "${aws_iam_user.AWS-secgame-mission5-iam-user-emetselch.name}"
+}
+
+resource "aws_iam_access_key" "AWS-secgame-mission5-iam-user-solus-keys"{
+	user = "${aws_iam_user.AWS-secgame-mission5-iam-user-solus.name}"
 }
 
 #Groups
@@ -82,15 +114,33 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-suspects"
   "Statement": [
     {
       "Action": [
-        "*"
+        "ec2:DescribeInstances",
+        "iam:ListGroups",
+        "iam:ListGroupsForUser",
+        "lambda:ListFunctions"
       ],
-      "Effect": "Deny",
+      "Effect": "Allow",
       "Resource": "*"
+    },
+    {
+      "Action": [
+        "ec2:StopInstances"
+      ],
+      "Effect": "Allow",
+      "Resource": "${aws_instance.AWS-secgame-mission5-ec2-hyper-critical-security-hypervisor.arn}" 
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "lambda:UpdateFunctionCode",
+        "lambda:GetFunction"
+       ],
+       "Resource": "${aws_lambda_function.AWS-secgame-mission5-lambda-change-group.arn}"
     }
   ]
 }
 EOF
-} #This policy is a bit restrictive, might want to change it later so as not to force a restart if needed
+} 
 
 resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-privileged" {
   name  = "AWS-secgame-mission5-iam-group-policy-privileged-${var.id}"
@@ -104,6 +154,7 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-privilege
         "ec2:Describe*",
         "logs:*",
         "iam:listGroups",
+        "iam:ListGroupsForUser",
         "s3:ListAllMyBuckets"
       ],
       "Effect": "Allow",
@@ -162,6 +213,7 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-standard"
       "Action": [
         "ec2:Describe*",
         "iam:ListGroups",
+        "iam:ListGroupsForUser",
         "lambda:ListFunctions"
       ],
       "Effect": "Allow",
