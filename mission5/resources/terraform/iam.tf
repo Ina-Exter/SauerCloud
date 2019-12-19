@@ -58,8 +58,17 @@ resource "aws_iam_user_policy" "AWS-secgame-mission5-iam-user-solus-policy"{
     "Statement": [
         {
             "Effect": "Allow",
-            "Action": "ec2:DescribeInstances",
+            "Action": [
+                "ec2:DescribeInstances",
+                "iam:ListUsers",
+                "s3:ListAllMyBuckets"
+            ],
             "Resource": "*"
+        },
+        {
+			"Effect": "Allow",
+			"Action": "iam:CreateAccessKey",
+			"Resource": "${aws_iam_user.AWS-secgame-mission5-iam-user-emetselch.arn}"
         }
     ]
 }
@@ -117,6 +126,7 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-suspects"
         "ec2:DescribeInstances",
         "iam:ListGroups",
         "iam:ListGroupsForUser",
+        "iam:ListUsers",
         "lambda:ListFunctions"
       ],
       "Effect": "Allow",
@@ -153,6 +163,7 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-privilege
       "Action": [
         "ec2:Describe*",
         "logs:*",
+        "iam:ListUsers",
         "iam:listGroups",
         "iam:ListGroupsForUser",
         "s3:ListAllMyBuckets"
@@ -195,6 +206,20 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-privilege
           "ec2:osuser": "ec2-user"
         }
       }
+    },
+    {
+        "Effect": "Allow",
+        "Action": [
+            "s3:ListBucket"
+        ],
+        "Resource": "${aws_s3_bucket.AWS-secgame-mission5-s3-es.arn}"
+    },
+    {
+        "Effect": "Allow",
+        "Action": [
+            "s3:GetObject"
+        ],
+        "Resource": "${aws_s3_bucket.AWS-secgame-mission5-s3-es.arn}/*"
     }
   ]
 }
@@ -212,9 +237,11 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-standard"
     {
       "Action": [
         "ec2:Describe*",
+        "iam:ListUsers",
         "iam:ListGroups",
         "iam:ListGroupsForUser",
-        "lambda:ListFunctions"
+        "lambda:ListFunctions",
+        "s3:ListAllMyBuckets"
       ],
       "Effect": "Allow",
       "Resource": "*"
@@ -254,6 +281,20 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-standard"
           "ec2:osuser": "ec2-user"
         }
       }
+    },
+    {
+        "Effect": "Allow",
+        "Action": [
+            "s3:ListBucket"
+        ],
+        "Resource": "${aws_s3_bucket.AWS-secgame-mission5-s3-es.arn}"
+    },
+    {
+        "Effect": "Allow",
+        "Action": [
+            "s3:GetObject"
+        ],
+        "Resource": "${aws_s3_bucket.AWS-secgame-mission5-s3-es.arn}/*"
     }
   ]
 }

@@ -49,7 +49,9 @@ I swear on the Lord, Bob.
 
 You've made my life hell, and since I know you're dumber than a rock and thicker than oatmeal, I'll spell it out for you: Do NOT fiddle with the "Security Hypervisor". It's an obvious honeypot for that hacker that has been messing with us. If you try to disable it by any means, a lambda will come hard on you and most likely kill all of your privileges.
 
-Do not make me reset them for you, or I swear, your next computer will use punched cards.
+Don't fiddle with the lambdas, too. The other one is made to ensure post-mortems are doable if the database server comes down. There shouldn't be any logs appearing in AWS' logging system, but just in case, don't touch them.
+
+Do not make me reset your privileges for you if you end up getting a strike, or I swear, your next computer will use punched cards.
 
 E.Viladmin
 EOF

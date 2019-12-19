@@ -112,27 +112,43 @@ export solus_secret_key=$(terraform output solus_secret_key)
 echo "[AWS-Secgame] Updating lambda code with correct instance ID."
 cd ../code
 source create-lambda-dump-logs.sh
-zip lambda-dump-logs.zip lambda-dump-logs.py
-aws --profile $SECGAME_USER_PROFILE lambda update-function-code --function-name AWS-secgame-mission5-lambda-logs-dump-$SECGAME_USER_ID --zip-file fileb://lambda-dump-logs.zip
+zip lambda-dump-logs.zip lambda-dump-logs.py > /dev/null 2>&1
+aws --profile $SECGAME_USER_PROFILE lambda update-function-code --function-name AWS-secgame-mission5-lambda-logs-dump-$SECGAME_USER_ID --zip-file fileb://lambda-dump-logs.zip > /dev/null 2>&1
 
 #mail server setup
 echo "[AWS-Secgame] Mail server setup now running."
 sleep 8
 ssh-keygen -t rsa -f mailserver_temporary_key.pem -q -N ""
 echo "[AWS-Secgame] Key Generated."
-aws --profile $SECGAME_USER_PROFILE ec2-instance-connect send-ssh-public-key --availability-zone us-east-1a --instance-os-user ec2-user --instance-id $MAIL_SERVER_INSTANCE_ID --ssh-public-key file://mailserver_temporary_key.pem.pub
+aws --profile $SECGAME_USER_PROFILE ec2-instance-connect send-ssh-public-key --availability-zone us-east-1a --instance-os-user ec2-user --instance-id $MAIL_SERVER_INSTANCE_ID --ssh-public-key file://mailserver_temporary_key.pem.pub > /dev/null 2>&1
 echo "[AWS-Secgame] Copying file."
-scp -i "mailserver_temporary_key.pem" -o "StrictHostKeyChecking=no" make_mail_system.sh ec2-user@$MAIL_SERVER_IP:/home/ec2-user/
+scp -i "mailserver_temporary_key.pem" -o "StrictHostKeyChecking=no" make_mail_system.sh ec2-user@$MAIL_SERVER_IP:/home/ec2-user/ > /dev/null 2>&1
 echo "[AWS-Secgame] Script startup."
-aws --profile $SECGAME_USER_PROFILE ec2-instance-connect send-ssh-public-key --availability-zone us-east-1a --instance-os-user ec2-user --instance-id $MAIL_SERVER_INSTANCE_ID --ssh-public-key file://mailserver_temporary_key.pem.pub
-ssh -i "mailserver_temporary_key.pem" -o "StrictHostKeyChecking=no" ec2-user@$MAIL_SERVER_IP 'chmod u+x make_mail_system.sh; sudo bash -c "./make_mail_system.sh"; exit'
+aws --profile $SECGAME_USER_PROFILE ec2-instance-connect send-ssh-public-key --availability-zone us-east-1a --instance-os-user ec2-user --instance-id $MAIL_SERVER_INSTANCE_ID --ssh-public-key file://mailserver_temporary_key.pem.pub > /dev/null 2>&1
+ssh -i "mailserver_temporary_key.pem" -o "StrictHostKeyChecking=no" ec2-user@$MAIL_SERVER_IP 'chmod u+x make_mail_system.sh; sudo bash -c "./make_mail_system.sh"; exit' > /dev/null 2>&1
 
 #Add emetselch keys to bucket
 cd ..
 touch aws_key_reminder.txt
 echo "emetselch_aws_key = $emetselch_key_id" > aws_key_reminder.txt
 echo "emetselch_private_key = $emetselch_secret_key" >> aws_key_reminder.txt
-aws --profile $SECGAME_USER_PROFILE s3 cp aws_key_reminder.txt s3://aws-secgame-mission5-s3-es-$SECGAME_USER_ID --quiet
+aws --profile $SECGAME_USER_PROFILE s3 cp aws_key_reminder.txt s3://aws-secgame-mission5-s3-personal-data-emetselch-$SECGAME_USER_ID --quiet
+if [[ $? -ne 0 ]]
+then
+	echo "[AWS-Secgame] Cannot fill the bucket with required file. Rolling back."
+	cd terraform
+	terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshddbkey" -var="sshservicekey=$sshservicekey"
+	cd ../../..
+	#If trash doesn't exist, make it
+	if [[ ! -d "trash" ]]
+	then
+        	mkdir trash
+	fi
+	mv ./mission5-$SECGAME_USER_ID ./trash/
+	aws --profile $SECGAME_USER_PROFILE ec2 delete-key-pair --key-name AWS-secgame-mission5-keypair-ddb-handler-$SECGAME_USER_ID
+	aws --profile $SECGAME_USER_PROFILE ec2 delete-key-pair --key-name AWS-secgame-mission5-keypair-service-$SECGAME_USER_ID
+	exit 2
+fi
 rm aws_key_reminder.txt
 
 #Return in mission dir
@@ -140,11 +156,17 @@ cd ..
 
 sleep 3
 
-#uncomment in prod
-#clear
+clear
 
 #Write briefing
-echo "$solus_key_id \n $solus_secret_key"  >> briefing.txt
+echo "This is it, Agent. \
+We have finally managed to identify Evilcorp's home network. It is, of course, on a VPC on AWS. This is the very reason we contacted you. \
+You're the best we've got, and I heard from our insider that this mission will be significantly harder than the previous ones. \
+I've even heard that there is a trap in this one. Plan all your moves carefully...
+You'll be able to ingress using these low-privileged AWS keys a bot sniffed from their github.
+Best of luck to you, Agent... " > briefing.txt
+echo "solus_aws_access_key = $solus_key_id" >> briefing.txt
+echo "solus_aws_secret_access_key = $solus_secret_key" >> briefing.txt
 
 echo "[AWS-Secgame] Mission 5 deployment complete. Mission folder is ./mission5-$SECGAME_USER_ID. Read the briefing to begin, a copy can be found in the mission folder."
 

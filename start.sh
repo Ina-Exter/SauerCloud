@@ -28,7 +28,7 @@ then
 	echo "[AWS-Secgame] Commands: create => deploy the specified mission infrastructure on AWS."
 	echo "[AWS-Secgame] Commands: destroy => delete the specified mission infrastructure from AWS."
 	echo "[AWS-Secgame] Commands: help => Display this helptext. No, it won't work with a \"mission\" argument :^)"
-	echo "[AWS-Secgame] Missions: Range from mission1 to mission5. Missions 1 to 4 are small missions for training. Mission 5 is a large framework for a real CTF game. It is SIGNIFICANTLY longer than the others."
+	echo "[AWS-Secgame] Missions: Range from mission1 to mission5. Missions 1 to 4 are small missions for training. Mission 5 is a large framework for a real CTF game. It is significantly longer than the others."
 	echo "[AWS-Secgame] You may have to execute ./config.sh beforehand in order to specify your AWS CLI account, and whitelist your IP address."
 	exit 2
 fi
@@ -46,11 +46,6 @@ then
 	echo -n "[AWS-Secgame] Illegal argument error. start.sh requires exactly 2 arguments."
 	echo " Supplied $# argument(s)."
 	echo "[AWS-Secgame] See ./start.sh help to display helptext."
-<< ////
-	echo "[AWS-Secgame] Structure: ./start.sh command mission"
-	echo "[AWS-Secgame] Command is either create or destroy."
-	echo "[AWS-Secgame] Mission is either mission1, mission2, ... for create, or the mission folder for destroy."
-////
 	exit 2
 fi
 
@@ -64,9 +59,29 @@ fi
 export SECGAME_USER_PROFILE=$(head -n 1 profile.txt)
 export USER_IP=$(head -n 1 whitelist.txt)
 
+#Display warning regarding IP
+export test_ip=$(curl icanhazip.com --silent)
+
+if [[ ! "$USER_IP" == "$test_ip" ]]
+then
+	echo "[AWS-Secgame] Current IP address and IP address registered in whitelist.txt do not match. The security group will deny you access. Proceed? ((y)es/(n)o/(r)eplace)"
+	read -r ans
+	if [[ "$ans" == "y" ]] || [[ "$ans" == "yes" ]]
+	then
+		echo "[AWS-Secgame] Using whitelisted IP address. You will not be able to connect to the infrastructure if you do not have this IP address."
+	elif [[ "$ans" == "r" ]] || [[ "$ans" == "replace" ]]
+	then
+		echo "[AWS-Secgame] Using fetched IP address."
+		export USER_IP=$test_ip
+	else
+		echo "[AWS-Secgame] Aborting. Run /config.sh to configurate IP automatically, or edit whitelist.txt yourself."
+		exit 2
+	fi
+fi
+
 #Check whether the provided user profile is valid, i.e. if it is not mistyped.
-aws --profile $SECGAME_USER_PROFILE sts get-caller-identity > /dev/null 2>&1
-if [[ $? != 0 ]]
+aws --profile "$SECGAME_USER_PROFILE" sts get-caller-identity > /dev/null 2>&1
+if [[ $? -ne 0 ]]
 then
 	echo "[AWS-Secgame] Unable to confirm validity of AWS keys, please make sure you configured the correct profile."
 	exit 2
@@ -74,7 +89,7 @@ fi
 
 #Check whether the user has terraform
 export terraform_path=$(command -v terraform)
-if [[ $terraform_path == "" ]]
+if [[ "$terraform_path" == "" ]]
 then
 	echo "[AWS-Secgame] Cannot locate terraform. Please make sure terraform is installed and in a location in your PATH."
 	exit 2
@@ -91,18 +106,25 @@ if [[ "create" = "$1" ]] #User requests a mission deployment
 then
 	#Generate unique id for this session (only lowercase and numbers)
 	export SECGAME_USER_ID=$(head /dev/urandom | tr -dc a-z0-9 | head -c 10)
-	#Check that a startup script can be found. If not, assume mistype.
-	if [[ ! -e ./$2/$2-deploy.sh ]]
+	#Eliminate the trailing slash if needed
+	export MISSION=$2
+	export c=${MISSION: -1}
+	if [[ "$c" = "/" ]]
 	then
-		echo "[AWS-Secgame] Cannot find startup script for mission $2. Please check syntax and reiterate."
+		export MISSION=${MISSION::-1}
+	fi
+	#Check that a startup script can be found. If not, assume mistype.
+	if [[ ! -e ./$MISSION/$MISSION-deploy.sh ]]
+	then
+		echo "[AWS-Secgame] Cannot find startup script for mission $MISSION. Please check syntax and reiterate."
 		exit 2
 	fi
 	#Make a mission directory, copy the contents of the resources in it, and get in
-	mkdir $2-$SECGAME_USER_ID
-	cp -r ./$2/* ./$2-$SECGAME_USER_ID/
-	cd $2-$SECGAME_USER_ID
+	mkdir $MISSION-$SECGAME_USER_ID
+	cp -r ./$MISSION/* ./$MISSION-$SECGAME_USER_ID/
+	cd $MISSION-$SECGAME_USER_ID
 	#Run the mission startup script from the resources folder (may have to change path ultimately)
-	source ./$2-deploy.sh
+	source ./$MISSION-deploy.sh
 
 elif [[ "destroy" = "$1" ]] #User requests a mission destruction
 then
@@ -114,7 +136,7 @@ then
 	export SECGAME_USER_ID=${folder_name##*-}
 	#Since this gave me one hell of a headache, if the last / of the folder name remains, remove it.
 	export c=${SECGAME_USER_ID: -1}
-	if [[ $c = "/" ]]
+	if [[ "$c" = "/" ]]
 	then
 		export SECGAME_USER_ID=${SECGAME_USER_ID::-1}
 	fi
