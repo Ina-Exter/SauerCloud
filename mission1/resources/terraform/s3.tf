@@ -160,8 +160,17 @@ resource "aws_s3_bucket_object" "extremely-evil-git-folder13" {
     }
 }	
 	
-
 resource "aws_s3_bucket_object" "extremely-evil-git-folder14" {
+    bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
+    key = ".git/objects/4d/6d8a8d537c12f30960cd6ffb74a207c3e41357"
+    acl = "public-read"
+    source = "../evilcorp-evilbucket-data/.git/objects/89/2743504368f63d322963c076b6ca45282680bf"
+    tags = {
+        Name = "AWS-secgame-mission1-evilcorp-evilbucket-data-${var.id}"
+    }
+}	
+
+resource "aws_s3_bucket_object" "extremely-evil-git-folder15" {
     bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
     key = ".git/objects/4d/6d8a8d537c12f30960cd6ffb74a207c3e41357"
     acl = "public-read"
@@ -172,7 +181,7 @@ resource "aws_s3_bucket_object" "extremely-evil-git-folder14" {
 }	
 	
 
-resource "aws_s3_bucket_object" "extremely-evil-git-folder15" {
+resource "aws_s3_bucket_object" "extremely-evil-git-folder16" {
     bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
     key = ".git/objects/74/7a6aae67a712517ca671d7310d2e817b9ecc62"
     acl = "public-read"
@@ -183,7 +192,7 @@ resource "aws_s3_bucket_object" "extremely-evil-git-folder15" {
 }	
 	
 
-resource "aws_s3_bucket_object" "extremely-evil-git-folder16" {
+resource "aws_s3_bucket_object" "extremely-evil-git-folder17" {
     bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
     key = ".git/objects/86/972d85f2771f3203957ebc15fe85958a31a335"
     acl = "public-read"
@@ -194,22 +203,11 @@ resource "aws_s3_bucket_object" "extremely-evil-git-folder16" {
 }	
 	
 
-resource "aws_s3_bucket_object" "extremely-evil-git-folder17" {
+resource "aws_s3_bucket_object" "extremely-evil-git-folder18" {
     bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
     key = ".git/objects/a9/01e6822448751707b618ef5ef966159f003d02"
     acl = "public-read"
-    source = "../evilcorp-evilbucket-data/.git/objects/a9/01e6822448751707b618ef5ef966159f003d02"
-    tags = {
-        Name = "AWS-secgame-mission1-evilcorp-evilbucket-data-${var.id}"
-    }
-}	
-	
-
-resource "aws_s3_bucket_object" "extremely-evil-git-folder18" {
-    bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
-    key = ".git/objects/e9/bfadd3a7dbd3d7bc2bb8fdf61e95892046bf24"
-    acl = "public-read"
-    source = "../evilcorp-evilbucket-data/.git/objects/e9/bfadd3a7dbd3d7bc2bb8fdf61e95892046bf24"
+    source = "../evilcorp-evilbucket-data/.git/objects/6e/fb5f88e891c94dafe52a49a6c961a26723afc6"
     tags = {
         Name = "AWS-secgame-mission1-evilcorp-evilbucket-data-${var.id}"
     }
@@ -218,9 +216,9 @@ resource "aws_s3_bucket_object" "extremely-evil-git-folder18" {
 
 resource "aws_s3_bucket_object" "extremely-evil-git-folder19" {
     bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
-    key = ".git/objects/ff/e15afca9c23ec64b0c53c9ad33531240e548ee"
+    key = ".git/objects/e9/bfadd3a7dbd3d7bc2bb8fdf61e95892046bf24"
     acl = "public-read"
-    source = "../evilcorp-evilbucket-data/.git/objects/ff/e15afca9c23ec64b0c53c9ad33531240e548ee"
+    source = "../evilcorp-evilbucket-data/.git/objects/a5/7ebeeb812e957f19e3f698675308216cb470dc"
     tags = {
         Name = "AWS-secgame-mission1-evilcorp-evilbucket-data-${var.id}"
     }
@@ -229,9 +227,9 @@ resource "aws_s3_bucket_object" "extremely-evil-git-folder19" {
 
 resource "aws_s3_bucket_object" "extremely-evil-git-folder20" {
     bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
-    key = ".git/objects/7b/5e91f20f3c7333c61139aee5bffd6cadffe6cb"
+    key = ".git/objects/ff/e15afca9c23ec64b0c53c9ad33531240e548ee"
     acl = "public-read"
-    source = "../evilcorp-evilbucket-data/.git/objects/7b/5e91f20f3c7333c61139aee5bffd6cadffe6cb"
+    source = "../evilcorp-evilbucket-data/.git/objects/f2/1b7e0ee3d62d712d44bf9fd53aee6ed417d0e1"
     tags = {
         Name = "AWS-secgame-mission1-evilcorp-evilbucket-data-${var.id}"
     }
@@ -239,6 +237,26 @@ resource "aws_s3_bucket_object" "extremely-evil-git-folder20" {
 	
 
 resource "aws_s3_bucket_object" "extremely-evil-git-folder21" {
+    bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
+    key = ".git/objects/7b/5e91f20f3c7333c61139aee5bffd6cadffe6cb"
+    acl = "public-read"
+    source = "../evilcorp-evilbucket-data/.git/objects/96/d490736bd62b2257b05ef7b098b08a4e6ce334"
+    tags = {
+        Name = "AWS-secgame-mission1-evilcorp-evilbucket-data-${var.id}"
+    }
+}	
+	
+resource "aws_s3_bucket_object" "extremely-evil-git-folder22" {
+    bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
+    key = ".git/objects/bd/b84a59910b0f297ed97d6d84446221fc4b5c57"
+    acl = "public-read"
+    source = "../evilcorp-evilbucket-data/.git/objects/3d/aa037b38a816fd91056ca47d5365ce4ba5e744"
+    tags = {
+        Name = "AWS-secgame-mission1-evilcorp-evilbucket-data-${var.id}"
+    }
+}	
+
+resource "aws_s3_bucket_object" "extremely-evil-git-folder23" {
     bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
     key = ".git/objects/bd/b84a59910b0f297ed97d6d84446221fc4b5c57"
     acl = "public-read"
@@ -249,7 +267,7 @@ resource "aws_s3_bucket_object" "extremely-evil-git-folder21" {
 }	
 	
 
-resource "aws_s3_bucket_object" "extremely-evil-git-folder22" {
+resource "aws_s3_bucket_object" "extremely-evil-git-folder24" {
     bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
     key = ".git/logs/HEAD"
     acl = "public-read"
@@ -260,7 +278,7 @@ resource "aws_s3_bucket_object" "extremely-evil-git-folder22" {
 }	
 	
 
-resource "aws_s3_bucket_object" "extremely-evil-git-folder23" {
+resource "aws_s3_bucket_object" "extremely-evil-git-folder25" {
     bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
     key = ".git/logs/refs/heads/master"
     acl = "public-read"
@@ -271,7 +289,7 @@ resource "aws_s3_bucket_object" "extremely-evil-git-folder23" {
 }	
 	
 
-resource "aws_s3_bucket_object" "extremely-evil-git-folder24" {
+resource "aws_s3_bucket_object" "extremely-evil-git-folder26" {
     bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
     key = ".git/config"
     acl = "public-read"
@@ -282,7 +300,7 @@ resource "aws_s3_bucket_object" "extremely-evil-git-folder24" {
 }	
 	
 
-resource "aws_s3_bucket_object" "extremely-evil-git-folder25" {
+resource "aws_s3_bucket_object" "extremely-evil-git-folder27" {
     bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
     key = ".git/COMMIT_EDITMSG"
     acl = "public-read"
@@ -293,7 +311,7 @@ resource "aws_s3_bucket_object" "extremely-evil-git-folder25" {
 }	
 	
 
-resource "aws_s3_bucket_object" "extremely-evil-git-folder26" {
+resource "aws_s3_bucket_object" "extremely-evil-git-folder28" {
     bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
     key = ".git/index"
     acl = "public-read"
@@ -304,7 +322,7 @@ resource "aws_s3_bucket_object" "extremely-evil-git-folder26" {
 }	
 	
 
-resource "aws_s3_bucket_object" "extremely-evil-git-folder27" {
+resource "aws_s3_bucket_object" "extremely-evil-git-folder29" {
     bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
     key = ".git/info/exclude"
     acl = "public-read"
@@ -315,7 +333,7 @@ resource "aws_s3_bucket_object" "extremely-evil-git-folder27" {
 }	
 	
 
-resource "aws_s3_bucket_object" "extremely-evil-git-folder28" {
+resource "aws_s3_bucket_object" "extremely-evil-git-folder30" {
     bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
     key = ".git/refs/heads/master"
     acl = "public-read"
