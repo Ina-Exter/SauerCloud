@@ -14,7 +14,7 @@ read FLAG
 
 if [[ $MISSION_NUMBER == 1 ]]
 then
-	if [[ $FLAG == "N4N05UCK5V1MR0ck5" ]]
+	if [[ $FLAG == "c2FsdHlwcm9ncmFtbWVyCg==" ]]
 	then
 		echo "[AWS-Secgame] Congratulations! You solved the first mission!" 
 		exit 0
