@@ -27,6 +27,7 @@ resource "aws_s3_bucket_object" "extremely-evil-access-code" {
 
 EOF
 
+unzip evilcorp-evilbucket-data.zip
 cd evilcorp-evilbucket-data
 find .git/* -type f -exec echo "resource \"aws_s3_bucket_object\" \"git-{}\" {" >> ../terraform/s3.tf \; \
 	-exec echo "	bucket = \"\${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}\"" >> ../terraform/s3.tf \; \
@@ -46,3 +47,5 @@ do
 	sed -i "0,/git-\..*/s//git-$LINE_COUNT\" {/" terraform/s3.tf
 	let LINE_COUNT=$LINE_COUNT-1
 done
+
+rm -rf evilcorp-evilbucket-data/

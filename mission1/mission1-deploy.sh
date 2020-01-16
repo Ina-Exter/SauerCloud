@@ -62,6 +62,7 @@ terraform apply -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SEC
 if [[ $? != 0 ]]
 then
 	echo "[AWS-Secgame] Non-zero return code on terraform apply. Rolling back."
+	echo "[AWS-Secgame] If this problem happened because of s3 files being incorrectly listed in terraform or being not found, try running the \"create_s3_tf.sh\" script in mission1/resources."
 	terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID"
 	cd ../../..
 	#If trash doesn't exist, make it
