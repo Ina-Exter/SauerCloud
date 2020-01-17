@@ -6,3 +6,4 @@ mission1/resources/evilcorp-evilbucket-data/
 *.swp
 mission1/resources/evilcorp-evilbucket-data-backup/
 multiuser_*
+/old-mission4/*
