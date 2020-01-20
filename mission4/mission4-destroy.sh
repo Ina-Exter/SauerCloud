@@ -6,7 +6,7 @@ echo "[AWS-Secgame] Master account profile: $SECGAME_USER_PROFILE"
 echo "[AWS-Secgame] Session ID: $SECGAME_USER_ID"
 echo "[AWS-Secgame] User IP: $USER_IP"
 
-#ALWAYS assume this will run from the mission dir!
+#ALWAYS assume this will be run from the mission dir!
 
 #Request confirmation
 echo "[AWS-Secgame] Destroy mission4-$SECGAME_USER_ID? (yes/no)"
@@ -23,7 +23,7 @@ fi
 #destroy terraform
 echo "[AWS-Secgame] Destroying terraform resources"
 cd resources/terraform
-terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE"
+terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP"
 #check terraform destroy's return code, act depending on it. 0 is for a flawless execution, 1 means an error has arisen
 if [[ $? != 0 ]]
 then
@@ -31,5 +31,15 @@ then
 	exit 2
 fi
 
-echo "[AWS-Secgame] Mission 4 destroy complete."
-exit 0
+
+#destroy key pair
+echo "[AWS-Secgame] Deleting key pair."
+aws --profile $SECGAME_USER_PROFILE ec2 delete-key-pair --key-name AWS-secgame-mission4-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID
+if [[ $? != 0 ]]
+then
+	echo "[AWS-Secgame] Non-zero return code on keypair destruction. Use aws --profile $USER_SECGAME_PROFILE ec2 describe-key-pairs and delete-key-pair to manually delete the key pair if needed."
+	exit 2
+fi
+
+
+echo "[AWS-Secgame] Mission 4 destroy complete"
