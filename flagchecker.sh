@@ -42,7 +42,7 @@ then
 	exit 1
 elif [[ $MISSION_NUMBER == 4 ]]
 then
-	if [[ $FLAG == "russianmanfinedfortakingfatcatonaplane" ]]
+	if [[ $FLAG == "tamereenstring" ]]
 	then
 		echo "[AWS-Secgame] Congratulations! You solved the third mission!" 
 		exit 0
