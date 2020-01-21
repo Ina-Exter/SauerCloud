@@ -40,21 +40,21 @@ EOF
 
 #IAMPR
 resource "aws_iam_role_policy_attachment" "AWS-secgame-mission4-ec2rolepolicyattachment" {
-  role       = "aws_iam_role.AWS-secgame-mission4-role-ec2.name"
-  policy_arn = "aws_iam_policy.AWS-secgame-mission4-ec2.arn"
+  role       = aws_iam_role.AWS-secgame-mission4-role-ec2.name
+  policy_arn = aws_iam_policy.AWS-secgame-mission4-ec2.arn
 }
 
 #IAMIP
 resource "aws_iam_instance_profile" "AWS-secgame-mission4-ec2-instanceprofile" {
   name = "AWS-secgame-mission4-ec2-instanceprofile-${var.id}"
-  role = "aws_iam_role.AWS-secgame-mission4-role-ec2.name"
+  role = aws_iam_role.AWS-secgame-mission4-role-ec2.name
 }
 
 #SG
 resource "aws_security_group" "AWS-secgame-mission4-allow" { #Standard access SG
     name        = "AWS-secgame-mission4-allow-${var.id}"
     description = "Allow whitelisted IP in, and other instances from same SG"
-    vpc_id      = "aws_vpc.AWS-secgame-mission4-vpc.id"
+    vpc_id      = aws_vpc.AWS-secgame-mission4-vpc.id
 
     ingress {
         from_port       = 0
@@ -85,7 +85,7 @@ resource "aws_security_group" "AWS-secgame-mission4-allow" { #Standard access SG
 resource "aws_security_group" "AWS-secgame-mission4-filtered" { #Standard access SG
     name        = "AWS-secgame-mission4-filtered-${var.id}"
     description = "filtered ip with secruty group"
-    vpc_id      = "aws_vpc.AWS-secgame-mission4-vpc.id"
+    vpc_id      = aws_vpc.AWS-secgame-mission4-vpc.id
 
     ingress {
         from_port       = 80
@@ -113,7 +113,7 @@ resource "aws_security_group" "AWS-secgame-mission4-filtered" { #Standard access
 }
 
 #KP
-#Key pair is handled with bash AWS-secgame-mission4-keypair-Evilcorp-Evilkeypair-var.id
+#Key pair is handled with bash key_step1
 
 
 #EC2
@@ -124,8 +124,8 @@ resource "aws_instance" "AWS-secgame-mission4-ec2-filtered" {
     instance_type               = "t2.micro"
     iam_instance_profile        = ""
     monitoring                  = false
-    key_name                    = "AWS-secgame-mission4-keypair-Evilcorp-Evilkeypair-${var.id}"
-    subnet_id                   = "aws_subnet.AWS-secgame-mission4-subnet.id"
+    key_name                    = "key_step1"
+    subnet_id                   = aws_subnet.AWS-secgame-mission4-subnet.id
     vpc_security_group_ids      = ["aws_security_group.AWS-secgame-mission4-filtered.id"]
     associate_public_ip_address = true
     private_ip                  = "192.168.0.219"
@@ -147,7 +147,7 @@ resource "aws_instance" "AWS-secgame-mission4-ec2-filtered" {
     </head>
     <body>
 
-    <h1>Your are filtered</h1>
+    <h1>Your are Filtered</h1>
     <d>try to hack me</d>
     </body>
     </html>

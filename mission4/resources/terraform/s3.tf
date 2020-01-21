@@ -10,7 +10,7 @@ resource "aws_s3_bucket" "AWS-secgame-mission4-super-secret-utlimate-s3" {
 
 #S3 OBJECTS 
 resource "aws_s3_bucket_object" "picture-of-mila-best-cat-1" {
-    bucket = "aws_s3_bucket.AWS-secgame-mission4-super-secret-utlimate-s3.id"
+    bucket = aws_s3_bucket.AWS-secgame-mission4-super-secret-utlimate-s3.id
     key = "mila1.jpg"
     source = "../flags/chat1.jpg"
     tags = {
@@ -18,7 +18,7 @@ resource "aws_s3_bucket_object" "picture-of-mila-best-cat-1" {
     }
 }
 resource "aws_s3_bucket_object" "picture-of-mila-best-cat-2" {
-    bucket = "aws_s3_bucket.AWS-secgame-mission4-super-secret-utlimate-s3.id"
+    bucket = aws_s3_bucket.AWS-secgame-mission4-super-secret-utlimate-s3.id
     key = "chat2.jpg"
     source = "../flags/chat2.jpg"
     tags = {

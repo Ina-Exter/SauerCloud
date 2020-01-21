@@ -12,7 +12,7 @@ resource "aws_vpc" "AWS-secgame-mission4-vpc" {
 
 #IGW
 resource "aws_internet_gateway" "AWS-secgame-mission4-igw" {
-    vpc_id = "aws_vpc.AWS-secgame-mission4-vpc.id"
+    vpc_id = aws_vpc.AWS-secgame-mission4-vpc.id
 
     tags = {
         Name = "AWS-secgame-mission4-igw-${var.id}"
@@ -21,7 +21,7 @@ resource "aws_internet_gateway" "AWS-secgame-mission4-igw" {
 
 #Subnets
 resource "aws_subnet" "AWS-secgame-mission4-subnet" {
-    vpc_id                  = "aws_vpc.AWS-secgame-mission4-vpc.id"
+    vpc_id                  = aws_vpc.AWS-secgame-mission4-vpc.id
     cidr_block              = "192.168.0.0/24"
     availability_zone       = "us-east-1a"
     map_public_ip_on_launch = false
@@ -35,9 +35,9 @@ resource "aws_subnet" "AWS-secgame-mission4-subnet" {
 resource "aws_route_table" "AWS-secgame-mission4-routing-table" {
   route {
       cidr_block = "0.0.0.0/0"
-      gateway_id = "aws_internet_gateway.AWS-secgame-mission4-igw.id"
+      gateway_id = aws_internet_gateway.AWS-secgame-mission4-igw.id
   }
-  vpc_id = "aws_vpc.AWS-secgame-mission4-vpc.id"
+  vpc_id = aws_vpc.AWS-secgame-mission4-vpc.id
   tags = {
       Name = "AWS-secgame-mission4-routing-table-${var.id}"
   }
@@ -51,7 +51,7 @@ resource "aws_route_table_association" "AWS-secgame-mission4-rta" {
 
 #NACL
 resource "aws_network_acl" "AWS-secgame-mission4-acl" {
-    vpc_id     = "aws_vpc.AWS-secgame-mission4-vpc.id"
+    vpc_id     = aws_vpc.AWS-secgame-mission4-vpc.id
     subnet_ids = ["aws_subnet.AWS-secgame-mission4-subnet.id"]
 
     ingress {

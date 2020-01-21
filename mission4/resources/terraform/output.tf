@@ -1,7 +1,3 @@
-output "wololo_key" {
-  value = aws_iam_access_key.AWS-secgame-mission4-iam-user-wololo-keys.id
-}
-
-output "wololo_secret_key" {
-  value = aws_iam_access_key.AWS-secgame-mission4-iam-user-wololo-keys.secret
+output "mission4_ip_addr" {
+  value = aws_instance.AWS-secgame-mission4-ec2-filtered.public_ip
 }
