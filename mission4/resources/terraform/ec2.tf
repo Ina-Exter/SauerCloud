@@ -113,7 +113,7 @@ resource "aws_security_group" "AWS-secgame-mission4-filtered" { #Standard access
 }
 
 #KP
-#Key pair is handled with bash key_step1
+#Key pair is handled with bash AWS-secgame-mission4-keypair-Evilcorp-Evilkeypair-var.id
 
 
 #EC2
@@ -124,7 +124,7 @@ resource "aws_instance" "AWS-secgame-mission4-ec2-filtered" {
     instance_type               = "t2.micro"
     iam_instance_profile        = ""
     monitoring                  = false
-    key_name                    = "key_step1"
+    key_name                    = "AWS-secgame-mission4-keypair-Evilcorp-Evilkeypair-${var.id}"
     subnet_id                   = aws_subnet.AWS-secgame-mission4-subnet.id
     vpc_security_group_ids      = ["aws_security_group.AWS-secgame-mission4-filtered.id"]
     associate_public_ip_address = true
@@ -147,7 +147,7 @@ resource "aws_instance" "AWS-secgame-mission4-ec2-filtered" {
     </head>
     <body>
 
-    <h1>Your are Filtered</h1>
+    <h1>Your are filtered</h1>
     <d>try to hack me</d>
     </body>
     </html>
