@@ -50,5 +50,5 @@ then
 	echo "[AWS-Secgame] Non-zero return code on snapshot destruction. Use aws --profile $USER_SECGAME_PROFILE ec2 describe-snapshots and delete-snapshot to manually delete it if needed."
 	exit 2
 fi
-
+echo "[AWS-Secgame] Remember to delete the volume you created yourself!"
 echo "[AWS-Secgame] Mission 3 destroy complete"

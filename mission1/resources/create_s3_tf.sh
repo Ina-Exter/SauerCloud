@@ -16,7 +16,7 @@ resource "aws_s3_bucket" "AWS-secgame-mission1-evilcorp-evilbucket" {
 
 
 resource "aws_s3_bucket_object" "extremely-evil-access-code" {
-    bucket = "aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id"
+    bucket = aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id
     key = "extremely-evil-access-code.txt"
     acl = "public-read"
     source = "../evilcorp-evilbucket-data/extremely-evil-access-code.txt"
@@ -30,7 +30,7 @@ EOF
 unzip evilcorp-evilbucket-data.zip
 cd evilcorp-evilbucket-data
 find .git/* -type f -exec echo "resource \"aws_s3_bucket_object\" \"git-{}\" {" >> ../terraform/s3.tf \; \
-	-exec echo "	bucket = \"\${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}\"" >> ../terraform/s3.tf \; \
+	-exec echo "	bucket = aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id" >> ../terraform/s3.tf \; \
 	-exec echo "	key = \"{}\"" >> ../terraform/s3.tf \; \
 	-exec echo "	acl = \"public-read\"" >> ../terraform/s3.tf \; \
 	-exec echo "	source = \"../evilcorp-evilbucket-data/{}\"" >> ../terraform/s3.tf \; \

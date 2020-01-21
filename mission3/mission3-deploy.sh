@@ -212,7 +212,7 @@ clear
 echo "Agent, you are a godsent. Well done fetching those blueprints on that other server. The brass were delighted. You will find the usual pay on your usual account. \
 We have another task for you. Our insider told us about a suspicious instance. Apparently, they intend to use it for a powerful wave of cyber-attacks. \
 It was also brought to our attention that the instance contained sensitive data, but they have been redacted after some time. \
-We have provided you with leaked AWS keys to their account, but they have little to no privilege. Your job is to access the instance, then escalate your privileges and do some forensics on it in order to get the sensitive data out, and after that, take it down.
+We have provided you with leaked AWS keys to their account, but they have little to no privilege. Your job is to access the instance, then escalate your privileges and do some forensics on it in order to get the sensitive data out, and after that, you are free to do with the server as you please. Shutting it down would be wiser.
 We have great hopes for you.
 
 The ssh key you need is in ssh_key.pem.

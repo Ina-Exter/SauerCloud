@@ -41,6 +41,7 @@ resource "aws_iam_policy" "AWS-secgame-mission3-ec2rolepolicy" {
                 "ec2:DescribeSnapshots",
                 "ec2:DescribeInstances",
                 "ec2:AttachVolume",
+                "ec2:DetachVolume",
                 "ec2:CreateVolume"
             ],
             "Resource": "*"
@@ -52,14 +53,14 @@ EOF
 
 #IAMPR
 resource "aws_iam_role_policy_attachment" "AWS-secgame-mission3-ec2rolepolicyattachment" {
-  role       = "${aws_iam_role.AWS-secgame-mission3-ec2role.name}"
-  policy_arn = "${aws_iam_policy.AWS-secgame-mission3-ec2rolepolicy.arn}"
+  role       = aws_iam_role.AWS-secgame-mission3-ec2role.name
+  policy_arn = aws_iam_policy.AWS-secgame-mission3-ec2rolepolicy.arn
 }
 
 #IAMIP
 resource "aws_iam_instance_profile" "AWS-secgame-mission3-ec2listinstanceprofile" {
   name = "AWS-secgame-mission3-ec2listinstanceprofile-${var.id}"
-  role = "${aws_iam_role.AWS-secgame-mission3-ec2role.name}"
+  role = aws_iam_role.AWS-secgame-mission3-ec2role.name
 }
 
 #Users
@@ -92,6 +93,6 @@ POLICY
 
 #Users Policy Attachment
 resource "aws_iam_user_policy_attachment" "AWS-secgame-mission3-eviladminpolicyattachment" {
-  user = "${aws_iam_user.AWS-secgame-mission3-eviladmin.name}"
-  policy_arn = "${aws_iam_policy.AWS-secgame-mission3-eviladminpolicy.arn}"
+  user = aws_iam_user.AWS-secgame-mission3-eviladmin.name
+  policy_arn = aws_iam_policy.AWS-secgame-mission3-eviladminpolicy.arn
 }

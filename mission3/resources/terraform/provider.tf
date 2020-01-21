@@ -4,3 +4,7 @@ provider "aws" {
 	region = var.region
 	version = "~> 2.31"
 }
+
+terraform {
+  required_version = "<=0.12.19"
+}

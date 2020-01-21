@@ -2,7 +2,7 @@
 resource "aws_security_group" "AWS-secgame-mission3-sg" {
     name        = "AWS-secgame-mission3-sg-${var.id}"
     description = "Allow whitelisted IP in"
-    vpc_id      = "${aws_vpc.AWS-secgame-mission3-vpc.id}"
+    vpc_id      = aws_vpc.AWS-secgame-mission3-vpc.id
 
     ingress {
         from_port       = 0
@@ -29,11 +29,11 @@ resource "aws_instance" "AWS-secgame-mission3-ec2-completely-safe-critical-serve
     availability_zone           = "us-east-1a"
     ebs_optimized               = false
     instance_type               = "t2.micro"
-    iam_instance_profile = "${aws_iam_instance_profile.AWS-secgame-mission3-ec2listinstanceprofile.name}"
+    iam_instance_profile        = aws_iam_instance_profile.AWS-secgame-mission3-ec2listinstanceprofile.name
     monitoring                  = false
     key_name                    = "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-${var.id}"
-    subnet_id                   = "${aws_subnet.AWS-secgame-mission3-subnet.id}"
-    vpc_security_group_ids      = ["${aws_security_group.AWS-secgame-mission3-sg.id}"]
+    subnet_id                   = aws_subnet.AWS-secgame-mission3-subnet.id
+    vpc_security_group_ids      = [aws_security_group.AWS-secgame-mission3-sg.id]
     associate_public_ip_address = true
     private_ip                  = "192.168.0.144"
     source_dest_check           = true

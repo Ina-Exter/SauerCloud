@@ -15,7 +15,7 @@ PS: Just in case, remember to set the policies correctly, and in case you lock y
 echo "
 An EC2 EBS disk is usually an xfs partition.
 When a snapshot is made, it needs to be built into either an image, or a volume in order to be used.
-You start a new EC2 with an image, or attach a volume to an existing EC2 and give it a name (for instance, /dev/sdh)
+You start a new EC2 with an image, or attach a volume to an existing EC2 and give it a name (for instance, /dev/sdh. In this instance, you will want to mount /dev/xvdh1).
 
 An xfs partition has a unique uuid that serves to prevent users from mounting the same filesystem twice. This may sometimes cause superblock problems, especially when mounting a snapshot on the same instance.
 To circumvent this, mount has a -o nouuid option that allows users to still mount the filesystem.

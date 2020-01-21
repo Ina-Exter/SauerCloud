@@ -78,31 +78,31 @@ EOF
 
 #IAMPR
 resource "aws_iam_role_policy_attachment" "AWS-secgame-mission2-ec2adminrolepolicyattachment" {
-  role       = "aws_iam_role.AWS-secgame-mission2-ec2adminrole.name"
-  policy_arn = "aws_iam_policy.AWS-secgame-mission2-ec2adminrolepolicy.arn"
+  role       = aws_iam_role.AWS-secgame-mission2-ec2adminrole.name
+  policy_arn = aws_iam_policy.AWS-secgame-mission2-ec2adminrolepolicy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "AWS-secgame-mission2-ec2listrolepolicyattachment" {
-  role       = "aws_iam_role.AWS-secgame-mission2-ec2listrole.name"
-  policy_arn = "aws_iam_policy.AWS-secgame-mission2-ec2listrolepolicy.arn"
+  role       = aws_iam_role.AWS-secgame-mission2-ec2listrole.name
+  policy_arn = aws_iam_policy.AWS-secgame-mission2-ec2listrolepolicy.arn
 }
 
 #IAMIP
 resource "aws_iam_instance_profile" "AWS-secgame-mission2-ec2admininstanceprofile" {
   name = "AWS-secgame-mission2-ec2admininstanceprofile-${var.id}"
-  role = "aws_iam_role.AWS-secgame-mission2-ec2adminrole.name"
+  role = aws_iam_role.AWS-secgame-mission2-ec2adminrole.name
 }
 
 resource "aws_iam_instance_profile" "AWS-secgame-mission2-ec2listinstanceprofile" {
   name = "AWS-secgame-mission2-ec2listinstanceprofile-${var.id}"
-  role = "aws_iam_role.AWS-secgame-mission2-ec2listrole.name"
+  role = aws_iam_role.AWS-secgame-mission2-ec2listrole.name
 }
 
 #SG
 resource "aws_security_group" "AWS-secgame-mission2-sg" {
     name        = "AWS-secgame-mission2-sg-${var.id}"
     description = "Allow whitelisted IP in, and other instances from same SG"
-    vpc_id      = "aws_vpc.AWS-secgame-mission2-vpc.id"
+    vpc_id      = aws_vpc.AWS-secgame-mission2-vpc.id
 
     ingress {
         from_port       = 0
@@ -138,11 +138,11 @@ resource "aws_instance" "AWS-secgame-mission2-ec2-Evil-server-for-evil-data" {
     availability_zone           = "us-east-1a"
     ebs_optimized               = false
     instance_type               = "t2.micro"
-    iam_instance_profile        = "aws_iam_instance_profile.AWS-secgame-mission2-ec2admininstanceprofile.name"
+    iam_instance_profile        = aws_iam_instance_profile.AWS-secgame-mission2-ec2admininstanceprofile.name
     monitoring                  = false
     key_name                    = "AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-${var.id}"
-    subnet_id                   = "aws_subnet.AWS-secgame-mission2-subnet.id"
-    vpc_security_group_ids      = ["aws_security_group.AWS-secgame-mission2-sg.id"]
+    subnet_id                   = aws_subnet.AWS-secgame-mission2-subnet.id
+    vpc_security_group_ids      = [aws_security_group.AWS-secgame-mission2-sg.id]
     associate_public_ip_address = false
     private_ip                  = "192.168.0.219"
     source_dest_check           = true
@@ -161,7 +161,7 @@ resource "aws_instance" "AWS-secgame-mission2-ec2-Evil-server-for-evil-data" {
 	
 	PS: If you mess anything up I'll wring your neck." >> /home/ec2-user/bob_read_this.txt ;
 
-	cat << "EOFF" > /home/ec2-user/ultra-sensitive-blueprints.txt
+	cat <<"EOFF"> /home/ec2-user/ultra-sensitive-blueprints.txt
 	          __..--''``---....___   _..._    __
 	 /// //_.-'    .-/";  `        ``<._  ``.''_ `. / // /
 	///_.-' _..--.'_    \                    `( ) ) // //
@@ -277,8 +277,8 @@ resource "aws_instance" "AWS-secgame-mission2-ec2-Evil-server-for-evil-data" {
 	"Well, you did type the command "cat" didn't you? :^)"
 	You may want to enter "catcats" you know where.	
 
-	EOFF 
-	EOF
+EOFF
+EOF
     tags = {
         Name = "AWS-secgame-mission2-ec2-Evil-server-for-evil-data-${var.id}"
     }
@@ -289,11 +289,11 @@ resource "aws_instance" "AWS-secgame-mission2-ec2-Evil-bastion-for-evil-access" 
     availability_zone           = "us-east-1a"
     ebs_optimized               = false
     instance_type               = "t2.micro"
-    iam_instance_profile        = "aws_iam_instance_profile.AWS-secgame-mission2-ec2listinstanceprofile.name"
+    iam_instance_profile        = aws_iam_instance_profile.AWS-secgame-mission2-ec2listinstanceprofile.name
     monitoring                  = false
     key_name                    = "AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-${var.id}"
-    subnet_id                   = "aws_subnet.AWS-secgame-mission2-subnet.id"
-    vpc_security_group_ids      = ["aws_security_group.AWS-secgame-mission2-sg.id"]
+    subnet_id                   = aws_subnet.AWS-secgame-mission2-subnet.id
+    vpc_security_group_ids      = [aws_security_group.AWS-secgame-mission2-sg.id]
     associate_public_ip_address = true
     private_ip                  = "192.168.0.188"
     source_dest_check           = true
