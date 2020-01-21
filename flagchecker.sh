@@ -14,7 +14,7 @@ read FLAG
 
 if [[ $MISSION_NUMBER == 1 ]]
 then
-	if [[ $FLAG == "c2FsdHlwcm9ncmFtbWVyCg==" ]]
+	if [[ $FLAG == "c2FsdHlwcm9ncmFtbWVyCg==" || $FLAG == "saltyprogrammer" ]]
 	then
 		echo "[AWS-Secgame] Congratulations! You solved the first mission!" 
 		exit 0
@@ -42,7 +42,13 @@ then
 	exit 1
 elif [[ $MISSION_NUMBER == 4 ]]
 then
-
+	if [[ $FLAG == "russianmanfinedfortakingfatcatonaplane" ]]
+	then
+		echo "[AWS-Secgame] Congratulations! You solved the third mission!" 
+		exit 0
+	fi
+	echo "[AWS-Secgame] The specified flag is incorrect. Did you paste it correctly? Or maybe you missed something."	
+	exit 1
 elif [[ $MISSION_NUMBER == 5 ]]
 then
 	if [[ $FLAG == "Matt Steraker" ]]
