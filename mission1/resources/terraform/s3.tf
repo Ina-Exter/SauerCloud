@@ -9,7 +9,7 @@ resource "aws_s3_bucket" "AWS-secgame-mission1-evilcorp-evilbucket" {
 
 
 resource "aws_s3_bucket_object" "extremely-evil-access-code" {
-    bucket = "${aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id}"
+    bucket = "aws_s3_bucket.AWS-secgame-mission1-evilcorp-evilbucket.id"
     key = "extremely-evil-access-code.txt"
     acl = "public-read"
     source = "../evilcorp-evilbucket-data/extremely-evil-access-code.txt"
