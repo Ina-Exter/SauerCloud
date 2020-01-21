@@ -45,8 +45,8 @@ resource "aws_route_table" "AWS-secgame-mission4-routing-table" {
 
 #RTA
 resource "aws_route_table_association" "AWS-secgame-mission4-rta" {
-  subnet_id = "aws_subnet.AWS-secgame-mission4-subnet.id"
-  route_table_id = "aws_route_table.AWS-secgame-mission4-routing-table.id"
+  subnet_id = aws_subnet.AWS-secgame-mission4-subnet.id
+  route_table_id = aws_route_table.AWS-secgame-mission4-routing-table.id
 }
 
 #NACL

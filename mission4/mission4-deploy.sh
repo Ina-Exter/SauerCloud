@@ -72,7 +72,8 @@ then
 fi
 
 #Get the bastion's IP address as output
-export bastion_ip=$(terraform output bastion_ip_addr)
+export wololo_key=$(terraform output wololo_key)
+export wololo_secret_key=$(terraform output wololo_secret_key)
 
 #Return in mission dir
 cd ../..
@@ -83,7 +84,7 @@ sleep 3
 #clear
 
 #Write briefing
-echo ""  >> briefing.txt
+echo "$wololo_key  \n  $wololo_secret_key"  >> briefing.txt
 
 echo "[AWS-Secgame] Mission 4 deployment complete. Mission folder is ./mission4-$SECGAME_USER_ID. Read the briefing to begin, a copy can be found in the mission folder."
 
