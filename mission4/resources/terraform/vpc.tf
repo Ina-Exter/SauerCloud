@@ -52,7 +52,7 @@ resource "aws_route_table_association" "AWS-secgame-mission4-rta" {
 #NACL
 resource "aws_network_acl" "AWS-secgame-mission4-acl" {
     vpc_id     = aws_vpc.AWS-secgame-mission4-vpc.id
-    subnet_ids = ["aws_subnet.AWS-secgame-mission4-subnet.id"]
+    subnet_ids = [aws_subnet.AWS-secgame-mission4-subnet.id]
 
     ingress {
         from_port  = 0

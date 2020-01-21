@@ -11,8 +11,8 @@ resource "aws_dynamodb_table" "AWSkeys" {
 }
 
 resource "aws_dynamodb_table_item" "hades-keys" {
-  table_name = "${aws_dynamodb_table.AWSkeys.name}"
-  hash_key   = "${aws_dynamodb_table.AWSkeys.hash_key}"
+  table_name = aws_dynamodb_table.AWSkeys.name
+  hash_key   = aws_dynamodb_table.AWSkeys.hash_key
 
   item = <<ITEM
 {

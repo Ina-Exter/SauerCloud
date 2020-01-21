@@ -92,33 +92,33 @@ EOF
 
 #IAMRPA
 resource "aws_iam_role_policy_attachment" "AWS-secgame-mission5-rolepolicyattachment-ec2accessddb" {
-  role       = "${aws_iam_role.AWS-secgame-mission5-role-ec2accessddb.name}"
-  policy_arn = "${aws_iam_policy.AWS-secgame-mission5-rolepolicy-ec2accessddb.arn}"
+  role       = aws_iam_role.AWS-secgame-mission5-role-ec2accessddb.name
+  policy_arn = aws_iam_policy.AWS-secgame-mission5-rolepolicy-ec2accessddb.arn
 }
 
 #IAMPA
 resource "aws_iam_policy_attachment" "AWS-secgame-mission5-policyattachment-ec2proxy" {
   name       = "AWS-Secgame-mission5-policy-attachment-ec2-proxy-${var.id}"
   roles      = ["${aws_iam_role.AWS-secgame-mission5-role-ec2proxy.name}"]
-  policy_arn = "${aws_iam_policy.AWS-secgame-mission5-rolepolicy-ec2proxy.arn}"
+  policy_arn = aws_iam_policy.AWS-secgame-mission5-rolepolicy-ec2proxy.arn
 }
 
 #IAMIP
 resource "aws_iam_instance_profile" "AWS-secgame-mission5-instanceprofile-ec2accessddb" {
   name = "AWS-secgame-mission5-instanceprofile-ec2accessddb-${var.id}"
-  role = "${aws_iam_role.AWS-secgame-mission5-role-ec2accessddb.name}"
+  role = aws_iam_role.AWS-secgame-mission5-role-ec2accessddb.name
 }
 
 resource "aws_iam_instance_profile" "AWS-secgame-mission5-instanceprofile-ec2proxy" {
   name = "AWS-secgame-mission5-instanceprofile-ec2proxy-${var.id}"
-  role = "${aws_iam_role.AWS-secgame-mission5-role-ec2proxy.name}"
+  role = aws_iam_role.AWS-secgame-mission5-role-ec2proxy.name
 }
 
 #SG
 resource "aws_security_group" "AWS-secgame-mission5-sg" {
     name        = "AWS-secgame-mission5-sg-${var.id}"
     description = "Allow whitelisted IP in, and other instances from same SG"
-    vpc_id      = "${aws_vpc.AWS-secgame-mission5-vpc.id}"
+    vpc_id      = aws_vpc.AWS-secgame-mission5-vpc.id
 
     ingress {
         from_port       = 0
@@ -154,12 +154,12 @@ resource "aws_instance" "AWS-secgame-mission5-ec2-dynamo-handler" {
     availability_zone           = "us-east-1a"
     ebs_optimized               = false
     instance_type               = "t2.micro"
-    iam_instance_profile        = "${aws_iam_instance_profile.AWS-secgame-mission5-instanceprofile-ec2accessddb.name}"
+    iam_instance_profile        = aws_iam_instance_profile.AWS-secgame-mission5-instanceprofile-ec2accessddb.name
     monitoring                  = false
     key_name                    = "AWS-secgame-mission5-keypair-ddb-handler-${var.id}"
-    subnet_id                   = "${aws_subnet.AWS-secgame-mission5-subnet.id}"
-    vpc_security_group_ids      = ["${aws_security_group.AWS-secgame-mission5-sg.id}"]
-    associate_public_ip_address = true #Switch to true for direct access to layer 3
+    subnet_id                   = aws_subnet.AWS-secgame-mission5-subnet.id
+    vpc_security_group_ids      = [aws_security_group.AWS-secgame-mission5-sg.id]
+    associate_public_ip_address = true #Switch to true for direct access to layer 3. Legacy? Check.
     private_ip                  = "192.168.0.89"
     source_dest_check           = true
 
@@ -188,8 +188,8 @@ resource "aws_instance" "AWS-secgame-mission5-ec2-hyper-critical-security-hyperv
     instance_type               = "t2.micro"
     monitoring                  = false
     key_name                    = ""
-    subnet_id                   = "${aws_subnet.AWS-secgame-mission5-subnet.id}"
-    vpc_security_group_ids      = ["${aws_security_group.AWS-secgame-mission5-sg.id}"]
+    subnet_id                   = aws_subnet.AWS-secgame-mission5-subnet.id
+    vpc_security_group_ids      = [aws_security_group.AWS-secgame-mission5-sg.id]
     associate_public_ip_address = false
     private_ip                  = "192.168.0.121"
     source_dest_check           = true
@@ -217,8 +217,8 @@ resource "aws_instance" "AWS-secgame-mission5-ec2-mail-server" {
     instance_type               = "t2.micro"
     monitoring                  = false
     key_name                    = ""
-    subnet_id                   = "${aws_subnet.AWS-secgame-mission5-subnet.id}"
-    vpc_security_group_ids      = ["${aws_security_group.AWS-secgame-mission5-sg.id}"]
+    subnet_id                   = aws_subnet.AWS-secgame-mission5-subnet.id
+    vpc_security_group_ids      = [aws_security_group.AWS-secgame-mission5-sg.id]
     associate_public_ip_address = true
     private_ip                  = "192.168.0.37"
     source_dest_check           = true
@@ -242,11 +242,11 @@ resource "aws_instance" "AWS-secgame-mission5-ec2-proxy" {
     availability_zone           = "us-east-1a"
     ebs_optimized               = false
     instance_type               = "t2.micro"
-    iam_instance_profile        = "${aws_iam_instance_profile.AWS-secgame-mission5-instanceprofile-ec2proxy.name}"
+    iam_instance_profile        = aws_iam_instance_profile.AWS-secgame-mission5-instanceprofile-ec2proxy.name
     monitoring                  = false
     key_name                    = "AWS-secgame-mission5-keypair-service-${var.id}"
-    subnet_id                   = "${aws_subnet.AWS-secgame-mission5-subnet.id}"
-    vpc_security_group_ids      = ["${aws_security_group.AWS-secgame-mission5-sg.id}"]
+    subnet_id                   = aws_subnet.AWS-secgame-mission5-subnet.id
+    vpc_security_group_ids      = [aws_security_group.AWS-secgame-mission5-sg.id]
     associate_public_ip_address = true
     private_ip                  = "192.168.0.12"
     source_dest_check           = true
@@ -261,7 +261,7 @@ resource "aws_instance" "AWS-secgame-mission5-ec2-proxy" {
       connection {
         type = "ssh"
         user = "ubuntu"
-        private_key = "${file("../ssh_service_key.pem")}"
+        private_key = file("../ssh_service_key.pem")
         host = self.public_ip
       }
     }

@@ -1,7 +1,7 @@
-output "wololo_key" {
-  value = aws_iam_access_key.AWS-secgame-mission4-iam-user-wololo-keys.id
+output "juan_key" {
+  value = aws_iam_access_key.AWS-secgame-mission4-iam-user-juan-keys.id
 }
 
-output "wololo_secret_key" {
-  value = aws_iam_access_key.AWS-secgame-mission4-iam-user-wololo-keys.secret
+output "juan_secret_key" {
+  value = aws_iam_access_key.AWS-secgame-mission4-iam-user-juan-keys.secret
 }

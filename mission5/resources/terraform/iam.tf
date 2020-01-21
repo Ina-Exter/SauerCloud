@@ -31,7 +31,7 @@ resource "aws_iam_user" "AWS-secgame-mission5-iam-user-solus" {
 #Hades should be the only one to access the target bucket
 resource "aws_iam_user_policy" "AWS-secgame-mission5-iam-admin-hades-policy"{
     name = "hades-policy-${var.id}"
-    user = "${aws_iam_user.AWS-secgame-mission5-iam-admin-hades.id}"
+    user = aws_iam_user.AWS-secgame-mission5-iam-admin-hades.id
     
     policy = <<EOF
 {
@@ -50,7 +50,7 @@ EOF
 #User policy for entrypoint
 resource "aws_iam_user_policy" "AWS-secgame-mission5-iam-user-solus-policy"{
     name = "solus-policy-${var.id}"
-    user = "${aws_iam_user.AWS-secgame-mission5-iam-user-solus.id}"
+    user = aws_iam_user.AWS-secgame-mission5-iam-user-solus.id
     
     policy = <<EOF
 {
@@ -77,15 +77,15 @@ EOF
 
 #Generate keys
 resource "aws_iam_access_key" "AWS-secgame-mission5-iam-admin-hades-keys"{
-	user = "${aws_iam_user.AWS-secgame-mission5-iam-admin-hades.name}"
+	user = aws_iam_user.AWS-secgame-mission5-iam-admin-hades.name
 }
 
 resource "aws_iam_access_key" "AWS-secgame-mission5-iam-user-emetselch-keys"{
-	user = "${aws_iam_user.AWS-secgame-mission5-iam-user-emetselch.name}"
+	user = aws_iam_user.AWS-secgame-mission5-iam-user-emetselch.name
 }
 
 resource "aws_iam_access_key" "AWS-secgame-mission5-iam-user-solus-keys"{
-	user = "${aws_iam_user.AWS-secgame-mission5-iam-user-solus.name}"
+	user = aws_iam_user.AWS-secgame-mission5-iam-user-solus.name
 }
 
 #Groups
@@ -106,16 +106,16 @@ resource "aws_iam_group_membership" "AWS-secgame-mission5-gm-standard" {
     name = "AWS-secgame-mission5-gm-standard-${var.id}"
 
     users = [
-        "${aws_iam_user.AWS-secgame-mission5-iam-user-emetselch.name}",
+        aws_iam_user.AWS-secgame-mission5-iam-user-emetselch.name,
     ]
 
-    group = "${aws_iam_group.AWS-secgame-mission5-iam-group-standard.name}"
+    group = aws_iam_group.AWS-secgame-mission5-iam-group-standard.name
 }
 
 #Group policies
 resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-suspects" {
   name = "AWS-secgame-mission5-iam-group-policy-suspects-${var.id}"
-  group = "${aws_iam_group.AWS-secgame-mission5-iam-group-suspects.id}"
+  group = aws_iam_group.AWS-secgame-mission5-iam-group-suspects.id
 
   policy = <<EOF
 {
@@ -137,7 +137,7 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-suspects"
         "ec2:StopInstances"
       ],
       "Effect": "Allow",
-      "Resource": "${aws_instance.AWS-secgame-mission5-ec2-hyper-critical-security-hypervisor.arn}" 
+      "Resource": "${aws_instance.AWS-secgame-mission5-ec2-hyper-critical-security-hypervisor.arn}"
     },
     {
       "Effect": "Allow",
@@ -154,7 +154,7 @@ EOF
 
 resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-privileged" {
   name  = "AWS-secgame-mission5-iam-group-policy-privileged-${var.id}"
-  group = "${aws_iam_group.AWS-secgame-mission5-iam-group-privileged.id}"
+  group = aws_iam_group.AWS-secgame-mission5-iam-group-privileged.id
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -176,7 +176,7 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-privilege
         "ec2:StopInstances"
       ],
       "Effect": "Allow",
-      "Resource": "${aws_instance.AWS-secgame-mission5-ec2-dynamo-handler.arn}" 
+      "Resource": "${aws_instance.AWS-secgame-mission5-ec2-dynamo-handler.arn}"
     },
     {
       "Effect": "Allow",
@@ -228,7 +228,7 @@ EOF
 
 resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-standard" {
   name  = "AWS-secgame-mission5-iam-group-policy-standard-${var.id}"
-  group = "${aws_iam_group.AWS-secgame-mission5-iam-group-standard.id}"
+  group = aws_iam_group.AWS-secgame-mission5-iam-group-standard.id
 
   policy = <<EOF
 {
@@ -252,7 +252,7 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-standard"
         "ec2:TerminateInstances"
       ],
       "Effect": "Allow",
-      "Resource": "${aws_instance.AWS-secgame-mission5-ec2-hyper-critical-security-hypervisor.arn}" 
+      "Resource": "${aws_instance.AWS-secgame-mission5-ec2-hyper-critical-security-hypervisor.arn}"
     },
     {
       "Effect": "Allow",

@@ -100,6 +100,7 @@ then
 fi
 
 #Get the output
+export DDB_HANDLER_INSTANCE_ID=$(terraform output ec2_ddb_instance_id)
 export MAIL_SERVER_INSTANCE_ID=$(terraform output ec2_mailserver_instance_id)
 export MAIL_SERVER_IP=$(terraform output ec2_mailserver_public_ip)
 export emetselch_key_id=$(terraform output emetselch_key)

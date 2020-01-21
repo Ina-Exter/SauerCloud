@@ -12,7 +12,7 @@ resource "aws_vpc" "AWS-secgame-mission5-vpc" {
 
 #IGW
 resource "aws_internet_gateway" "AWS-secgame-mission5-igw" {
-    vpc_id = "${aws_vpc.AWS-secgame-mission5-vpc.id}"
+    vpc_id = aws_vpc.AWS-secgame-mission5-vpc.id
 
     tags = {
         Name = "AWS-secgame-mission5-igw-${var.id}"
@@ -21,7 +21,7 @@ resource "aws_internet_gateway" "AWS-secgame-mission5-igw" {
 
 #Subnets
 resource "aws_subnet" "AWS-secgame-mission5-subnet" {
-    vpc_id                  = "${aws_vpc.AWS-secgame-mission5-vpc.id}"
+    vpc_id                  = aws_vpc.AWS-secgame-mission5-vpc.id
     cidr_block              = "192.168.0.0/24" 
     availability_zone       = "us-east-1a"
     map_public_ip_on_launch = false
@@ -35,9 +35,9 @@ resource "aws_subnet" "AWS-secgame-mission5-subnet" {
 resource "aws_route_table" "AWS-secgame-mission5-routing-table" {
     route {
         cidr_block = "0.0.0.0/0"
-       gateway_id = "${aws_internet_gateway.AWS-secgame-mission5-igw.id}"
+       gateway_id = aws_internet_gateway.AWS-secgame-mission5-igw.id
     }
-    vpc_id = "${aws_vpc.AWS-secgame-mission5-vpc.id}"
+    vpc_id = aws_vpc.AWS-secgame-mission5-vpc.id
     tags = {
         Name = "AWS-secgame-mission5-routing-table-${var.id}"
     }
@@ -45,14 +45,14 @@ resource "aws_route_table" "AWS-secgame-mission5-routing-table" {
 
 #RTA
 resource "aws_route_table_association" "AWS-secgame-mission5-rta" {
-    subnet_id = "${aws_subnet.AWS-secgame-mission5-subnet.id}"
-    route_table_id = "${aws_route_table.AWS-secgame-mission5-routing-table.id}"
+    subnet_id = aws_subnet.AWS-secgame-mission5-subnet.id
+    route_table_id = aws_route_table.AWS-secgame-mission5-routing-table.id
 }
 
 #NACL
 resource "aws_network_acl" "AWS-secgame-mission5-acl" {
-    vpc_id     = "${aws_vpc.AWS-secgame-mission5-vpc.id}"
-    subnet_ids = ["${aws_subnet.AWS-secgame-mission5-subnet.id}"]
+    vpc_id     = aws_vpc.AWS-secgame-mission5-vpc.id
+    subnet_ids = [aws_subnet.AWS-secgame-mission5-subnet.id]
 
     ingress {
         from_port  = 0

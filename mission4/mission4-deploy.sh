@@ -78,13 +78,15 @@ export wololo_secret_key=$(terraform output wololo_secret_key)
 #Return in mission dir
 cd ../..
 
+cp resources/ssh_key.pem AWS-secgame-mission4-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID
+
 sleep 3
 
 #uncomment in prod
 #clear
 
 #Write briefing
-echo "$wololo_key  \n  $wololo_secret_key"  >> briefing.txt
+echo "$wololo_key  \n  $wololo_secret_key, keypair"  >> briefing.txt
 
 echo "[AWS-Secgame] Mission 4 deployment complete. Mission folder is ./mission4-$SECGAME_USER_ID. Read the briefing to begin, a copy can be found in the mission folder."
 

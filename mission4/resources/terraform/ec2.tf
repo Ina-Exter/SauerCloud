@@ -19,8 +19,8 @@ POLICY
 }
 
 #IAMP
-resource "aws_iam_policy" "AWS-secgame-mission4-ec2" {
-  name        = "AWS-secgame-mission4-${var.id}"
+resource "aws_iam_policy" "AWS-secgame-mission4-ec2-policy" {
+  name        = "AWS-secgame-mission4-ec2-policy-${var.id}"
 
   policy = <<EOF
 {
@@ -28,7 +28,9 @@ resource "aws_iam_policy" "AWS-secgame-mission4-ec2" {
   "Statement": [
     {
       "Action": [
-        "iam:AttachGroupPolicy"
+        "iam:ListUsers",
+        "iam:PutUserPolicy",
+        "s3:ListAllMyBuckets"
       ],
       "Effect": "Allow",
       "Resource": "*"
@@ -41,7 +43,7 @@ EOF
 #IAMPR
 resource "aws_iam_role_policy_attachment" "AWS-secgame-mission4-ec2rolepolicyattachment" {
   role       = aws_iam_role.AWS-secgame-mission4-role-ec2.name
-  policy_arn = aws_iam_policy.AWS-secgame-mission4-ec2.arn
+  policy_arn = aws_iam_policy.AWS-secgame-mission4-ec2-policy.arn
 }
 
 #IAMIP
@@ -91,7 +93,7 @@ resource "aws_security_group" "AWS-secgame-mission4-filtered" { #Standard access
         from_port       = 80
         to_port         = 80
         protocol        = "tcp"
-        security_groups = []
+        cidr_blocks     = ["${var.ip}/32"]
         self            = true
     }
     ingress {
@@ -106,7 +108,7 @@ resource "aws_security_group" "AWS-secgame-mission4-filtered" { #Standard access
         from_port       = 22
         to_port         = 22
         protocol        = "tcp"
-        security_groups = ["AWS-secgame-mission4-allow-${var.id}"]
+        security_groups = [aws_security_group.AWS-secgame-mission4-allow.id]
         self            = true
     }
 
@@ -122,11 +124,11 @@ resource "aws_instance" "AWS-secgame-mission4-ec2-filtered" {
     availability_zone           = "us-east-1a"
     ebs_optimized               = false
     instance_type               = "t2.micro"
-    iam_instance_profile        = ""
+    iam_instance_profile        = aws_iam_instance_profile.AWS-secgame-mission4-ec2-instanceprofile.name
     monitoring                  = false
     key_name                    = "AWS-secgame-mission4-keypair-Evilcorp-Evilkeypair-${var.id}"
     subnet_id                   = aws_subnet.AWS-secgame-mission4-subnet.id
-    vpc_security_group_ids      = ["aws_security_group.AWS-secgame-mission4-filtered.id"]
+    vpc_security_group_ids      = [aws_security_group.AWS-secgame-mission4-filtered.id]
     associate_public_ip_address = true
     private_ip                  = "192.168.0.219"
     source_dest_check           = true
@@ -137,26 +139,22 @@ resource "aws_instance" "AWS-secgame-mission4-ec2-filtered" {
         delete_on_termination = true
     }
     user_data = <<-EOF
-    yum update
-    yum install httpd 
-    cat /var/www/index.html <<EOFF
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <title>Page Title</title>
-    </head>
-    <body>
-
-    <h1>Your are filtered</h1>
-    <d>try to hack me</d>
-    </body>
-    </html>
-    EOFF 
-    systemctl restart httpd
-    EOF
-
+#!/bin/bash
+sudo yum install httpd -y
+sudo echo "<!DOCTYPE html>" > /var/www/html/index.html
+sudo echo "<html>" >> /var/www/html/index.html
+sudo echo "<head>" >> /var/www/html/index.html
+sudo echo "<title>Evilcorp Evilpage</title>" >> /var/www/html/index.html
+sudo echo "</head>" >> /var/www/html/index.html
+sudo echo "<body>" >> /var/www/html/index.html
+sudo echo "<h1>Your IP does not belong to the Evilcorp IP pool. You are filtered!</h1>" >> /var/www/html/index.html
+sudo echo "<d>JV Hacker Protection Services</d>" >> /var/www/html/index.html
+sudo echo "</body>" >> /var/www/html/index.html
+sudo echo "</html>" >> /var/www/html/index.html
+sudo systemctl restart httpd
+EOF
     tags = {
-        Name = "AWS-secgame-mission4-ec2-filtered--${var.id}"
+        Name = "AWS-secgame-mission4-ec2-filtered-${var.id}"
     }
 }
 
