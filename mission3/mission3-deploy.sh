@@ -215,7 +215,7 @@ It was also brought to our attention that the instance contained sensitive data,
 We have provided you with leaked AWS keys to their account, but they have little to no privilege. Your job is to access the instance, then escalate your privileges and do some forensics on it in order to get the sensitive data out, and after that, you are free to do with the server as you please. Shutting it down would be wiser.
 We have great hopes for you.
 
-The ssh key you need is in ssh_key.pem.
+The ssh key you need is in mission3-$SECGAME_USER_ID/ssh_key.pem.
 Instance ip address: $ec2_ip
 
 PS: Remember, agent. If you create any resources yourself, delete them before deleting the mission. Terraform will not be able to handle them.
