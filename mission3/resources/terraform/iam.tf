@@ -38,8 +38,7 @@ resource "aws_iam_policy" "AWS-secgame-mission3-ec2rolepolicy" {
                 "iam:CreatePolicyVersion",
                 "iam:CreateAccessKey",
                 "ec2:RunInstances",
-                "ec2:DescribeSnapshots",
-                "ec2:DescribeInstances",
+                "ec2:Describe*",
                 "ec2:AttachVolume",
                 "ec2:DetachVolume",
                 "ec2:CreateVolume"
