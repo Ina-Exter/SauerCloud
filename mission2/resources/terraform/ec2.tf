@@ -307,7 +307,7 @@ resource "aws_instance" "AWS-secgame-mission2-ec2-Evil-bastion-for-evil-access" 
 	#!/bin/bash
 	sudo adduser eviluser
 	echo "eviluser:ConquerTheWorld" |sudo chpasswd
-	#sudo echo "eviluser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/90-cloud-init-users
+	sudo echo "eviluser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/90-cloud-init-users
 	sudo sed -i '/PasswordAuthentication no/c\PasswordAuthentication yes' /etc/ssh/sshd_config
 	sudo service sshd restart
 		
