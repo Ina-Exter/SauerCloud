@@ -20,6 +20,10 @@ then
 	exit 2
 fi
 
+echo "[AWS-Secgame] Removing user policy"
+policy_name=$(aws --profile $SECGAME_USER_PROFILE iam list-user-policies --user-name juan-$SECGAME_USER_ID --query PolicyNames[0] --output text)
+aws --profile $SECGAME_USER_PROFILE iam delete-user-policy --user-name juan-$SECGAME_USER_ID --policy-name $policy_name
+
 #destroy terraform
 echo "[AWS-Secgame] Destroying terraform resources"
 cd resources/terraform

@@ -53,9 +53,9 @@ resource "aws_iam_instance_profile" "AWS-secgame-mission4-ec2-instanceprofile" {
 }
 
 #SG
-resource "aws_security_group" "AWS-secgame-mission4-allow" { #Standard access SG
-    name        = "AWS-secgame-mission4-allow-${var.id}"
-    description = "Allow whitelisted IP in, and other instances from same SG"
+resource "aws_security_group" "AWS-secgame-mission4-sg-evilcorp-allow" { #Standard access SG
+    name        = "AWS-secgame-mission4-sg-evilcorp-allow-${var.id}"
+    description = "Allow whitelisted IP in, Evil Manager insisted on being able to connect from his mistress' home..."
     vpc_id      = aws_vpc.AWS-secgame-mission4-vpc.id
 
     ingress {
@@ -84,9 +84,9 @@ resource "aws_security_group" "AWS-secgame-mission4-allow" { #Standard access SG
 }
 
 #Create 2nd SG
-resource "aws_security_group" "AWS-secgame-mission4-filtered" { #Standard access SG
-    name        = "AWS-secgame-mission4-filtered-${var.id}"
-    description = "filtered ip with secruty group"
+resource "aws_security_group" "AWS-secgame-mission4-sg-evilcorp-filtered" { #Standard access SG
+    name        = "AWS-secgame-mission4-sg-evilcorp-filtered-${var.id}"
+    description = "Filtered ips out of the Evilcorp pool with this evil security group"
     vpc_id      = aws_vpc.AWS-secgame-mission4-vpc.id
 
     ingress {
@@ -100,16 +100,14 @@ resource "aws_security_group" "AWS-secgame-mission4-filtered" { #Standard access
         from_port       = 22
         to_port         = 22
         protocol        = "tcp"
-        security_groups = []
-        cidr_blocks     = ["${var.ip}/32"]
+        security_groups = [aws_security_group.AWS-secgame-mission4-sg-evilcorp-allow.id]
         self            = true
     }
-    ingress {
-        from_port       = 22
-        to_port         = 22
-        protocol        = "tcp"
-        security_groups = [aws_security_group.AWS-secgame-mission4-allow.id]
-        self            = true
+    egress {
+        from_port       = 0
+        to_port         = 0
+        protocol        = "-1"
+        cidr_blocks     = ["0.0.0.0/0"]
     }
 
 }
@@ -128,10 +126,11 @@ resource "aws_instance" "AWS-secgame-mission4-ec2-filtered" {
     monitoring                  = false
     key_name                    = "AWS-secgame-mission4-keypair-Evilcorp-Evilkeypair-${var.id}"
     subnet_id                   = aws_subnet.AWS-secgame-mission4-subnet.id
-    vpc_security_group_ids      = [aws_security_group.AWS-secgame-mission4-filtered.id]
+    vpc_security_group_ids      = [aws_security_group.AWS-secgame-mission4-sg-evilcorp-filtered.id]
     associate_public_ip_address = true
     private_ip                  = "192.168.0.219"
     source_dest_check           = true
+    disable_api_termination     = false
 
     root_block_device {
         volume_type           = "gp2"
@@ -140,7 +139,9 @@ resource "aws_instance" "AWS-secgame-mission4-ec2-filtered" {
     }
     user_data = <<-EOF
 #!/bin/bash
+touch /home/ec2-user/tamere
 sudo yum install httpd -y
+echo 'bla' > /home/ec2-user/tamere
 sudo echo "<!DOCTYPE html>" > /var/www/html/index.html
 sudo echo "<html>" >> /var/www/html/index.html
 sudo echo "<head>" >> /var/www/html/index.html
@@ -151,7 +152,9 @@ sudo echo "<h1>Your IP does not belong to the Evilcorp IP pool. You are filtered
 sudo echo "<d>JV Hacker Protection Services</d>" >> /var/www/html/index.html
 sudo echo "</body>" >> /var/www/html/index.html
 sudo echo "</html>" >> /var/www/html/index.html
+echo 'wololo' >> /home/ec2-user/tamere
 sudo systemctl restart httpd
+echo 'aaaaaaaaaaaaaa' >> /home/ec2-user/tamere
 EOF
     tags = {
         Name = "AWS-secgame-mission4-ec2-filtered-${var.id}"

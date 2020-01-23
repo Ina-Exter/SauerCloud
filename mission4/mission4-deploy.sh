@@ -72,13 +72,13 @@ then
 fi
 
 #Get the bastion's IP address as output
-export wololo_key=$(terraform output wololo_key)
-export wololo_secret_key=$(terraform output wololo_secret_key)
+export juan_key=$(terraform output juan_key)
+export juan_secret_key=$(terraform output juan_secret_key)
 
 #Return in mission dir
 cd ../..
 
-cp resources/ssh_key.pem AWS-secgame-mission4-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID
+cp resources/ssh_key.pem . 
 
 sleep 3
 
@@ -86,7 +86,12 @@ sleep 3
 #clear
 
 #Write briefing
-echo "$wololo_key  \n  $wololo_secret_key, keypair"  >> briefing.txt
+echo "Excellent work, agent. I am in awe at the size of these cats. Absolute units.
+Still, there's a new bogey on our radar. We've found another Evilcorp bucket, but it seems they learned their lession (who'd have thought), it is not public. An instance also exists, but you will find it most... curious. They have actually learned how to block traffic. We obtained the ssh key for this instance, which corresponds to the AWS keypair of the instance, but the port 22 is apparently inaccessible. 
+We have found some AWS keys for your recon operation, perhaps you can find a way to circumvent the blocking? 
+The keypair you need is in mission4-$SECGAME_USER_ID/ssh_key.pem
+juan_access_key = $juan_key
+juan_secret_access_key = $juan_secret_key"  >> briefing.txt
 
 echo "[AWS-Secgame] Mission 4 deployment complete. Mission folder is ./mission4-$SECGAME_USER_ID. Read the briefing to begin, a copy can be found in the mission folder."
 

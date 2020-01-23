@@ -46,7 +46,8 @@ Only root can use -o options on mount, so switch to root. Mount xvdh1 (partition
 
 $ `aws --region us-east-1 ec2 describe-images --owners amazon --filters 'Name=name,Values=amzn-ami-hvm-????.??.?.????????-x86_64-gp2' 'Name=state,Values=available' --query 'reverse(sort_by(Images, &CreationDate))[:1].ImageId' --output text`
 
-Find the latest Amazon Linux AMI, called $ami_id afterwards.
+Find the latest Amazon Linux AMI, called $ami_id afterwards. Note that you can also use that of the other instance by describing it.
+This command is not really something to know. [AWS displays it openly on their help website.](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/finding-an-ami.html#finding-an-ami-parameter-store)
 
 
 $ `aws --region us-east-1 ec2 describe-instances`
@@ -79,6 +80,7 @@ Mount xvdh1 (partition of sdh) on /mnt while specifying the filesystem type (xfs
 $ `cd mnt/home/ec2-user; ls; cd chonks; cat flag.txt`
 
 You win!
+
 
 ## Remember
 

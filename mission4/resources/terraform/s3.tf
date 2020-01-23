@@ -1,10 +1,10 @@
 #S3
 resource "aws_s3_bucket" "AWS-secgame-mission4-final-s3" {
-    bucket = "AWS-secgame-mission4-final-s3-${var.id}"
+    bucket = "secgame-mission4-final-s3-${var.id}"
     acl = "private"
     force_destroy = true
     tags = {
-        Name = "AWS-secgame-mission4-final-s3-${var.id}"
+        Name = "secgame-mission4-final-s3-${var.id}"
     }
 }
 
@@ -18,7 +18,7 @@ resource "aws_s3_bucket_object" "picture-of-buddha-cat-1" {
     }
 }
 
-resource "aws_s3_bucket_object" "picture-of-buddha-cat-1" {
+resource "aws_s3_bucket_object" "picture-of-buddha-cat-2" {
     bucket = aws_s3_bucket.AWS-secgame-mission4-final-s3.id
     key = "buddha_drug_kingpin.jpg"
     source = "../flags/buddha_drug_kingpin.jpg"
