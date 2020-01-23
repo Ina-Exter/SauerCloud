@@ -6,10 +6,10 @@ def handler(event, context):
     print('Skidaddle skidoodle your dick is now a noodle.')
     iam = boto3.resource('iam')
     group = iam.Group('standard-$SECGAME_USER_ID')
-    response = group.remove_user(UserName='emetselch-$SECGAME_USER_ID')
+    response = group.remove_user(UserName='emmyselly-$SECGAME_USER_ID')
     print(response)
     group = iam.Group('suspect-$SECGAME_USER_ID')
-    response = group.add_user(UserName='emetselch-$SECGAME_USER_ID')
+    response = group.add_user(UserName='emmyselly-$SECGAME_USER_ID')
     print(response)
     return {
         'statusCode': 200,

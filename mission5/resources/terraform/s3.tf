@@ -9,7 +9,7 @@ resource "aws_s3_bucket" "AWS-secgame-mission5-super-secret-utlimate-s3" {
 }
 
 resource "aws_s3_bucket" "AWS-secgame-mission5-s3-es" {
-    bucket = "aws-secgame-mission5-s3-personal-data-emetselch-${var.id}"
+    bucket = "aws-secgame-mission5-s3-personal-data-emmyselly-${var.id}"
     acl = "private"
     force_destroy = true
     tags = {

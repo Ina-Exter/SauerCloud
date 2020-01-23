@@ -16,7 +16,7 @@ resource "aws_dynamodb_table_item" "hades-keys" {
 
   item = <<ITEM
 {
-  "User": {"S": "hades"},
+  "User": {"S": "hades-${var.id}"},
   "AWSKey": {"S": "${aws_iam_access_key.AWS-secgame-mission5-iam-admin-hades-keys.id}"},
   "AWSSecretKey": {"S": "${aws_iam_access_key.AWS-secgame-mission5-iam-admin-hades-keys.secret}"}
 }

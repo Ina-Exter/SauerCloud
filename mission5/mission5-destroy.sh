@@ -23,29 +23,29 @@ fi
 #destroy terraform
 #First, empty the groups in case
 echo "[AWS-Secgame] Emptying groups, may fail."
-aws --profile $SECGAME_USER_PROFILE iam remove-user-from-group --group-name privileged-$SECGAME_USER_ID --user-name emetselch-$SECGAME_USER_ID
-aws --profile $SECGAME_USER_PROFILE iam remove-user-from-group --group-name suspects-$SECGAME_USER_ID --user-name emetselch-$SECGAME_USER_ID
+aws --profile $SECGAME_USER_PROFILE iam remove-user-from-group --group-name privileged-$SECGAME_USER_ID --user-name emmyselly-$SECGAME_USER_ID
+aws --profile $SECGAME_USER_PROFILE iam remove-user-from-group --group-name suspects-$SECGAME_USER_ID --user-name emmyselly-$SECGAME_USER_ID
 
 #destroy user keys
 echo "[AWS-Secgame] Deleting extra user keys."
 cd resources/terraform
 #check if user made a new key
-export es_standard_key=$(terraform output emetselch_key)
-export es_maybe_new_key=$(aws --profile $SECGAME_USER_PROFILE iam list-access-keys --user-name emetselch-$SECGAME_USER_ID --query AccessKeyMetadata[0].AccessKeyId)
+export es_standard_key=$(terraform output emmyselly_key)
+export es_maybe_new_key=$(aws --profile $SECGAME_USER_PROFILE iam list-access-keys --user-name emmyselly-$SECGAME_USER_ID --query AccessKeyMetadata[0].AccessKeyId)
 export es_maybe_new_key=${es_maybe_new_key:1: -1}
 if [[ "$es_standard_key" == "$es_maybe_new_key" ]]
 then
 	#same key. check if the other is the new key
-	export es_maybe_new_key=$(aws --profile $SECGAME_USER_PROFILE iam list-access-keys --user-name emetselch-$SECGAME_USER_ID --query AccessKeyMetadata[1].AccessKeyId)
+	export es_maybe_new_key=$(aws --profile $SECGAME_USER_PROFILE iam list-access-keys --user-name emmyselly-$SECGAME_USER_ID --query AccessKeyMetadata[1].AccessKeyId)
 	export es_maybe_new_key=${es_maybe_new_key:1: -1}
 	if [[ ! "$es_standard_key" == "$es_maybe_new_key" ]]
 	then
 		#ok, this one is the new key, destroy it
-		aws --profile $SECGAME_USER_PROFILE iam delete-access-key --access-key-id $es_maybe_new_key --user-name emetselch-$SECGAME_USER_ID > /dev/null 2>&1
+		aws --profile $SECGAME_USER_PROFILE iam delete-access-key --access-key-id $es_maybe_new_key --user-name emmyselly-$SECGAME_USER_ID > /dev/null 2>&1
 	fi #if not, [1] is most likely void. carry on.
 else
 	#new key. destroy it and carry on.
-	aws --profile $SECGAME_USER_PROFILE iam delete-access-key --access-key-id $es_maybe_new_key --user-name emetselch-$SECGAME_USER_ID > /dev/null 2>&1
+	aws --profile $SECGAME_USER_PROFILE iam delete-access-key --access-key-id $es_maybe_new_key --user-name emmyselly-$SECGAME_USER_ID > /dev/null 2>&1
 fi
 
 echo "[AWS-Secgame] Destroying terraform resources"

@@ -10,11 +10,11 @@ resource "aws_iam_user" "AWS-secgame-mission5-iam-admin-hades" {
 }
 
 #User2 (honeypot segment)
-resource "aws_iam_user" "AWS-secgame-mission5-iam-user-emetselch" {
-    name = "emetselch-${var.id}"
+resource "aws_iam_user" "AWS-secgame-mission5-iam-user-emmyselly" {
+    name = "emmyselly-${var.id}"
     
     tags = {
-		name = "AWS-secgame-mission5-iam-user-emetselch-${var.id}"
+		name = "AWS-secgame-mission5-iam-user-emmyselly-${var.id}"
     }
 }
 
@@ -68,7 +68,7 @@ resource "aws_iam_user_policy" "AWS-secgame-mission5-iam-user-solus-policy"{
         {
 			"Effect": "Allow",
 			"Action": "iam:CreateAccessKey",
-			"Resource": "${aws_iam_user.AWS-secgame-mission5-iam-user-emetselch.arn}"
+			"Resource": "${aws_iam_user.AWS-secgame-mission5-iam-user-emmyselly.arn}"
         }
     ]
 }
@@ -80,8 +80,8 @@ resource "aws_iam_access_key" "AWS-secgame-mission5-iam-admin-hades-keys"{
 	user = aws_iam_user.AWS-secgame-mission5-iam-admin-hades.name
 }
 
-resource "aws_iam_access_key" "AWS-secgame-mission5-iam-user-emetselch-keys"{
-	user = aws_iam_user.AWS-secgame-mission5-iam-user-emetselch.name
+resource "aws_iam_access_key" "AWS-secgame-mission5-iam-user-emmyselly-keys"{
+	user = aws_iam_user.AWS-secgame-mission5-iam-user-emmyselly.name
 }
 
 resource "aws_iam_access_key" "AWS-secgame-mission5-iam-user-solus-keys"{
@@ -98,7 +98,7 @@ resource "aws_iam_group" "AWS-secgame-mission5-iam-group-privileged"{
 }
 
 resource "aws_iam_group" "AWS-secgame-mission5-iam-group-standard"{
-	name = "standard-${var.id}" #group for emetselch
+	name = "standard-${var.id}" #group for emmyselly
 }
 
 #Group membership
@@ -106,7 +106,7 @@ resource "aws_iam_group_membership" "AWS-secgame-mission5-gm-standard" {
     name = "AWS-secgame-mission5-gm-standard-${var.id}"
 
     users = [
-        aws_iam_user.AWS-secgame-mission5-iam-user-emetselch.name,
+        aws_iam_user.AWS-secgame-mission5-iam-user-emmyselly.name,
     ]
 
     group = aws_iam_group.AWS-secgame-mission5-iam-group-standard.name
@@ -181,9 +181,8 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-privilege
     {
       "Effect": "Allow",
       "Action": [
-        "lambda:UpdateFunctionCode",
         "lambda:GetLayerVersion",
-        "lambda:GetFunction",
+        "lambda:ListFunctions",
         "lambda:ListLayerVersions",
         "lambda:ListLayers",
         "lambda:GetFunctionConfiguration",
@@ -192,6 +191,14 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-privilege
        ],
        "Resource": "*"
     },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "lambda:UpdateFunctionCode",
+        "lambda:GetFunction"
+       ],
+       "Resource": "${aws_lambda_function.AWS-secgame-mission5-lambda-change-group.arn}"
+    },	
     {
       "Effect": "Allow",
       "Action": [

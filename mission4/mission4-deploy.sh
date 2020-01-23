@@ -83,7 +83,7 @@ cp resources/ssh_key.pem .
 sleep 3
 
 #uncomment in prod
-#clear
+clear
 
 #Write briefing
 echo "Excellent work, agent. I am in awe at the size of these cats. Absolute units.

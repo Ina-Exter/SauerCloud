@@ -103,8 +103,8 @@ fi
 export DDB_HANDLER_INSTANCE_ID=$(terraform output ec2_ddb_instance_id)
 export MAIL_SERVER_INSTANCE_ID=$(terraform output ec2_mailserver_instance_id)
 export MAIL_SERVER_IP=$(terraform output ec2_mailserver_public_ip)
-export emetselch_key_id=$(terraform output emetselch_key)
-export emetselch_secret_key=$(terraform output emetselch_secret_key)
+export emmyselly_key_id=$(terraform output emmyselly_key)
+export emmyselly_secret_key=$(terraform output emmyselly_secret_key)
 export solus_key_id=$(terraform output solus_key)
 export solus_secret_key=$(terraform output solus_secret_key)
 
@@ -127,12 +127,12 @@ echo "[AWS-Secgame] Script startup."
 aws --profile $SECGAME_USER_PROFILE ec2-instance-connect send-ssh-public-key --availability-zone us-east-1a --instance-os-user ec2-user --instance-id $MAIL_SERVER_INSTANCE_ID --ssh-public-key file://mailserver_temporary_key.pem.pub > /dev/null 2>&1
 ssh -i "mailserver_temporary_key.pem" -o "StrictHostKeyChecking=no" ec2-user@$MAIL_SERVER_IP 'chmod u+x make_mail_system.sh; sudo bash -c "./make_mail_system.sh"; exit' > /dev/null 2>&1
 
-#Add emetselch keys to bucket
+#Add emmyselly keys to bucket
 cd ..
 touch aws_key_reminder.txt
-echo "emetselch_aws_key = $emetselch_key_id" > aws_key_reminder.txt
-echo "emetselch_private_key = $emetselch_secret_key" >> aws_key_reminder.txt
-aws --profile $SECGAME_USER_PROFILE s3 cp aws_key_reminder.txt s3://aws-secgame-mission5-s3-personal-data-emetselch-$SECGAME_USER_ID --quiet
+echo "emmyselly_aws_key = $emmyselly_key_id" > aws_key_reminder.txt
+echo "emmyselly_private_key = $emmyselly_secret_key" >> aws_key_reminder.txt
+aws --profile $SECGAME_USER_PROFILE s3 cp aws_key_reminder.txt s3://aws-secgame-mission5-s3-personal-data-emmyselly-$SECGAME_USER_ID --quiet
 if [[ $? -ne 0 ]]
 then
 	echo "[AWS-Secgame] Cannot fill the bucket with required file. Rolling back."

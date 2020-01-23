@@ -14,13 +14,12 @@ read FLAG
 
 if [[ $MISSION_NUMBER -eq 1 ]]
 then
-	if [[ $FLAG == "c2FsdHlwcm9ncmFtbWVyCg==" || $FLAG == "saltyprogrammer" ]]
+	if [[ $FLAG == "c2FsdHlwcm9ncmFtbWVyCg==" ]] || [[ $FLAG == "saltyprogrammer" ]]
 	then
 		echo "[AWS-Secgame] Congratulations! You solved the first mission!" 
 		exit 0
 	fi
 	echo "[AWS-Secgame] The specified flag is incorrect. Did you paste it correctly? Or maybe you missed something."	
-	#possible to implement fake flag detector
 	exit 1
 elif [[ $MISSION_NUMBER -eq 2 ]]
 then
@@ -42,10 +41,9 @@ then
 	exit 1
 elif [[ $MISSION_NUMBER -eq 4 ]]
 then
-	# :qcmFnZG9sbGRydWdiYXJvbg==
-	if [[ $FLAG == "tamereenstring" ]]
+	if [[ $FLAG == "cmFnZG9sbGRydWdiYXJvbg==" ]]
 	then
-		echo "[AWS-Secgame] Congratulations! You solved the third mission!" 
+		echo "[AWS-Secgame] Congratulations! You solved the fourth mission!" 
 		exit 0
 	fi
 	echo "[AWS-Secgame] The specified flag is incorrect. Did you paste it correctly? Or maybe you missed something."	
@@ -54,7 +52,7 @@ elif [[ $MISSION_NUMBER -eq 5 ]]
 then
 	if [[ $FLAG == "Matt Steraker" ]]
 	then
-		echo "[AWS-Secgame] Congratulations! You solved the fifth mission, the \"big game\"!" 
+		echo "[AWS-Secgame] Congratulations! You solved the fifth mission, the \"big game\". Hope you liked it!" 
 		exit 0
 	fi
 	echo "[AWS-Secgame] The specified flag is incorrect. Did you paste it correctly? Or maybe you missed something."	
