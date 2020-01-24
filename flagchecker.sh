@@ -1,7 +1,12 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e
 
 echo "[AWS-Secgame] Enter the mission number you want to check the flag for (1, 2, 3, 4 or 5):"
-read MISSION_NUMBER
+read -r MISSION_NUMBER
+MISSION_NUMBER=${MISSION_NUMBER//_/}
+MISSION_NUMBER=${MISSION_NUMBER// /_}
+MISSION_NUMBER=${MISSION_NUMBER//[^a-zA-Z0-9_=]/}
+
 
 if [[ ( "$MISSION_NUMBER" -lt 1 ) || ( "$MISSION_NUMBER" -gt 5 ) ]]
 then
@@ -10,7 +15,7 @@ then
 fi
 
 echo "[AWS-Secgame] Enter the flag for your mission, as you found it:"
-read FLAG
+read -r FLAG
 
 if [[ $MISSION_NUMBER -eq 1 ]]
 then
@@ -41,7 +46,7 @@ then
 	exit 1
 elif [[ $MISSION_NUMBER -eq 4 ]]
 then
-	if [[ $FLAG == "cmFnZG9sbGRydWdiYXJvbg==" ]]
+	if [[ $FLAG == "cmFnZG9sbGRydWdiYXJvbg==" ]] || [[ $FLAG == "ragdolldrugbaron" ]]
 	then
 		echo "[AWS-Secgame] Congratulations! You solved the fourth mission!" 
 		exit 0
