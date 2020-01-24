@@ -79,7 +79,7 @@ Mount xvdh1 (partition of sdh) on /mnt while specifying the filesystem type (xfs
 
 $ `cd mnt/home/ec2-user; ls; cd chonks; cat flag.txt`
 
-You win!
+You win! Note that the instance has the required privileges to generate administrator AWS keys...
 
 
 ## Remember

@@ -71,7 +71,7 @@ Please note that if you create resources yourself during a mission, the program 
 
 Once you have created a mission, you will be prompted to read the briefing in the newly created mission folder. Then, you are all set.
 
-Nb: Most of the time, using anything else than bash and the CLI is considered cheating. ;)
+Nb: Most of the time, using anything else than bash and the CLI is considered cheating. ;) You may also use only what I provide you with, not your own administrator AWS keys.
 
 ### What is an AWS account/What is AWS?
 

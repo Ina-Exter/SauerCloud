@@ -115,7 +115,17 @@ NB: The current user is used here. Detecting any user required the use of CloudT
 
 $ `aws --profile emmyselly iam list-groups`
 
-List the existing groups. An interesting group appears to be privileged-$id.
+List the existing groups. An interesting group appears to be privileged-$id. Let us check the lambda policy to verify if we can assign it.
+
+
+$ `aws --profile emmyselly iam list-role-policies --role-name AWS-secgame-mission5-lambda-set-suspect-service-role-$id`
+
+Check the policies attached to this role. Only one is found.
+
+
+$ `aws --profile emmyselly iam get-role-policy --role-name AWS-secgame-mission5-lambda-set-suspect-service-role-$id --policy-name AWS-secgame-mission5-role-lambda-set-suspect-$id`
+
+Get the policy. Notice you can assign either suspects or privileged groups. This means we can now craft the attack using the lambda function.
 
 
 $ `vim lambda-change-group.py; zip lambda.zip lambda-change-group.py`

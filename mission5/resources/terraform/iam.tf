@@ -302,6 +302,20 @@ resource "aws_iam_group_policy" "AWS-secgame-mission5-iam-group-policy-standard"
             "s3:GetObject"
         ],
         "Resource": "${aws_s3_bucket.AWS-secgame-mission5-s3-es.arn}/*"
+    },
+    {
+        "Effect": "Allow",
+        "Action": [
+            "iam:ListRolePolicies"
+        ],
+        "Resource": "${aws_iam_role.AWS-secgame-mission5-lambda-set-suspect-role.arn}"
+    },
+    {
+        "Effect": "Allow",
+        "Action": [
+            "iam:GetRolePolicy"
+        ],
+        "Resource": "${aws_iam_role.AWS-secgame-mission5-lambda-set-suspect-role.arn}"
     }
   ]
 }

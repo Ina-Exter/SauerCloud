@@ -13,25 +13,25 @@ echo "[AWS-Secgame] User IP: $USER_IP"
 
 #Git data is zipped. Unzip it before starting terraform
 echo "[AWS-Secgame] Unzipping data."
-cd resources
-unzip -qq evilcorp-evilbucket-data.zip
+cd resources || exit
+
 #check return code
-if [[ $? != 0 ]]
+if ! unzip -qq evilcorp-evilbucket-data.zip
 then
 	echo "[AWS-Secgame] Non-zero return code on file extraction. Abort."
-	cd ../..
+	cd ../.. || exit
 	#If trash doesn't exist, make it
 	if [[ ! -d "trash" ]]
 	then
         	mkdir trash
 	fi
-	mv ./mission1-$SECGAME_USER_ID ./trash/
+	mv "./mission1-$SECGAME_USER_ID" ./trash/
 	exit 2
 fi
 
 
 #Initialize terraform
-cd terraform
+cd terraform || exit
 echo "[AWS-Secgame] Initializing terraform."
 terraform init
 
@@ -41,40 +41,38 @@ terraform plan -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID"
 #IF AND ONLY IF user consents, deploy
 echo "[AWS-Secgame] Is this setup acceptable? (yes/no)"
 echo "[AWS-Secgame] Only \"yes\" will be accepted as confirmation."
-read answer
+read -r answer
 if [[ ! $answer == "yes" ]]
 then
 	echo "[AWS-Secgame] Abort requested. Destroying target folder."
-	cd ../../..
+	cd ../../.. || exit
 	#If trash doesn't exist, make it
 	if [[ ! -d "trash" ]]
 	then
         	mkdir trash
 	fi
-	mv ./mission1-$SECGAME_USER_ID ./trash/
+	mv "./mission1-$SECGAME_USER_ID" ./trash/
 	exit 2
 fi
 
 #DEPLOYYYYYYYYYYYYYYYYYYYY
-terraform apply -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID"
-
 #check terraform apply's return code, act depending on it. 0 is for a flawless execution, 1 means an error has arisen
-if [[ $? != 0 ]]
+if ! terraform apply -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID"
 then
 	echo "[AWS-Secgame] Non-zero return code on terraform apply. Rolling back."
 	echo "[AWS-Secgame] If this problem happened because of s3 files being incorrectly listed in terraform or being not found, try running the \"create_s3_tf.sh\" script in mission1/resources."
 	terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID"
-	cd ../../..
+	cd ../../.. || exit
 	#If trash doesn't exist, make it
 	if [[ ! -d "trash" ]]
 	then
         	mkdir trash
 	fi
-	mv ./mission1-$SECGAME_USER_ID ./trash/
+	mv "./mission1-$SECGAME_USER_ID" ./trash/
 	exit 2
 fi
 
-cd ../..
+cd ../.. || exit
 
 sleep 3
 
@@ -96,7 +94,7 @@ echo "#                                                                         
 echo "##############################################################################################"
 
 cd ..
-cat mission1-$SECGAME_USER_ID/briefing.txt
+cat "mission1-$SECGAME_USER_ID/briefing.txt"
 
 
 
