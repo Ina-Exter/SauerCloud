@@ -2,10 +2,8 @@ profile.txt
 whitelist.txt
 /trash/*
 mission1/resources/evilcorp-evilbucket-data/
-/mission0/*
 *.swp
 mission1/resources/evilcorp-evilbucket-data-backup/
-multiuser_*
-/old-mission4/*
+missions/mission*/resources/terraform/.terraform/*
 /mission*/resources/terraform/.terraform/*
 /mission1/resources/s3old.tf

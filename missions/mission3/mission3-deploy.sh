@@ -84,50 +84,62 @@ sleep 8
 echo "[AWS-Secgame] Importing instance data."
 if ! scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q -r ./chonks "ec2-user@$ec2_ip:/home/ec2-user/"
 then
-	echo "[AWS-Secgame] Unable to safely copy files on instance. Abort."
-	cd terraform || exit
-	terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
-	cd ../../.. || exit
-	#If trash doesn't exist, make it
-	if [[ ! -d "trash" ]]
+	echo "[AWS-Secgame] Unable to safely copy files on instance. Retrying."
+	if ! scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q -r ./chonks "ec2-user@$ec2_ip:/home/ec2-user/"
 	then
-        	mkdir trash
+		echo "[AWS-Secgame] Unable to safely copy files on instance (second attempt). Check your internet connection. Abort."
+		cd terraform || exit
+		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
+		cd ../../.. || exit
+		#If trash doesn't exist, make it
+		if [[ ! -d "trash" ]]
+		then
+   		    mkdir trash
+		fi
+		mv "./mission3-$SECGAME_USER_ID" ./trash/
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+		exit 2
 	fi
-	mv "./mission3-$SECGAME_USER_ID" ./trash/
-	aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
-	exit 2
 fi
 
 if ! scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q bob_todo.txt "ec2-user@$ec2_ip:/home/ec2-user/"
 then
-	echo "[AWS-Secgame] Unable to safely copy files on instance. Abort."
-	cd terraform || exit
-	terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
-	cd ../../.. || exit
-	#If trash doesn't exist, make it
-	if [[ ! -d "trash" ]]
+	echo "[AWS-Secgame] Unable to safely copy files on instance. Retrying."
+	if ! scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q bob_todo.txt "ec2-user@$ec2_ip:/home/ec2-user/"
 	then
+		echo "[AWS-Secgame] Unable to safely copy files on instance (second attempt). Check your internet connection. Abort."
+		cd terraform || exit
+		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
+		cd ../../.. || exit
+		#If trash doesn't exist, make it
+		if [[ ! -d "trash" ]]
+		then
         	mkdir trash
+		fi
+		mv "./mission3-$SECGAME_USER_ID" ./trash/
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+		exit 2
 	fi
-	mv "./mission3-$SECGAME_USER_ID" ./trash/
-	aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
-	exit 2
 fi
 
 if ! scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q mounting_on_linux_for_evil_dummies.txt "ec2-user@$ec2_ip:/home/ec2-user/"
 then
-	echo "[AWS-Secgame] Unable to safely copy files on instance. Abort."
-	cd terraform || exit
-	terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
-	cd ../../.. || exit
-	#If trash doesn't exist, make it
-	if [[ ! -d "trash" ]]
+	echo "[AWS-Secgame] Unable to safely copy files on instance. Retrying."
+	if ! scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q bob_todo.txt "ec2-user@$ec2_ip:/home/ec2-user/"
 	then
-        	mkdir trash
+		echo "[AWS-Secgame] Unable to safely copy files on instance (second attempt). Check your internet connection. Abort."
+		cd terraform || exit
+		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
+		cd ../../.. || exit
+		#If trash doesn't exist, make it
+		if [[ ! -d "trash" ]]
+		then
+				mkdir trash
+		fi
+		mv "./mission3-$SECGAME_USER_ID" ./trash/
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+		exit 2
 	fi
-	mv "./mission3-$SECGAME_USER_ID" ./trash/
-	aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
-	exit 2
 fi
 
 
@@ -136,18 +148,22 @@ echo "[AWS-Secgame] Snapshotting instance."
 volumeID=$(aws --profile "$SECGAME_USER_PROFILE" ec2 describe-instance-attribute --attribute blockDeviceMapping --instance-id "$ec2_id" --query 'BlockDeviceMappings[0].Ebs.VolumeId' --output text)
 if ! snapshotID=$(aws --profile "$SECGAME_USER_PROFILE" ec2 create-snapshot --volume-id "$volumeID" --query 'SnapshotId' --output text)
 then
-	echo "[AWS-Secgame] Unable to generate instance snapshot. Abort."
-	cd terraform || exit
-	terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
-	cd ../../.. || exit
-	#If trash doesn't exist, make it
-	if [[ ! -d "trash" ]]
+	echo "[AWS-Secgame] Unable to generate instance snapshot. Retrying."
+	if ! snapshotID=$(aws --profile "$SECGAME_USER_PROFILE" ec2 create-snapshot --volume-id "$volumeID" --query 'SnapshotId' --output text)
 	then
-        	mkdir trash
+		echo "[AWS-Secgame] Unable to generate instance snapshot (second attempt). Abort."
+		cd terraform || exit
+		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
+		cd ../../.. || exit
+		#If trash doesn't exist, make it
+		if [[ ! -d "trash" ]]
+		then
+				mkdir trash
+		fi
+		mv "./mission3-$SECGAME_USER_ID" ./trash/
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+		exit 2
 	fi
-	mv "./mission3-$SECGAME_USER_ID" ./trash/
-	aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
-	exit 2
 fi
 
 echo "$snapshotID" >> snapshotid.txt
@@ -156,36 +172,44 @@ echo "$snapshotID" >> snapshotid.txt
 echo "[AWS-Secgame] Setting up instance environment"
 if ! scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q cleanup_script.sh "ec2-user@$ec2_ip:/home/ec2-user/"
 then
-	echo "[AWS-Secgame] Unable to safely send cleanup_script.sh to instance. Abort."
-	cd terraform || exit
-	terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
-	cd ../../.. || exit
-	#If trash doesn't exist, make it
-	if [[ ! -d "trash" ]]
+	echo "[AWS-Secgame] Unable to safely send cleanup_script.sh to instance. Reutrying."
+	if ! scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q cleanup_script.sh "ec2-user@$ec2_ip:/home/ec2-user/"
 	then
-        	mkdir trash
+		echo "[AWS-Secgame] Unable to safely send cleanup_script.sh to instance (second attempt). Abort."
+		cd terraform || exit
+		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
+		cd ../../.. || exit
+		#If trash doesn't exist, make it
+		if [[ ! -d "trash" ]]
+		then
+				mkdir trash
+		fi
+		mv "./mission3-$SECGAME_USER_ID" ./trash/
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-snapshot --snapshot-id "$snapshotID"
+		exit 2
 	fi
-	mv "./mission3-$SECGAME_USER_ID" ./trash/
-	aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
-	aws --profile "$SECGAME_USER_PROFILE" ec2 delete-snapshot --snapshot-id "$snapshotID"
-	exit 2
 fi
 
 if ! ssh -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q  "ec2-user@$ec2_ip" 'chmod u+x cleanup_script.sh; ./cleanup_script.sh; exit'
 then
-	echo "[AWS-Secgame] Unable to start remote cleanup script. Abort."
-	cd terraform || exit
-	terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
-	cd ../../.. || exit
-	#If trash doesn't exist, make it
-	if [[ ! -d "trash" ]]
-	then
-        	mkdir trash
+	echo "[AWS-Secgame] Unable to start remote cleanup script. Retrying."
+	if ! ssh -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q  "ec2-user@$ec2_ip" 'chmod u+x cleanup_script.sh; ./cleanup_script.sh; exit'
+	then	
+		echo "[AWS-Secgame] Unable to start remote cleanup script (second attempt). Abort."
+		cd terraform || exit
+		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
+		cd ../../.. || exit
+		#If trash doesn't exist, make it
+		if [[ ! -d "trash" ]]
+		then
+				mkdir trash
+		fi
+		mv "./mission3-$SECGAME_USER_ID" ./trash/
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-snapshot --snapshot-id "$snapshotID"
+		exit 2
 	fi
-	mv "./mission3-$SECGAME_USER_ID" ./trash/
-	aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
-	aws --profile "$SECGAME_USER_PROFILE" ec2 delete-snapshot --snapshot-id "$snapshotID"
-	exit 2
 fi
 
 

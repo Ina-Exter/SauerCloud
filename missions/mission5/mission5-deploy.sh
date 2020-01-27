@@ -112,7 +112,25 @@ cd ../code || exit
 # shellcheck disable=SC1091
 source create-lambda-dump-logs.sh
 zip lambda-dump-logs.zip lambda-dump-logs.py > /dev/null 2>&1
-aws --profile "$SECGAME_USER_PROFILE" lambda update-function-code --function-name "AWS-secgame-mission5-lambda-logs-dump-$SECGAME_USER_ID" --zip-file fileb://lambda-dump-logs.zip > /dev/null 2>&1
+if ! aws --profile "$SECGAME_USER_PROFILE" lambda update-function-code --function-name "AWS-secgame-mission5-lambda-logs-dump-$SECGAME_USER_ID" --zip-file fileb://lambda-dump-logs.zip > /dev/null 2>&1
+then
+	echo "[AWS-Secgame] Non-zero return code on lambda code update. Retrying."
+	if ! aws --profile "$SECGAME_USER_PROFILE" lambda update-function-code --function-name "AWS-secgame-mission5-lambda-logs-dump-$SECGAME_USER_ID" --zip-file fileb://lambda-dump-logs.zip > /dev/null 2>&1
+	then
+		echo "[AWS-Secgame] Non-zero return code on lambda code update (second attempt). Abort."
+		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshddbkey" -var="sshservicekey=$sshservicekey"
+		cd ../../.. || exit
+		#If trash doesn't exist, make it
+		if [[ ! -d "trash" ]]
+		then
+				mkdir trash
+		fi
+		mv "./mission5-$SECGAME_USER_ID" ./trash/
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission5-keypair-ddb-handler-$SECGAME_USER_ID"
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission5-keypair-service-$SECGAME_USER_ID"
+		exit 2
+	fi
+fi
 
 #mail server setup
 echo "[AWS-Secgame] Mail server setup now running."
@@ -121,34 +139,74 @@ ssh-keygen -t rsa -f mailserver_temporary_key.pem -q -N ""
 echo "[AWS-Secgame] Key Generated."
 aws --profile "$SECGAME_USER_PROFILE" ec2-instance-connect send-ssh-public-key --availability-zone us-east-1a --instance-os-user ec2-user --instance-id "$MAIL_SERVER_INSTANCE_ID" --ssh-public-key file://mailserver_temporary_key.pem.pub > /dev/null 2>&1
 echo "[AWS-Secgame] Copying file."
-scp -i "mailserver_temporary_key.pem" -o "StrictHostKeyChecking=no" make_mail_system.sh "ec2-user@$MAIL_SERVER_IP:/home/ec2-user/" > /dev/null 2>&1
+if ! scp -i "mailserver_temporary_key.pem" -o "StrictHostKeyChecking=no" make_mail_system.sh "ec2-user@$MAIL_SERVER_IP:/home/ec2-user/" > /dev/null 2>&1
+then
+	echo "[AWS-Secgame] Cannot send data to mail server. Retrying."
+	if ! scp -i "mailserver_temporary_key.pem" -o "StrictHostKeyChecking=no" make_mail_system.sh "ec2-user@$MAIL_SERVER_IP:/home/ec2-user/" > /dev/null 2>&1
+	then
+		echo "[AWS-Secgame] Cannot send data to mail server (second attempt). Check your internet connection. Abort."
+		cd terraform || exit
+		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshddbkey" -var="sshservicekey=$sshservicekey"
+		cd ../../.. || exit
+		#If trash doesn't exist, make it
+		if [[ ! -d "trash" ]]
+		then
+  		      	mkdir trash
+		fi
+		mv "./mission5-$SECGAME_USER_ID" ./trash/
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission5-keypair-ddb-handler-$SECGAME_USER_ID"
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission5-keypair-service-$SECGAME_USER_ID"
+		exit 2
+	fi
+fi
+
 echo "[AWS-Secgame] Script startup."
 aws --profile "$SECGAME_USER_PROFILE" ec2-instance-connect send-ssh-public-key --availability-zone us-east-1a --instance-os-user ec2-user --instance-id "$MAIL_SERVER_INSTANCE_ID" --ssh-public-key file://mailserver_temporary_key.pem.pub > /dev/null 2>&1
-ssh -i "mailserver_temporary_key.pem" -o "StrictHostKeyChecking=no" "ec2-user@$MAIL_SERVER_IP" 'chmod u+x make_mail_system.sh; sudo bash -c "./make_mail_system.sh"; exit' > /dev/null 2>&1
+if ! ssh -i "mailserver_temporary_key.pem" -o "StrictHostKeyChecking=no" "ec2-user@$MAIL_SERVER_IP" 'chmod u+x make_mail_system.sh; sudo bash -c "./make_mail_system.sh"; exit' > /dev/null 2>&1
+then
+	echo "[AWS-Secgame] Cannot send data to mail server. Retrying."
+	if ! ssh -i "mailserver_temporary_key.pem" -o "StrictHostKeyChecking=no" "ec2-user@$MAIL_SERVER_IP" 'chmod u+x make_mail_system.sh; sudo bash -c "./make_mail_system.sh"; exit' > /dev/null 2>&1
+	then
+		echo "[AWS-Secgame] Cannot send data to mail server (second attempt). Check your internet connection. Abort."
+		cd terraform || exit
+		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshddbkey" -var="sshservicekey=$sshservicekey"
+		cd ../../.. || exit
+		#If trash doesn't exist, make it
+		if [[ ! -d "trash" ]]
+		then
+  		      	mkdir trash
+		fi
+		mv "./mission5-$SECGAME_USER_ID" ./trash/
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission5-keypair-ddb-handler-$SECGAME_USER_ID"
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission5-keypair-service-$SECGAME_USER_ID"
+		exit 2
+	fi
+fi
 
 #Add emmyselly keys to bucket
 cd .. || exit
 touch aws_key_reminder.txt
 echo "emmyselly_aws_key = $emmyselly_key_id" > aws_key_reminder.txt
 echo "emmyselly_private_key = $emmyselly_secret_key" >> aws_key_reminder.txt
-aws --profile "$SECGAME_USER_PROFILE" s3 cp aws_key_reminder.txt "s3://aws-secgame-mission5-s3-personal-data-emmyselly-$SECGAME_USER_ID" --quiet
-# For some reason, direct testing does not work here. File is uploaded but return code is flagged as non-zero.
-# shellcheck disable=SC2181
-if [[ "$?" -ne 0 ]]
+if ! aws --profile "$SECGAME_USER_PROFILE" s3 cp aws_key_reminder.txt "s3://aws-secgame-mission5-s3-personal-data-emmyselly-$SECGAME_USER_ID" --quiet
 then
-	echo "[AWS-Secgame] Cannot fill the bucket with required file. Rolling back."
-	cd terraform || exit
-	terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshddbkey" -var="sshservicekey=$sshservicekey"
-	cd ../../.. || exit
-	#If trash doesn't exist, make it
-	if [[ ! -d "trash" ]]
+	echo "[AWS-Secgame] Cannot fill the bucket with required file. Retrying."
+	if ! aws --profile "$SECGAME_USER_PROFILE" s3 cp aws_key_reminder.txt "s3://aws-secgame-mission5-s3-personal-data-emmyselly-$SECGAME_USER_ID" --quiet
 	then
-        	mkdir trash
+		echo "[AWS-Secgame] Cannot fill the bucket with required file again. Check your internet connection. Rolling back."
+		cd terraform || exit
+		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshddbkey" -var="sshservicekey=$sshservicekey"
+		cd ../../.. || exit
+		#If trash doesn't exist, make it
+		if [[ ! -d "trash" ]]
+		then
+  		      	mkdir trash
+		fi
+		mv "./mission5-$SECGAME_USER_ID" ./trash/
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission5-keypair-ddb-handler-$SECGAME_USER_ID"
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission5-keypair-service-$SECGAME_USER_ID"
+		exit 2
 	fi
-	mv "./mission5-$SECGAME_USER_ID" ./trash/
-	aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission5-keypair-ddb-handler-$SECGAME_USER_ID"
-	aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission5-keypair-service-$SECGAME_USER_ID"
-	exit 2
 fi
 rm aws_key_reminder.txt
 
@@ -179,5 +237,3 @@ echo "##########################################################################
 
 cd .. || exit
 cat "mission5-$SECGAME_USER_ID/briefing.txt"
-
-

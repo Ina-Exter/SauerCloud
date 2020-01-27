@@ -147,14 +147,14 @@ then
 		MISSION=${MISSION::-1}
 	fi
 	#Check that a startup script can be found. If not, assume mistype.
-	if [[ ! -e ./$MISSION/$MISSION-deploy.sh ]]
+	if [[ ! -e ./missions/$MISSION/$MISSION-deploy.sh ]]
 	then
 		echo "[AWS-Secgame] Cannot find startup script for mission $MISSION. Please check syntax and reiterate."
 		exit 2
 	fi
 	#Make a mission directory, copy the contents of the resources in it, and get in
 	mkdir "$MISSION"-"$SECGAME_USER_ID"
-	cp -r ./"$MISSION"/* ./"$MISSION"-"$SECGAME_USER_ID"/
+	cp -r ./missions/"$MISSION"/* ./"$MISSION"-"$SECGAME_USER_ID"/
 	cd "$MISSION"-"$SECGAME_USER_ID" || exit
 	#Run the mission startup script from the resources folder (may have to change path ultimately)
 	# shellcheck disable=SC1090
@@ -181,7 +181,7 @@ then
 		exit 2
 	fi
 	#Check if mission name is legal. If not, assume mistype
-	if [[ ! -e ./$mission/$mission-destroy.sh ]]
+	if [[ ! -e ./$folder_name/$mission-destroy.sh ]]
 	then
 		echo "[AWS-Secgame] Cannot find destroy script for mission $mission. Please check syntax and reiterate."
 		exit 2

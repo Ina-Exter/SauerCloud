@@ -11,6 +11,7 @@ echo "[AWS-Secgame] User IP: $USER_IP"
 #Request confirmation
 echo "[AWS-Secgame] Destroy mission3-$SECGAME_USER_ID? (yes/no)"
 echo "[AWS-Secgame] Only \"yes\" will be accepted as confirmation."
+echo "[AWS-Secgame] Remember to delete anything you created yourself! Destroy might fail or stall if you do not."
 read -r answer
 if [[ ! $answer == "yes" ]]
 then
@@ -47,11 +48,11 @@ then
 	echo "[AWS-Secgame] Non-zero return code on snapshot destruction. Use aws --profile $USER_SECGAME_PROFILE ec2 describe-snapshots and delete-snapshot to manually delete it if needed."
 	error_flag=1
 fi
-echo "[AWS-Secgame] Remember to delete the volume you created yourself!"
+
 
 if [[ "$error_flag" -eq 1 ]]
 then
-	echo "[AWS-Secgame] Mission 1 destroy failed somewhere. Error messages should help you fix this."
+	echo "[AWS-Secgame] Mission 3 destroy failed somewhere. Error messages should help you fix this."
 	exit 1
 fi
 echo "[AWS-Secgame] Mission 3 destroy complete"

@@ -11,6 +11,7 @@ echo "[AWS-Secgame] User IP: $USER_IP"
 #Request confirmation
 echo "[AWS-Secgame] Destroy mission5-$SECGAME_USER_ID? (yes/no)"
 echo "[AWS-Secgame] Only \"yes\" will be accepted as confirmation."
+echo "[AWS-Secgame] Remember to delete anything you created yourself! Destroy might fail or stall if you do not."
 read -r answer
 if [[ ! $answer == "yes" ]]
 then
@@ -77,7 +78,7 @@ aws --profile "$SECGAME_USER_PROFILE" logs delete-log-group --log-group-name "/a
 
 if [[ "$error_flag" -eq 1 ]]
 then
-	echo "[AWS-Secgame] Mission 1 destroy failed somewhere. Error messages should help you fix this."
+	echo "[AWS-Secgame] Mission 5 destroy failed somewhere. Error messages should help you fix this."
 	exit 1
 fi
 echo "[AWS-Secgame] Mission 5 destroy complete"
