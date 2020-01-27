@@ -131,9 +131,10 @@ cd .. || exit
 touch aws_key_reminder.txt
 echo "emmyselly_aws_key = $emmyselly_key_id" > aws_key_reminder.txt
 echo "emmyselly_private_key = $emmyselly_secret_key" >> aws_key_reminder.txt
-echo "[Debug] aws --profile \"$SECGAME_USER_PROFILE\" s3 cp aws_key_reminder.txt \"s3://aws-secgame-mission5-s3-personal-data-emmyselly-$SECGAME_USER_ID\" --quiet"
-pwd
-if aws --profile $SECGAME_USER_PROFILE s3 cp aws_key_reminder.txt s3://aws-secgame-mission5-s3-personal-data-emmyselly-$SECGAME_USER_ID
+aws --profile "$SECGAME_USER_PROFILE" s3 cp aws_key_reminder.txt "s3://aws-secgame-mission5-s3-personal-data-emmyselly-$SECGAME_USER_ID" --quiet
+# For some reason, direct testing does not work here. File is uploaded but return code is flagged as non-zero.
+# shellcheck disable=SC2181
+if [[ "$?" -ne 0 ]]
 then
 	echo "[AWS-Secgame] Cannot fill the bucket with required file. Rolling back."
 	cd terraform || exit

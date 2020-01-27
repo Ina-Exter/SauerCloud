@@ -1,15 +1,5 @@
 #!/bin/bash
 
-############################################################
-#                                                          #
-#              AWS OFFENSIVE SECURITY GAME                 #
-#                         About                            #
-############################################################
-
-#This security game is initially developed for internal use 
-#by society Stack Labs. Its future uses are not limited to 
-#this and should not be considered a company exclusivity.
-
 #These scripts and most of the resources were made by
 #Xavier Goffin (xaviergoffin42@gmail.com, xavier.goffin@stack-labs.com)
 #I am not responsible for any billing charges incurred when using this program.
@@ -17,15 +7,20 @@
 ############################################################
 #                                                          #
 #                      SANITY CHECKS                       #
-#                     Cthulhu F'taghn                      #
+#                                                          #
 ############################################################
 
 #If user requests help, do not send him packing
-if [[ "$1" = "help" ]]
+if [[ "$1" = "help" ]]; 
 then
-	echo "[AWS-Secgame] AWS-Secgame (name subject to change) is a bash-and-terraform deployment framework in order to setup \"nice\" and \"fun\" challenges to sensbilize to AWS vulnerabilities caused by misconfigurations." #work in progress, insert more coffee
-cat <<EOF
-AWS SECURITY GAME
+       cat <<HELP
+############################################################
+#                                                          #
+#              AWS OFFENSIVE SECURITY GAME                 #
+#                    About and help                        #
+############################################################
+
+[AWS-Secgame] AWS-Secgame (name subject to change) is a bash-and-terraform deployment framework in order to setup "nice" and "fun" challenges to sensbilize to AWS vulnerabilities caused by misconfigurations.
 
 SYNTAX   
 	start.sh <command> argument
@@ -44,7 +39,7 @@ COMMANDS
 
 	  	> mission1
 
- 		> mission2
+		> mission2
 
 		> mission3
 
@@ -65,8 +60,8 @@ COMMANDS
 		Please note that if you create resources yourself during a mission, the program cannot delete them for you. You will have to remove them manually.
 
 		Example: ./start.sh destroy mission1-aaaaaaaaaa
-EOF
-exit 0
+HELP
+       exit 1
 fi
 
 #If user failed a configuration step, kindly remind him to go do it
