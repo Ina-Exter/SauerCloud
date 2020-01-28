@@ -1,6 +1,37 @@
 # AWS Offensive Security Game
 
-**DISCLAMER: DO NOT USE THESE IN PRODUCTION, THEY ARE VULNERABLE BY DESIGN!**
+**A tool for deploying vulnerable-by-design infrastructure on your personal AWS account for penetration testing purposes.**
+
+## What you need
+
+* Linux operating system. The software has not been tested on MacOS and I doubt it can work on Windows. WSL should be fine but untested;
+* Bash and the following binaries, always in your path:
+  * ssh
+  * scp
+  * unzip
+  * zip
+  * The AWS cli
+  * terraform v0.12
+
+## Quick Start Guide
+
+Pull the repository and change to the 
+You need to configure your default profile and IP address for the program to work properly. For this, run:
+
+`./config.sh`
+
+and follow the instructions. Once this is done, any mission can be started using:
+
+`./start.sh create missionX`
+
+A briefing will be displayed. You can find relevant files in the `missionX-id` directory that will be created (the id is a 10-character random string). You may use only what can be found in this directory, and **not in the subdirectories, nor may you use your "profile" access keys.**
+If you need help, cheat sheets are available in the `/help/cheat-sheets/` folder.
+
+Once you are done, destroy your infrastructure with:
+
+`./start.sh destroy missionX-id`
+
+Remember to delete resources you created yourself before that. Terraform will not handle them and will most likely be very distressed at the prospect.
 
 ## FAQ
 
@@ -42,7 +73,7 @@ At the moment, three are available
 
 * help
 
->This command does not take an argument. It will display a brief helptext to the user, then exit gracefully.
+This command does not take an argument. It will display a brief helptext to the user, then exit gracefully.
 
 * create
 
@@ -71,15 +102,13 @@ Please note that if you create resources yourself during a mission, the program 
 
 Once you have created a mission, you will be prompted to read the briefing in the newly created mission folder. Then, you are all set.
 
-Nb: Most of the time, using anything else than bash and the CLI is considered cheating. ;)
+Nb: Most of the time, using anything else than bash and the CLI is considered cheating. ;) You may also use only what I provide you with, not your own administrator AWS keys.
 
 ### What is an AWS account/What is AWS?
 
 This part is oriented towards people who do not really know of cloud computing and are hoping to get started with this program.
 
 Please note, however, that the challenges proposed here may be a bit complex for people who have no idea what they are looking for.
-
-**It is possible to undertake "mission 0" in order to get more familiar with AWS as a whole (subject to change and deployment).**
 
 #### What is cloud computing (in a nutshell)?
 
@@ -113,7 +142,7 @@ You will need to install AWS' tool for the CLI (aka the AWS CLI). Depending on y
 
 Once this is done, you will have to specify your account information so the CLI knows with which account (more specifically, with whose credit card...) it is working. This can be done using the following command:
 
->aws configure --profile [YOUR_PROFILE_NAME]
+`aws configure --profile [YOUR_PROFILE_NAME]`
 
 This will request you to input information. In order to get an access key and secret access key, visit the AWS console with a regular internet browser, select "IAM", and create an user **with programmatic access**. Give it sufficient privileges, and in the end you will get both keys.
 

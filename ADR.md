@@ -10,7 +10,9 @@ Long answer: Python is nice, but bash is less cumbersome (in my modest opinion) 
 
 ### Folder architecture
 
-SUBJECT TO CHANGE!!!!1!!1!!1!ONE!
+`/help` contains all you need if you ever are stuck. `/help/diagrams` needs to be curated.
+
+`/missions` contain all mission data.
 
 ## Deployment
 
@@ -27,7 +29,7 @@ Terraform also has a big advantage which I did not find (perhaps I did not look 
 
 Also: I found that CloudFormation is incredibly silent in terminal (I might have missed the --verbose option but eh), where Terraform keeps you up-to-date on what it is doing, even popping reminders every 10 seconds. I find that this is better, especially for the user that is curretly deploying potentially costy infrastructure on his account and would rather know not everything is being f\*\*\*ed-up.
 
-### Terraform file architecture
+### Terraform file architecture
 
 Files in each terraform folder are split according to the AWS service they belong to (in the console) (and very uninspiredly, the way CloudGoat does it). 
 
@@ -58,16 +60,20 @@ This mission consists of a single bucket and some data. I thought terraform woul
 
 Update: After a while, I ended up switching this mission to terraform for uniformization reasons.
 
-Legacy: As such, deployment is handled sorely using bash script; aws s3 mb, aws s3 cp, and the s3api commands "set-file-alc" and "set-bucket-acl".
+Legacy: <<<As such, deployment is handled sorely using bash script; aws s3 mb, aws s3 cp, and the s3api commands "set-file-alc" and "set-bucket-acl".
 A problem I have encountered is that setting the bucket ACL is not enough to allow users to download files. This requires the big recursive operation with set-file-acl. 
 
-The command is essentially aws s3 lb --recursive piped with set-file-acl, which sets on the entire bucket.
+The command is essentially aws s3 lb --recursive piped with set-file-acl, which sets on the entire bucket.>>>
 
 Side notes: 
 
 -The .git is in clear on the bucket, but hidden on a linux due to the dot. Heh. Also, the commits used to be in my name and got changed.
 
 -This challenge does not use the whitelist. Since it's a read-only bucket with no sensible data, I deemed that it was not worth giving a damn. Might go back on it.
+
+Further notes:
+
+-A script exists now to regenerate the s3.tf file based on the current state of the zipped bucket folder. Since there are about 31 items, this was deemed much easier. 
 
 ### Mission 2
 
@@ -109,7 +115,7 @@ The aim of this mission is to get the owner id, use it to look for the snapshot,
 
 It has to be duly noted that the snapshot must be mounted while ignoring the filesystem's uuid using a mount option. A conspicuous text file has been placed to remind people of this and prevent them from spending days researching the error message.
 
-#### Setup
+#### Setup
 
 This one is a doozy. Terraform is used up to the point of making the VPC and the instance (again the key is handled with bash).
 
@@ -123,23 +129,39 @@ After this, two entrypoints exist for privilage escalation (PrivEsc). The first 
 
 Both of those are easily setup: simply add the permission in the ec2's instance profile. Much easier than the snapshotting mess.
 
+### Mission 4
+
+#### Objectives
+
+This mission was added much later, as a means to fill the hole between mission 3 and 5. A coworker wanted to learn terraform, so I pruned the templates, and we decided together on a scenario. I would later test it.
+
+Security groups are never used or considered in other missions, so they are used here. The user's IP is filtered, and circumventing the security group requires the user to spin up a new EC2 instance and use it as a jump server. The key-pair, subnet, AMI, and so on, can be the same as that of the original instance. My coworker also spun up a web server to show taht users were filtered, and I loved the idea.
+
+Afterwards, another mode of PrivEsc is available by passing a new IAM policy to the original user. The usual admin policy works well, and allows access to a S3 bucket with the flags.
+
+#### Setup
+
+This one is fairly conventional. What ended up being a problem was to spin up the web server, and to give users the correct permissions to allow them to get the informations for the PrivEsc. Terraform ensures the whole deployment, almost no further actions are required. The user is given permissions to list security groups and the like in order to use the provided ones, rather than create a new one. Same goes for the key pair, but it is possible to create a new one if one wishes.
+
 ### Big game / Mission 5
 
-#### Objectives
+#### Objectives
 
 This mission is designed to take around two hours, and take you on a trip about all that you have learned and some, as well as giving a notion of how vertical mobility can be achieved. Vertical mobility is shifting from a set of privileges to a broader set of privilieges, by any means necessary: finding a new user with better permissions, using an EC2's instance profile, and so on. PrivEsc is a form of vertical mobility, in which you keep to a single user, however.
 
-#### Setup
+The reward consists in a closure of scenario, and pictures of my cat. She's cute, isn't she?
+
+#### Setup
 
 The mission could be split in three "layers". From the bottom-up, these are:
 
 Layer 3: the super-secret objective bucket, the DynamoDB containing the admin access keys, its handler, the security server and the lambda that monitors it.
 
-Layer 2: the whole honey-pot group, i.e. the honey-pot itself, the lambda watching it, the mail server
+Layer 2: the whole honey-pot group, i.e. the honey-pot itself, the lambda watching it, the mail server.
 
-Layer 1: the ingress. How you get the first keys, and the EC2 spoof required to get the second one.
+Layer 1: the ingress. The first keys, and either the generation of the second ones, or the EC2 SSRF to access the second user's personal bucket.
 
-Layer 1 has you use keys with the least possible privileges: a meager describe-instances at best, and slowly, you edge towards better privileges: the layer 2, with permissions on the honeypot lambda, finding ssh keys, accessing the mail server, until you manage to isolate the required attack, prepare it, and privesc to layer 3. Layer 3 has you learn some commands (notably logs and dynamodb), and the flag, but is essentially easier than layer 2.
+Layer 1 has you use keys with the least possible privileges: a meager describe-instances at best, and slowly, you edge towards better privileges: the layer 2, with permissions on the honeypot lambda, finding ssh keys, accessing the mail server, until you manage to isolate the required attack, prepare it, and privesc to layer 3. Layer 3 has you learn some commands (notably logs and dynamodb), and the flag, but is essentially easier than layer 2. Layer 2 is the beef of this mission.
 
 #### Architecture choices
 
@@ -149,10 +171,26 @@ MySQL suffers from some terrible flaws though. The fact that, when you attempt t
 
 Such delay could have been complensated by using PostGreSQL instead of MySQL, dropping the delay to around 3 minutes. However, installing a PostGreSQL client on a linux shell is an ordeal I would wish on no one. As such, it was decided to opt for a managed database service, and more specifically for DynamoDB.
 
-DynamoDB, after all, is a good choice for this application. First, it is non-relational and thus can bring you out of your comfort zone a little. Next, it also uses aws commands, which require no further tool to access, and last but not least, it is blazingly fast to deploy. The averse effect was that I had to find a way to give the user AWS keys instead of a username and a password. This is why the "DynamoDB handler" EC2 instance exists. The password allows you to access it, and it is cleared to access DynamoDB only. Still, better to deploy another EC2 than a RDS. 
+DynamoDB, after all, is a good choice for this application. First, it is non-relational and thus can bring you out of your comfort zone a little. Next, it also uses aws commands, which require no further tool to access, and last but not least, it is blazingly fast to deploy. The averse effect was that I had to find a way to give the user AWS keys instead of a username and a password. This is why the "DynamoDB handler" EC2 instance exists. The password allows you to access it, and it is cleared to access DynamoDB only. Still, better to deploy another EC2 than a RDS. Note that you can also use ec2-instance-connect, but you are not told so. 
+
+For the mail server, it was decided to create a /mail in the root of a simple linux system, rather than attempting a realistic mail server. Available clients were also greatly reduced so as not to make the search long and potentially tedious.
+
+It became a problem to track when and how the second user triggered the honey-pot. Initially, I wanted the user to ssh into it to trigger the lambda, but that would have required CloudTrail trails on the user, which are not necessarily free. Thus, I elected to change this to "taking down the instance", and hard coded the user name in the lambda. Not as realistic, but at least it's free.
+
+The mail server has an obvious bait in order to give visibility: the "NEW! Connect NOW with EC2-INSTANCE-CONNECT!" tag on the server. Since it is full of valuable information, it is recommended to go check it.
+
+Checking the lambdas, attempting to download the correct one, that has to be inferred. However, you can check the lambda role policy in order to find the group you can assign to yourself.
+
+Back in layer 1, you can either directly generate keys to access layer 2, which is easy mode but not obvious, or you can do the ec2 ssrf. This means cURLing the proxy with parameter ?url=169.254.169.254 and fiddle around in the meta-data until you find the iam keys. Then, set them, and read the bucket to get your real layer 2 credentials.
 
 ### Scenario
 
-Honestly if you need an ADR on that you are a nitpicker (and you just lost The Game).
+Honestly if you need an ADR on that you are a nitpicker.
 
 More seriously, this is a security game. It made sense that you'd be in a situation akin to a security engineer, but an ethical hacker is a much more seductive prospect, isn't it?
+
+### Flags
+
+Initially, flags were just supposed to be "you win". After a while, we added cats. A lot. And strings you could paste in flagchecker.sh.x to check them. For base64 flags, you may choose to decode them or not.
+
+Note that flagchecker.sh.x is a shell script compiled with shc -r. It should work on any linux system.
