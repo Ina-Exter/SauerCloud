@@ -6,4 +6,4 @@ mission1/resources/evilcorp-evilbucket-data/
 mission1/resources/evilcorp-evilbucket-data-backup/
 missions/mission*/resources/terraform/.terraform/*
 /mission*/resources/terraform/.terraform/*
-/mission1/resources/s3old.tf
+missions/mission1/resources/s3old.tf

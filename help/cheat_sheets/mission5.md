@@ -46,7 +46,7 @@ $ `aws configure --profile emmyselly`
 Configure your new profile.
 
 
-## Route 2: Generate new credentials for the next user
+## Route 2: Generate new credentials for the next user
 
 $ `aws --profile solus iam list-users` 
 
@@ -63,7 +63,7 @@ $ `aws configure --profile emmyselly`
 Set up the new credentials.
 
 
-## As user emmyselly (Tier 2)
+## As user emmyselly (Tier 2)
 
 $ `aws --profile emmyselly ec2 describe-instances`
 
@@ -150,11 +150,11 @@ List your groups. Notice you are now in the privileged group.
 
 ## The dynamo database (Tier 3)
 
-$ `aws --profile emmyselly ec2 describe-instances`
+$ `aws --profile emmyselly ec2 describe-instances`
 
 It is time to investigate the "dynamo-handler" instance. Note its id and ip as $ddb_handler_id and $ddb_handler_ip.
 
-## Route 1: Investigate the lambda logs
+## Route 1: Investigate the lambda logs
 
 $ `aws --profile emmyselly ec2 stop-instances --instance-id $dynamo_handler_id`
 
@@ -181,7 +181,7 @@ $ `ssh ec2-user@$dynamo_handler_ip`
 Use the password foobarbazevil to log in to the dynamo handler. Be careful that restarting the instance will have changed its public ip.
 
 
-## Route 2: Use ec2-instance-connect
+## Route 2: Use ec2-instance-connect
 
 $ `aws --profile emmyselly ec2-instance-connect send-ssh-public-key --instance-id $dynamo_handler_id --instance-os-user ec2-user --availability-zone us-east-1a --ssh-public-key file://key.pub`
 

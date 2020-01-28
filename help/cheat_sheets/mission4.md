@@ -42,7 +42,7 @@ $ `ssh -i ssh_key.pem ec2-user@$instance_private_ip`
 Connect into the filtered machine from an allowed ip.
 
 
-## Running commands from the instance
+## Running commands from the instance
 
 $ `aws iam list-users`
 
@@ -65,7 +65,9 @@ Write the access key and secret access key. Add then the security token to your 
 
  [mission4-ec2]
 aws_access_key = ASIAXXXXXXXXXXXXX
+
 aws_secret_access_key = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
 aws_session_token = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX...XXXXXXXXXXXXX==
 
 
@@ -110,6 +112,6 @@ $ `cat on_buddha.txt`
 You win! Decoding the flag is optional.
 
 
-## Remember
+## Remember
 
 **Delete anything you created before attempting to destroy the mission, especially the new instance! You can, of course, use the console or the CLI for it with your admin profile.**

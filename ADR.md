@@ -10,7 +10,9 @@ Long answer: Python is nice, but bash is less cumbersome (in my modest opinion) 
 
 ### Folder architecture
 
-SUBJECT TO CHANGE!!!!1!!1!!1!ONE!
+`/help` contains all you need if you ever are stuck. `/help/diagrams` needs to be curated.
+
+`/missions` contain all mission data.
 
 ## Deployment
 
@@ -27,7 +29,7 @@ Terraform also has a big advantage which I did not find (perhaps I did not look 
 
 Also: I found that CloudFormation is incredibly silent in terminal (I might have missed the --verbose option but eh), where Terraform keeps you up-to-date on what it is doing, even popping reminders every 10 seconds. I find that this is better, especially for the user that is curretly deploying potentially costy infrastructure on his account and would rather know not everything is being f\*\*\*ed-up.
 
-### Terraform file architecture
+### Terraform file architecture
 
 Files in each terraform folder are split according to the AWS service they belong to (in the console) (and very uninspiredly, the way CloudGoat does it). 
 
@@ -113,7 +115,7 @@ The aim of this mission is to get the owner id, use it to look for the snapshot,
 
 It has to be duly noted that the snapshot must be mounted while ignoring the filesystem's uuid using a mount option. A conspicuous text file has been placed to remind people of this and prevent them from spending days researching the error message.
 
-#### Setup
+#### Setup
 
 This one is a doozy. Terraform is used up to the point of making the VPC and the instance (again the key is handled with bash).
 
@@ -127,9 +129,9 @@ After this, two entrypoints exist for privilage escalation (PrivEsc). The first 
 
 Both of those are easily setup: simply add the permission in the ec2's instance profile. Much easier than the snapshotting mess.
 
-### Mission 4
+### Mission 4
 
-#### Objectives
+#### Objectives
 
 This mission was added much later, as a means to fill the hole between mission 3 and 5. A coworker wanted to learn terraform, so I pruned the templates, and we decided together on a scenario. I would later test it.
 
@@ -143,13 +145,13 @@ This one is fairly conventional. What ended up being a problem was to spin up th
 
 ### Big game / Mission 5
 
-#### Objectives
+#### Objectives
 
 This mission is designed to take around two hours, and take you on a trip about all that you have learned and some, as well as giving a notion of how vertical mobility can be achieved. Vertical mobility is shifting from a set of privileges to a broader set of privilieges, by any means necessary: finding a new user with better permissions, using an EC2's instance profile, and so on. PrivEsc is a form of vertical mobility, in which you keep to a single user, however.
 
 The reward consists in a closure of scenario, and pictures of my cat. She's cute, isn't she?
 
-#### Setup
+#### Setup
 
 The mission could be split in three "layers". From the bottom-up, these are:
 
@@ -187,7 +189,7 @@ Honestly if you need an ADR on that you are a nitpicker.
 
 More seriously, this is a security game. It made sense that you'd be in a situation akin to a security engineer, but an ethical hacker is a much more seductive prospect, isn't it?
 
-### Flags
+### Flags
 
 Initially, flags were just supposed to be "you win". After a while, we added cats. A lot. And strings you could paste in flagchecker.sh.x to check them. For base64 flags, you may choose to decode them or not.
 

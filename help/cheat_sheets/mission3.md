@@ -30,7 +30,7 @@ $ `aws --region us-east-1 ec2 create-volume --availability-zone us-east-1a --sna
 Create an EBS volume using this snapshot. Its id is called $ebs_id.
 
 
-## Route 1: Mount the volume on the current instance
+## Route 1: Mount the volume on the current instance
 
 $ `aws --region us-east-1 ec2 attach-volume --device sdh --volume-id $ebs_id --instance-id $instance_id`
 
@@ -42,7 +42,7 @@ $ `sudo su; mount -t xfs -o nouuid /dev/xvdh1 /mnt`
 Only root can use -o options on mount, so switch to root. Mount xvdh1 (partition of sdh) on /mnt while specifying the filesystem type (xfs) and avoiding uuid checks (-o nouuid). This is required since both volumes are actually the same at different points in time, so their uuid are the same.
 
 
-## Route 2: Create a new instance and mount the volume there
+## Route 2: Create a new instance and mount the volume there
 
 $ `aws --region us-east-1 ec2 describe-images --owners amazon --filters 'Name=name,Values=amzn-ami-hvm-????.??.?.????????-x86_64-gp2' 'Name=state,Values=available' --query 'reverse(sort_by(Images, &CreationDate))[:1].ImageId' --output text`
 
@@ -82,6 +82,6 @@ $ `cd mnt/home/ec2-user; ls; cd chonks; cat flag.txt`
 You win! Note that the instance has the required privileges to generate administrator AWS keys...
 
 
-## Remember
+## Remember
 
 **Delete anything you created before attempting to destroy the mission. This includes volumes, instances, and so on. The snapshot is destroyed by the script, so do not worry about that.**

