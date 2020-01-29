@@ -1,15 +1,15 @@
 #User
 resource "aws_iam_user" "AWS-secgame-mission4-iam-user-juan" {
-    name = "juan-${var.id}"
-    
-    tags = {
-		name = "AWS-secgame-mission4-iam-user-juan-${var.id}"
-    }
+  name = "juan-${var.id}"
+
+  tags = {
+    name = "AWS-secgame-mission4-iam-user-juan-${var.id}"
+  }
 }
 
 #User policy
 resource "aws_iam_policy" "AWS-secgame-mission4-juan-userpolicy" {
-  name = "AWS-secgame-mission4-juan-userpolicy-${var.id}"
+  name   = "AWS-secgame-mission4-juan-userpolicy-${var.id}"
   policy = <<-POLICY
     {
     "Version": "2012-10-17",
@@ -39,6 +39,6 @@ resource "aws_iam_policy_attachment" "AWS-secgame-mission5-policyattachment-user
 }
 
 #Generate keys
-resource "aws_iam_access_key" "AWS-secgame-mission4-iam-user-juan-keys"{
-	user = aws_iam_user.AWS-secgame-mission4-iam-user-juan.name
+resource "aws_iam_access_key" "AWS-secgame-mission4-iam-user-juan-keys" {
+  user = aws_iam_user.AWS-secgame-mission4-iam-user-juan.name
 }

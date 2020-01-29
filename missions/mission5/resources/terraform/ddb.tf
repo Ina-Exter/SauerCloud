@@ -1,13 +1,13 @@
 resource "aws_dynamodb_table" "AWSkeys" {
-    name = "AWSkeys-${var.id}"
-    read_capacity = 5
-    write_capacity = 5
-    hash_key = "User"
+  name           = "AWSkeys-${var.id}"
+  read_capacity  = 5
+  write_capacity = 5
+  hash_key       = "User"
 
-    attribute {
-        name = "User"
-        type = "S"
-    }
+  attribute {
+    name = "User"
+    type = "S"
+  }
 }
 
 resource "aws_dynamodb_table_item" "hades-keys" {

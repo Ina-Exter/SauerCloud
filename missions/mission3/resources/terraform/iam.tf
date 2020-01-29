@@ -1,8 +1,8 @@
 #IAMR
 resource "aws_iam_role" "AWS-secgame-mission3-ec2role" {
-    name               = "AWS-secgame-mission3-ec2role-${var.id}"
-    path               = "/"
-    assume_role_policy = <<POLICY
+  name               = "AWS-secgame-mission3-ec2role-${var.id}"
+  path               = "/"
+  assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -20,7 +20,7 @@ POLICY
 
 #IAMP
 resource "aws_iam_policy" "AWS-secgame-mission3-ec2rolepolicy" {
-  name        = "AWS-secgame-mission3-ec2rolepolicy-${var.id}"
+  name = "AWS-secgame-mission3-ec2rolepolicy-${var.id}"
 
   policy = <<EOF
 {
@@ -72,9 +72,9 @@ resource "aws_iam_user" "AWS-secgame-mission3-eviladmin" {
 
 #Users Policy
 resource "aws_iam_policy" "AWS-secgame-mission3-eviladminpolicy" {
-  name = "AWS-secgame-mission3-eviladminpolicy-${var.id}"
+  name        = "AWS-secgame-mission3-eviladminpolicy-${var.id}"
   description = "AWS-secgame-mission3-eviladminpolicy-${var.id}"
-  policy = <<POLICY
+  policy      = <<POLICY
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -92,6 +92,6 @@ POLICY
 
 #Users Policy Attachment
 resource "aws_iam_user_policy_attachment" "AWS-secgame-mission3-eviladminpolicyattachment" {
-  user = aws_iam_user.AWS-secgame-mission3-eviladmin.name
+  user       = aws_iam_user.AWS-secgame-mission3-eviladmin.name
   policy_arn = aws_iam_policy.AWS-secgame-mission3-eviladminpolicy.arn
 }
