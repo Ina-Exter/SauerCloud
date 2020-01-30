@@ -4,7 +4,7 @@
 
 ## What you need
 
-* Linux operating system. The software has not been tested on MacOS and I doubt it can work on Windows. WSL should be fine but untested;
+* Linux operating system. The software has not been tested on MacOS and I doubt it can work on Windows. WSL should be fine but untested.
 * Bash and the following binaries, always in your path:
   * ssh
   * scp
