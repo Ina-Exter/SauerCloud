@@ -104,6 +104,8 @@ Please note that if you create resources yourself during a mission, the program 
 
 Once you have created a mission, you will be prompted to read the briefing in the newly created mission folder. Then, you are all set.
 
+In missions, when you are done, you may find a "flag". Simply run ./flagchecker.sh.x and answer the quesions accordingly to check that you indeed completed the mission!
+
 Nb: Most of the time, using anything else than bash and the CLI is considered cheating. ;) You may also use only what I provide you with, not your own administrator AWS keys.
 
 ### What is an AWS account/What is AWS?
