@@ -1,4 +1,5 @@
-# AWS Offensive Security Game
+# SauerCloud
+An offensive security game for use with AWS 
 
 **A tool for deploying vulnerable-by-design infrastructure on your personal AWS account for penetration testing purposes.**
 
@@ -46,10 +47,11 @@ Most of the time, there are one (or two) go-to ways to go through each mission, 
 ### Who made it?
 
 
-### Inspirations
+### Inspirations and acknowledgements
 
-The programmer would like to thank CloudGoat (by RhinoSecurityLabs) and flaws.cloud. This is a free inspiration of their work, technically devoid of plagiarism.
-Those two also make great learning resources and I recommand them warmly.
+This program was inspired by flaws.cloud, which was created by Summit Route. It is a great learning resource, for which I thank them.
+I would also like to thank CloudGoat, by RhinoSecurityLabs, which inspired the format of this program, and is a fantastic way to delve into AWS misconfigurations.
+I recommend those two learning resources warmly.
 
 ### How do I use it?
 

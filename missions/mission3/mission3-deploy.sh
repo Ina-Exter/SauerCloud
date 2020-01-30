@@ -2,17 +2,17 @@
 
 ##Sanity check: print user profile, id, ip
 ##May delete it afterwards
-echo "[AWS-Secgame] Master account profile: $SECGAME_USER_PROFILE"
-echo "[AWS-Secgame] Session ID: $SECGAME_USER_ID"
-echo "[AWS-Secgame] User IP: $USER_IP"
+echo "[SauerCloud] Master account profile: $SECGAME_USER_PROFILE"
+echo "[SauerCloud] Session ID: $SECGAME_USER_ID"
+echo "[SauerCloud] User IP: $USER_IP"
 
 #ALWAYS assume that this script will run in the mission folder mission2-user_id
 
 #A ssh private key should also be generated and passed as parameter.
-echo "[AWS-Secgame] Generating ssh key for ec2"
-if ! aws --profile "$SECGAME_USER_PROFILE" ec2 create-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID" --query 'KeyMaterial' --output text >> resources/ssh_key.pem
+echo "[SauerCloud] Generating ssh key for ec2"
+if ! aws --profile "$SECGAME_USER_PROFILE" ec2 create-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID" --query 'KeyMaterial' --output text >> resources/ssh_key.pem
 then
-	echo "[AWS-Secgame] Non-zero return code on operation. Abort."
+	echo "[SauerCloud] Non-zero return code on operation. Abort."
 	cd .. || exit
 	#No resource has been created, just delete the folder
 	if [[ ! -d "trash" ]]
@@ -27,15 +27,15 @@ chmod 400 resources/ssh_key.pem
 
 #Initialize terraform
 cd resources/terraform || exit
-echo "[AWS-Secgame] Initializing terraform."
+echo "[SauerCloud] Initializing terraform."
 terraform init
 
 #Pass the required variables (profile, region?, id, key) to terraform and plan
 terraform plan -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 
 #IF AND ONLY IF user consents, deploy
-echo "[AWS-Secgame] Is this setup acceptable? (yes/no)"
-echo "[AWS-Secgame] Only \"yes\" will be accepted as confirmation."
+echo "[SauerCloud] Is this setup acceptable? (yes/no)"
+echo "[SauerCloud] Only \"yes\" will be accepted as confirmation."
 read -r answer
 if [[ ! $answer == "yes" ]]
 then
@@ -47,7 +47,7 @@ then
         	mkdir trash
 	fi
 	mv "./mission3-$SECGAME_USER_ID" ./trash/
-	aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+	aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
 	exit 2
 fi
 
@@ -55,7 +55,7 @@ fi
 #check terraform apply's return code, act depending on it. 0 is for a flawless execution, 1 means an error has arisen
 if ! terraform apply -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 then
-	echo "[AWS-Secgame] Non-zero return code on terraform apply. Rolling back."
+	echo "[SauerCloud] Non-zero return code on terraform apply. Rolling back."
 	terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 	cd ../../.. || exit
 	#If trash doesn't exist, make it
@@ -64,7 +64,7 @@ then
         	mkdir trash
 	fi
 	mv "./mission3-$SECGAME_USER_ID" ./trash/
-	aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+	aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
 	exit 2
 fi
 
@@ -77,17 +77,17 @@ ec2_id=$(terraform output ec2_instance_id)
 cd .. || exit #now in resources
 
 #wait, else scp will get all pissy on me
-echo "[AWS-Secgame] Waiting for completion of EC2 startup (8s)."
+echo "[SauerCloud] Waiting for completion of EC2 startup (8s)."
 sleep 8
 
 #scp all the required data in
-echo "[AWS-Secgame] Importing instance data."
+echo "[SauerCloud] Importing instance data."
 if ! scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q -r ./chonks "ec2-user@$ec2_ip:/home/ec2-user/"
 then
-	echo "[AWS-Secgame] Unable to safely copy files on instance. Retrying."
+	echo "[SauerCloud] Unable to safely copy files on instance. Retrying."
 	if ! scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q -r ./chonks "ec2-user@$ec2_ip:/home/ec2-user/"
 	then
-		echo "[AWS-Secgame] Unable to safely copy files on instance (second attempt). Check your internet connection. Abort."
+		echo "[SauerCloud] Unable to safely copy files on instance (second attempt). Check your internet connection. Abort."
 		cd terraform || exit
 		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 		cd ../../.. || exit
@@ -97,17 +97,17 @@ then
    		    mkdir trash
 		fi
 		mv "./mission3-$SECGAME_USER_ID" ./trash/
-		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
 		exit 2
 	fi
 fi
 
 if ! scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q bob_todo.txt "ec2-user@$ec2_ip:/home/ec2-user/"
 then
-	echo "[AWS-Secgame] Unable to safely copy files on instance. Retrying."
+	echo "[SauerCloud] Unable to safely copy files on instance. Retrying."
 	if ! scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q bob_todo.txt "ec2-user@$ec2_ip:/home/ec2-user/"
 	then
-		echo "[AWS-Secgame] Unable to safely copy files on instance (second attempt). Check your internet connection. Abort."
+		echo "[SauerCloud] Unable to safely copy files on instance (second attempt). Check your internet connection. Abort."
 		cd terraform || exit
 		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 		cd ../../.. || exit
@@ -117,17 +117,17 @@ then
         	mkdir trash
 		fi
 		mv "./mission3-$SECGAME_USER_ID" ./trash/
-		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
 		exit 2
 	fi
 fi
 
 if ! scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q mounting_on_linux_for_evil_dummies.txt "ec2-user@$ec2_ip:/home/ec2-user/"
 then
-	echo "[AWS-Secgame] Unable to safely copy files on instance. Retrying."
+	echo "[SauerCloud] Unable to safely copy files on instance. Retrying."
 	if ! scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q bob_todo.txt "ec2-user@$ec2_ip:/home/ec2-user/"
 	then
-		echo "[AWS-Secgame] Unable to safely copy files on instance (second attempt). Check your internet connection. Abort."
+		echo "[SauerCloud] Unable to safely copy files on instance (second attempt). Check your internet connection. Abort."
 		cd terraform || exit
 		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 		cd ../../.. || exit
@@ -137,21 +137,21 @@ then
 				mkdir trash
 		fi
 		mv "./mission3-$SECGAME_USER_ID" ./trash/
-		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
 		exit 2
 	fi
 fi
 
 
 #Snapshot
-echo "[AWS-Secgame] Snapshotting instance."
+echo "[SauerCloud] Snapshotting instance."
 volumeID=$(aws --profile "$SECGAME_USER_PROFILE" ec2 describe-instance-attribute --attribute blockDeviceMapping --instance-id "$ec2_id" --query 'BlockDeviceMappings[0].Ebs.VolumeId' --output text)
 if ! snapshotID=$(aws --profile "$SECGAME_USER_PROFILE" ec2 create-snapshot --volume-id "$volumeID" --query 'SnapshotId' --output text)
 then
-	echo "[AWS-Secgame] Unable to generate instance snapshot. Retrying."
+	echo "[SauerCloud] Unable to generate instance snapshot. Retrying."
 	if ! snapshotID=$(aws --profile "$SECGAME_USER_PROFILE" ec2 create-snapshot --volume-id "$volumeID" --query 'SnapshotId' --output text)
 	then
-		echo "[AWS-Secgame] Unable to generate instance snapshot (second attempt). Abort."
+		echo "[SauerCloud] Unable to generate instance snapshot (second attempt). Abort."
 		cd terraform || exit
 		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 		cd ../../.. || exit
@@ -161,7 +161,7 @@ then
 				mkdir trash
 		fi
 		mv "./mission3-$SECGAME_USER_ID" ./trash/
-		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
 		exit 2
 	fi
 fi
@@ -169,13 +169,13 @@ fi
 echo "$snapshotID" >> snapshotid.txt
 
 #scp cleanup script and execute it
-echo "[AWS-Secgame] Setting up instance environment"
+echo "[SauerCloud] Setting up instance environment"
 if ! scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q cleanup_script.sh "ec2-user@$ec2_ip:/home/ec2-user/"
 then
-	echo "[AWS-Secgame] Unable to safely send cleanup_script.sh to instance. Reutrying."
+	echo "[SauerCloud] Unable to safely send cleanup_script.sh to instance. Reutrying."
 	if ! scp -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q cleanup_script.sh "ec2-user@$ec2_ip:/home/ec2-user/"
 	then
-		echo "[AWS-Secgame] Unable to safely send cleanup_script.sh to instance (second attempt). Abort."
+		echo "[SauerCloud] Unable to safely send cleanup_script.sh to instance (second attempt). Abort."
 		cd terraform || exit
 		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 		cd ../../.. || exit
@@ -185,7 +185,7 @@ then
 				mkdir trash
 		fi
 		mv "./mission3-$SECGAME_USER_ID" ./trash/
-		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
 		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-snapshot --snapshot-id "$snapshotID"
 		exit 2
 	fi
@@ -193,10 +193,10 @@ fi
 
 if ! ssh -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q  "ec2-user@$ec2_ip" 'chmod u+x cleanup_script.sh; ./cleanup_script.sh; exit'
 then
-	echo "[AWS-Secgame] Unable to start remote cleanup script. Retrying."
+	echo "[SauerCloud] Unable to start remote cleanup script. Retrying."
 	if ! ssh -i "ssh_key.pem" -o "StrictHostKeyChecking=no" -q  "ec2-user@$ec2_ip" 'chmod u+x cleanup_script.sh; ./cleanup_script.sh; exit'
 	then	
-		echo "[AWS-Secgame] Unable to start remote cleanup script (second attempt). Abort."
+		echo "[SauerCloud] Unable to start remote cleanup script (second attempt). Abort."
 		cd terraform || exit
 		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 		cd ../../.. || exit
@@ -206,7 +206,7 @@ then
 				mkdir trash
 		fi
 		mv "./mission3-$SECGAME_USER_ID" ./trash/
-		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "AWS-secgame-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
 		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-snapshot --snapshot-id "$snapshotID"
 		exit 2
 	fi
@@ -236,7 +236,7 @@ Instance ip address: $ec2_ip
 PS: Remember, agent. If you create any resources yourself, delete them before deleting the mission. Terraform will not be able to handle them.
 " >> briefing.txt
 
-echo "[AWS-Secgame] Mission 3 deployment complete. Mission folder is ./mission3-$SECGAME_USER_ID. Read the briefing to begin, a copy can be found in the mission folder."
+echo "[SauerCloud] Mission 3 deployment complete. Mission folder is ./mission3-$SECGAME_USER_ID. Read the briefing to begin, a copy can be found in the mission folder."
 
 echo "##############################################################################################"
 echo "#                                                                                            #"

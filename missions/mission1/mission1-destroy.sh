@@ -2,40 +2,40 @@
 
 ##Sanity check: print user profile, id, ip
 ##May delete it afterwards
-echo "[AWS-Secgame] Master account profile: $SECGAME_USER_PROFILE"
-echo "[AWS-Secgame] Session ID: $SECGAME_USER_ID"
-echo "[AWS-Secgame] User IP: $USER_IP"
+echo "[SauerCloud] Master account profile: $SECGAME_USER_PROFILE"
+echo "[SauerCloud] Session ID: $SECGAME_USER_ID"
+echo "[SauerCloud] User IP: $USER_IP"
 
 #ALWAYS assume this will run from the mission dir!
 error_flag=0
 
 #Request confirmation
-echo "[AWS-Secgame] Destroy mission1-$SECGAME_USER_ID? (yes/no)"
-echo "[AWS-Secgame] Only \"yes\" will be accepted as confirmation."
+echo "[SauerCloud] Destroy mission1-$SECGAME_USER_ID? (yes/no)"
+echo "[SauerCloud] Only \"yes\" will be accepted as confirmation."
 read -r answer
 if [[ ! $answer == "yes" ]]
 then
-	echo "[AWS-Secgame] Abort requested. Restoring target folder."
+	echo "[SauerCloud] Abort requested. Restoring target folder."
 	cd ../../ || exit
 	mv "./trash/mission1-$SECGAME_USER_ID" ./
 	exit 2
 fi
 
 #destroy terraform
-echo "[AWS-Secgame] Destroying terraform resources"
+echo "[SauerCloud] Destroying terraform resources"
 cd resources/terraform || exit
 
 #check terraform destroy's return code, act depending on it. 0 is for a flawless execution, 1 means an error has arisen
 if ! terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE"
 then
-	echo "[AWS-Secgame] Non-zero return code on terraform destroy. There might be a problem. Consider destroying by hand (move to /trash/mission1-$SECGAME_USER_ID/resources/terraform and use terraform destroy, or destroy your resources by hand on the console."
+	echo "[SauerCloud] Non-zero return code on terraform destroy. There might be a problem. Consider destroying by hand (move to /trash/mission1-$SECGAME_USER_ID/resources/terraform and use terraform destroy, or destroy your resources by hand on the console."
 	error_flag=1
 fi
 
 if [[ "$error_flag" -eq 1 ]]
 then
-	echo "[AWS-Secgame] Mission 1 destroy failed somewhere. Error messages should help you fix this."
+	echo "[SauerCloud] Mission 1 destroy failed somewhere. Error messages should help you fix this."
 	exit 1
 fi
-echo "[AWS-Secgame] Mission 1 destroy complete."
+echo "[SauerCloud] Mission 1 destroy complete."
 exit 0

@@ -1,58 +1,58 @@
 #VPC
-resource "aws_vpc" "AWS-secgame-mission4-vpc" {
+resource "aws_vpc" "SauerCloud-mission4-vpc" {
   cidr_block           = "192.168.0.0/24"
   enable_dns_hostnames = false
   enable_dns_support   = true
   instance_tenancy     = "default"
 
   tags = {
-    Name = "AWS-secgame-mission4-vpc-${var.id}"
+    Name = "SauerCloud-mission4-vpc-${var.id}"
   }
 }
 
 #IGW
-resource "aws_internet_gateway" "AWS-secgame-mission4-igw" {
-  vpc_id = aws_vpc.AWS-secgame-mission4-vpc.id
+resource "aws_internet_gateway" "SauerCloud-mission4-igw" {
+  vpc_id = aws_vpc.SauerCloud-mission4-vpc.id
 
   tags = {
-    Name = "AWS-secgame-mission4-igw-${var.id}"
+    Name = "SauerCloud-mission4-igw-${var.id}"
   }
 }
 
 #Subnets
-resource "aws_subnet" "AWS-secgame-mission4-subnet" {
-  vpc_id                  = aws_vpc.AWS-secgame-mission4-vpc.id
+resource "aws_subnet" "SauerCloud-mission4-subnet" {
+  vpc_id                  = aws_vpc.SauerCloud-mission4-vpc.id
   cidr_block              = "192.168.0.0/24"
   availability_zone       = "us-east-1a"
   map_public_ip_on_launch = false
 
   tags = {
-    Name = "AWS-secgame-mission4-subnet-${var.id}"
+    Name = "SauerCloud-mission4-subnet-${var.id}"
   }
 }
 
 #RTB
-resource "aws_route_table" "AWS-secgame-mission4-routing-table" {
+resource "aws_route_table" "SauerCloud-mission4-routing-table" {
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.AWS-secgame-mission4-igw.id
+    gateway_id = aws_internet_gateway.SauerCloud-mission4-igw.id
   }
-  vpc_id = aws_vpc.AWS-secgame-mission4-vpc.id
+  vpc_id = aws_vpc.SauerCloud-mission4-vpc.id
   tags = {
-    Name = "AWS-secgame-mission4-routing-table-${var.id}"
+    Name = "SauerCloud-mission4-routing-table-${var.id}"
   }
 }
 
 #RTA
-resource "aws_route_table_association" "AWS-secgame-mission4-rta" {
-  subnet_id      = aws_subnet.AWS-secgame-mission4-subnet.id
-  route_table_id = aws_route_table.AWS-secgame-mission4-routing-table.id
+resource "aws_route_table_association" "SauerCloud-mission4-rta" {
+  subnet_id      = aws_subnet.SauerCloud-mission4-subnet.id
+  route_table_id = aws_route_table.SauerCloud-mission4-routing-table.id
 }
 
 #NACL
-resource "aws_network_acl" "AWS-secgame-mission4-acl" {
-  vpc_id     = aws_vpc.AWS-secgame-mission4-vpc.id
-  subnet_ids = [aws_subnet.AWS-secgame-mission4-subnet.id]
+resource "aws_network_acl" "SauerCloud-mission4-acl" {
+  vpc_id     = aws_vpc.SauerCloud-mission4-vpc.id
+  subnet_ids = [aws_subnet.SauerCloud-mission4-subnet.id]
 
   ingress {
     from_port  = 0
@@ -73,6 +73,6 @@ resource "aws_network_acl" "AWS-secgame-mission4-acl" {
   }
 
   tags = {
-    Name = "AWS-secgame-mission4-acl-${var.id}"
+    Name = "SauerCloud-mission4-acl-${var.id}"
   }
 }

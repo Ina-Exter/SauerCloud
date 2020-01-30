@@ -2,9 +2,9 @@
 
 ##Sanity check: print user profile, id, ip
 ##May delete it afterwards
-echo "[AWS-Secgame] Master account profile: $SECGAME_USER_PROFILE"
-echo "[AWS-Secgame] Session ID: $SECGAME_USER_ID"
-echo "[AWS-Secgame] User IP: $USER_IP"
+echo "[SauerCloud] Master account profile: $SECGAME_USER_PROFILE"
+echo "[SauerCloud] Session ID: $SECGAME_USER_ID"
+echo "[SauerCloud] User IP: $USER_IP"
 
 #Given the extremely light nature of this script, the deployment will be fully handled with bash script and AWS cli, and not with terraform.
 #Note that ALL commands are run with --quiet so as to avoid spoiling the user.
@@ -12,13 +12,13 @@ echo "[AWS-Secgame] User IP: $USER_IP"
 #ALWAYS assume that this script will run in the mission folder mission1-user_id
 
 #Git data is zipped. Unzip it before starting terraform
-echo "[AWS-Secgame] Unzipping data."
+echo "[SauerCloud] Unzipping data."
 cd resources || exit
 
 #check return code
 if ! unzip -qq evilcorp-evilbucket-data.zip
 then
-	echo "[AWS-Secgame] Non-zero return code on file extraction. Abort."
+	echo "[SauerCloud] Non-zero return code on file extraction. Abort."
 	cd ../.. || exit
 	#If trash doesn't exist, make it
 	if [[ ! -d "trash" ]]
@@ -32,19 +32,19 @@ fi
 
 #Initialize terraform
 cd terraform || exit
-echo "[AWS-Secgame] Initializing terraform."
+echo "[SauerCloud] Initializing terraform."
 terraform init
 
 #Pass the required variables (profile, region?, id, key) to terraform and plan
 terraform plan -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID"
 
 #IF AND ONLY IF user consents, deploy
-echo "[AWS-Secgame] Is this setup acceptable? (yes/no)"
-echo "[AWS-Secgame] Only \"yes\" will be accepted as confirmation."
+echo "[SauerCloud] Is this setup acceptable? (yes/no)"
+echo "[SauerCloud] Only \"yes\" will be accepted as confirmation."
 read -r answer
 if [[ ! $answer == "yes" ]]
 then
-	echo "[AWS-Secgame] Abort requested. Destroying target folder."
+	echo "[SauerCloud] Abort requested. Destroying target folder."
 	cd ../../.. || exit
 	#If trash doesn't exist, make it
 	if [[ ! -d "trash" ]]
@@ -59,8 +59,8 @@ fi
 #check terraform apply's return code, act depending on it. 0 is for a flawless execution, 1 means an error has arisen
 if ! terraform apply -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID"
 then
-	echo "[AWS-Secgame] Non-zero return code on terraform apply. Rolling back."
-	echo "[AWS-Secgame] If this problem happened because of s3 files being incorrectly listed in terraform or being not found, try running the \"create_s3_tf.sh\" script in mission1/resources."
+	echo "[SauerCloud] Non-zero return code on terraform apply. Rolling back."
+	echo "[SauerCloud] If this problem happened because of s3 files being incorrectly listed in terraform or being not found, try running the \"create_s3_tf.sh\" script in mission1/resources."
 	terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID"
 	cd ../../.. || exit
 	#If trash doesn't exist, make it
@@ -85,7 +85,7 @@ Word has it that they are plotting something. Something bad. However, our inform
 Our guy working at Amazon Web Services reported seeing the name of Evilcorp passing by in an S3 report. There may be something to see. \
 Look up their evilcorp-evilbucket-$SECGAME_USER_ID bucket. There should be interesting files on there, and a hint regarding their plans..." >> briefing.txt
 
-echo "[AWS-Secgame] Mission 1 deployment complete. Mission folder is ./mission1-$SECGAME_USER_ID. Read the briefing to begin, a copy can be found in the mission folder."
+echo "[SauerCloud] Mission 1 deployment complete. Mission folder is ./mission1-$SECGAME_USER_ID. Read the briefing to begin, a copy can be found in the mission folder."
 
 echo "##############################################################################################"
 echo "#                                                                                            #"

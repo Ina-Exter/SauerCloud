@@ -1,6 +1,6 @@
 #IAMR
-resource "aws_iam_role" "AWS-secgame-mission2-ec2adminrole" {
-  name               = "AWS-secgame-mission2-ec2adminrole-${var.id}"
+resource "aws_iam_role" "SauerCloud-mission2-ec2adminrole" {
+  name               = "SauerCloud-mission2-ec2adminrole-${var.id}"
   path               = "/"
   assume_role_policy = <<POLICY
 {
@@ -18,8 +18,8 @@ resource "aws_iam_role" "AWS-secgame-mission2-ec2adminrole" {
 POLICY
 }
 
-resource "aws_iam_role" "AWS-secgame-mission2-ec2listrole" {
-  name               = "AWS-secgame-mission2-ec2listrole-${var.id}"
+resource "aws_iam_role" "SauerCloud-mission2-ec2listrole" {
+  name               = "SauerCloud-mission2-ec2listrole-${var.id}"
   path               = "/"
   assume_role_policy = <<POLICY
 {
@@ -38,8 +38,8 @@ POLICY
 }
 
 #IAMP
-resource "aws_iam_policy" "AWS-secgame-mission2-ec2listrolepolicy" {
-  name = "AWS-secgame-mission2-ec2listrolepolicy-${var.id}"
+resource "aws_iam_policy" "SauerCloud-mission2-ec2listrolepolicy" {
+  name = "SauerCloud-mission2-ec2listrolepolicy-${var.id}"
 
   policy = <<EOF
 {
@@ -57,8 +57,8 @@ resource "aws_iam_policy" "AWS-secgame-mission2-ec2listrolepolicy" {
 EOF
 }
 
-resource "aws_iam_policy" "AWS-secgame-mission2-ec2adminrolepolicy" {
-  name = "AWS-secgame-mission2-ec2adminrolepolicy-${var.id}"
+resource "aws_iam_policy" "SauerCloud-mission2-ec2adminrolepolicy" {
+  name = "SauerCloud-mission2-ec2adminrolepolicy-${var.id}"
 
   policy = <<EOF
 {
@@ -77,32 +77,32 @@ EOF
 }
 
 #IAMPR
-resource "aws_iam_role_policy_attachment" "AWS-secgame-mission2-ec2adminrolepolicyattachment" {
-  role       = aws_iam_role.AWS-secgame-mission2-ec2adminrole.name
-  policy_arn = aws_iam_policy.AWS-secgame-mission2-ec2adminrolepolicy.arn
+resource "aws_iam_role_policy_attachment" "SauerCloud-mission2-ec2adminrolepolicyattachment" {
+  role       = aws_iam_role.SauerCloud-mission2-ec2adminrole.name
+  policy_arn = aws_iam_policy.SauerCloud-mission2-ec2adminrolepolicy.arn
 }
 
-resource "aws_iam_role_policy_attachment" "AWS-secgame-mission2-ec2listrolepolicyattachment" {
-  role       = aws_iam_role.AWS-secgame-mission2-ec2listrole.name
-  policy_arn = aws_iam_policy.AWS-secgame-mission2-ec2listrolepolicy.arn
+resource "aws_iam_role_policy_attachment" "SauerCloud-mission2-ec2listrolepolicyattachment" {
+  role       = aws_iam_role.SauerCloud-mission2-ec2listrole.name
+  policy_arn = aws_iam_policy.SauerCloud-mission2-ec2listrolepolicy.arn
 }
 
 #IAMIP
-resource "aws_iam_instance_profile" "AWS-secgame-mission2-ec2admininstanceprofile" {
-  name = "AWS-secgame-mission2-ec2admininstanceprofile-${var.id}"
-  role = aws_iam_role.AWS-secgame-mission2-ec2adminrole.name
+resource "aws_iam_instance_profile" "SauerCloud-mission2-ec2admininstanceprofile" {
+  name = "SauerCloud-mission2-ec2admininstanceprofile-${var.id}"
+  role = aws_iam_role.SauerCloud-mission2-ec2adminrole.name
 }
 
-resource "aws_iam_instance_profile" "AWS-secgame-mission2-ec2listinstanceprofile" {
-  name = "AWS-secgame-mission2-ec2listinstanceprofile-${var.id}"
-  role = aws_iam_role.AWS-secgame-mission2-ec2listrole.name
+resource "aws_iam_instance_profile" "SauerCloud-mission2-ec2listinstanceprofile" {
+  name = "SauerCloud-mission2-ec2listinstanceprofile-${var.id}"
+  role = aws_iam_role.SauerCloud-mission2-ec2listrole.name
 }
 
 #SG
-resource "aws_security_group" "AWS-secgame-mission2-sg" {
-  name        = "AWS-secgame-mission2-sg-${var.id}"
+resource "aws_security_group" "SauerCloud-mission2-sg" {
+  name        = "SauerCloud-mission2-sg-${var.id}"
   description = "Allow whitelisted IP in, and other instances from same SG"
-  vpc_id      = aws_vpc.AWS-secgame-mission2-vpc.id
+  vpc_id      = aws_vpc.SauerCloud-mission2-vpc.id
 
   ingress {
     from_port   = 0
@@ -133,16 +133,16 @@ resource "aws_security_group" "AWS-secgame-mission2-sg" {
 #Key pair is handled with bash.
 
 #EC2
-resource "aws_instance" "AWS-secgame-mission2-ec2-Evil-server-for-evil-data" {
+resource "aws_instance" "SauerCloud-mission2-ec2-Evil-server-for-evil-data" {
   ami                         = "ami-0b69ea66ff7391e80"
   availability_zone           = "us-east-1a"
   ebs_optimized               = false
   instance_type               = "t2.micro"
-  iam_instance_profile        = aws_iam_instance_profile.AWS-secgame-mission2-ec2admininstanceprofile.name
+  iam_instance_profile        = aws_iam_instance_profile.SauerCloud-mission2-ec2admininstanceprofile.name
   monitoring                  = false
-  key_name                    = "AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-${var.id}"
-  subnet_id                   = aws_subnet.AWS-secgame-mission2-subnet.id
-  vpc_security_group_ids      = [aws_security_group.AWS-secgame-mission2-sg.id]
+  key_name                    = "SauerCloud-mission2-keypair-Evilcorp-Evilkeypair-${var.id}"
+  subnet_id                   = aws_subnet.SauerCloud-mission2-subnet.id
+  vpc_security_group_ids      = [aws_security_group.SauerCloud-mission2-sg.id]
   associate_public_ip_address = false
   private_ip                  = "192.168.0.219"
   source_dest_check           = true
@@ -280,20 +280,20 @@ resource "aws_instance" "AWS-secgame-mission2-ec2-Evil-server-for-evil-data" {
 EOFF
 EOF
   tags = {
-    Name = "AWS-secgame-mission2-ec2-Evil-server-for-evil-data-${var.id}"
+    Name = "SauerCloud-mission2-ec2-Evil-server-for-evil-data-${var.id}"
   }
 }
 
-resource "aws_instance" "AWS-secgame-mission2-ec2-Evil-bastion-for-evil-access" {
+resource "aws_instance" "SauerCloud-mission2-ec2-Evil-bastion-for-evil-access" {
   ami                         = "ami-0b69ea66ff7391e80"
   availability_zone           = "us-east-1a"
   ebs_optimized               = false
   instance_type               = "t2.micro"
-  iam_instance_profile        = aws_iam_instance_profile.AWS-secgame-mission2-ec2listinstanceprofile.name
+  iam_instance_profile        = aws_iam_instance_profile.SauerCloud-mission2-ec2listinstanceprofile.name
   monitoring                  = false
-  key_name                    = "AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-${var.id}"
-  subnet_id                   = aws_subnet.AWS-secgame-mission2-subnet.id
-  vpc_security_group_ids      = [aws_security_group.AWS-secgame-mission2-sg.id]
+  key_name                    = "SauerCloud-mission2-keypair-Evilcorp-Evilkeypair-${var.id}"
+  subnet_id                   = aws_subnet.SauerCloud-mission2-subnet.id
+  vpc_security_group_ids      = [aws_security_group.SauerCloud-mission2-sg.id]
   associate_public_ip_address = true
   private_ip                  = "192.168.0.188"
   source_dest_check           = true
@@ -311,10 +311,10 @@ resource "aws_instance" "AWS-secgame-mission2-ec2-Evil-bastion-for-evil-access" 
 	sudo sed -i '/PasswordAuthentication no/c\PasswordAuthentication yes' /etc/ssh/sshd_config
 	sudo service sshd restart
 		
-	echo "${var.sshprivatekey}" >> /home/ec2-user/AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-${var.id}.pem
+	echo "${var.sshprivatekey}" >> /home/ec2-user/SauerCloud-mission2-keypair-Evilcorp-Evilkeypair-${var.id}.pem
 	EOF
   tags = {
-    Name = "AWS-secgame-mission2-ec2-Evil-bastion-for-evil-access-${var.id}"
+    Name = "SauerCloud-mission2-ec2-Evil-bastion-for-evil-access-${var.id}"
   }
 }
 
