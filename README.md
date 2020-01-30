@@ -64,7 +64,7 @@ If you have no idea what I just told you means, don't panic and look at the next
 
 In order to start using this software, first run ./config.sh in order to make "profile" and "whitelist" files. Your ip is whitelisted in order to avoid someone else haphazardly getting into your account through a vulnerable app, that'd be ironic.
 
-Then, you may start any mission using start.sh **(file name subject to change)**.
+Then, you may start any mission using start.sh.
 
 Syntax:
 >./start.sh <command> argument
@@ -140,7 +140,7 @@ We will mostly use the CLI. You will have to generate CLI keys to use your accou
 
 CLI stands for command-line-interface. It essentially means you are going to work in a terminal-like environment (sorry Windows Users).
 
-You will need to install AWS' tool for the CLI (aka the AWS CLI). Depending on your distribution, there is most likely a package to get it. For debian or ubuntu users, *sudo apt-get install awscli* should work. Otherwise, you may opt for a Docker image.
+You will need to install AWS' tool for the CLI (aka the AWS CLI). Depending on your distribution, there is most likely a package to get it. For debian or ubuntu users, `sudo apt-get install awscli` should work. Otherwise, you may opt for a Docker image.
 
 Once this is done, you will have to specify your account information so the CLI knows with which account (more specifically, with whose credit card...) it is working. This can be done using the following command:
 
