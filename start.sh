@@ -16,11 +16,11 @@ then
        cat <<HELP
 ############################################################
 #                                                          #
-#              AWS OFFENSIVE SECURITY GAME                 #
+#                      SAUERCLOUD                          #
 #                    About and help                        #
 ############################################################
 
-[AWS-Secgame] AWS-Secgame (name subject to change) is a bash-and-terraform deployment framework in order to setup "nice" and "fun" challenges to sensbilize to AWS vulnerabilities caused by misconfigurations.
+[SauerCloud] SauerCloud is a bash-and-terraform deployment framework in order to setup "nice" and "fun" challenges to sensbilize to AWS vulnerabilities caused by misconfigurations.
 
 SYNTAX   
 	start.sh <command> argument
@@ -67,16 +67,16 @@ fi
 #If user failed a configuration step, kindly remind him to go do it
 if [ ! -e profile.txt ] || [ ! -e whitelist.txt ]
 then
-	echo "[AWS-Secgame] Please configure your default profile and whitelist ip before starting missions. Run ./config in order to write these files."
+	echo "[SauerCloud] Please configure your default profile and whitelist ip before starting missions. Run ./config in order to write these files."
 	exit 2
 fi
 
 #If user wrote more than 2 arguments, or less than 2 (excluding the one case with just "help", explain the error.
 if [[ 2 -ne "$#" ]]
 then
-	echo -n "[AWS-Secgame] Illegal argument error. start.sh requires exactly 2 arguments."
+	echo -n "[SauerCloud] Illegal argument error. start.sh requires exactly 2 arguments."
 	echo " Supplied $# argument(s)."
-	echo "[AWS-Secgame] See ./start.sh help to display helptext."
+	echo "[SauerCloud] See ./start.sh help to display helptext."
 	exit 2
 fi
 
@@ -97,17 +97,17 @@ test_ip=$(curl icanhazip.com --silent)
 
 if [[ ! "$USER_IP" == "$test_ip" ]]
 then
-	echo "[AWS-Secgame] Current IP address and IP address registered in whitelist.txt do not match. The security group will deny you access. Proceed? ((y)es/(n)o/(r)eplace)"
+	echo "[SauerCloud] Current IP address and IP address registered in whitelist.txt do not match. The security group will deny you access. Proceed? ((y)es/(n)o/(r)eplace)"
 	read -r ans
 	if [[ "$ans" == "y" ]] || [[ "$ans" == "yes" ]]
 	then
-		echo "[AWS-Secgame] Using whitelisted IP address. You will not be able to connect to the infrastructure if you do not have this IP address."
+		echo "[SauerCloud] Using whitelisted IP address. You will not be able to connect to the infrastructure if you do not have this IP address."
 	elif [[ "$ans" == "r" ]] || [[ "$ans" == "replace" ]]
 	then
-		echo "[AWS-Secgame] Using fetched IP address."
+		echo "[SauerCloud] Using fetched IP address."
 		export USER_IP=$test_ip
 	else
-		echo "[AWS-Secgame] Aborting. Run /config.sh to configurate IP automatically, or edit whitelist.txt yourself."
+		echo "[SauerCloud] Aborting. Run /config.sh to configurate IP automatically, or edit whitelist.txt yourself."
 		exit 2
 	fi
 fi
@@ -115,7 +115,7 @@ fi
 #Check whether the provided user profile is valid, i.e. if it is not mistyped.
 if ! aws --profile "$SECGAME_USER_PROFILE" sts get-caller-identity > /dev/null 2>&1
 then
-	echo "[AWS-Secgame] Unable to confirm validity of AWS keys, please make sure you configured the correct profile."
+	echo "[SauerCloud] Unable to confirm validity of AWS keys, please make sure you configured the correct profile."
 	exit 2
 fi
 
@@ -123,7 +123,7 @@ fi
 terraform_path=$(command -v terraform)
 if [[ "$terraform_path" == "" ]]
 then
-	echo "[AWS-Secgame] Cannot locate terraform. Please make sure terraform is installed and in a location in your PATH."
+	echo "[SauerCloud] Cannot locate terraform. Please make sure terraform is installed and in a location in your PATH."
 	exit 2
 fi
 
@@ -149,7 +149,7 @@ then
 	#Check that a startup script can be found. If not, assume mistype.
 	if [[ ! -e ./missions/$MISSION/$MISSION-deploy.sh ]]
 	then
-		echo "[AWS-Secgame] Cannot find startup script for mission $MISSION. Please check syntax and reiterate."
+		echo "[SauerCloud] Cannot find startup script for mission $MISSION. Please check syntax and reiterate."
 		exit 2
 	fi
 	#Make a mission directory, copy the contents of the resources in it, and get in
@@ -177,20 +177,20 @@ then
 	#Check if the folder actually exists
 	if [[ ! -e $folder_name ]]
 	then
-		echo "[AWS-Secgame] Cannot find destroy target. Please make sure you typed the correct folder name."
+		echo "[SauerCloud] Cannot find destroy target. Please make sure you typed the correct folder name."
 		exit 2
 	fi
 	#Check if mission name is legal. If not, assume mistype
 	if [[ ! -e ./$folder_name/$mission-destroy.sh ]]
 	then
-		echo "[AWS-Secgame] Cannot find destroy script for mission $mission. Please check syntax and reiterate."
+		echo "[SauerCloud] Cannot find destroy script for mission $mission. Please check syntax and reiterate."
 		exit 2
 	fi
 	#Check that the user is not trying to run it on the mission (resource) folder
 	if [[ "$mission" = "$SECGAME_USER_ID" ]]
 	then
-		echo "[AWS-Secgame] Invalid session ID, please do not attempt to destroy any folder."
-		echo "[AWS-Secgame] Destroy structure is ./start.sh destroy missionX-aaaaaaaaaa."
+		echo "[SauerCloud] Invalid session ID, please do not attempt to destroy any folder."
+		echo "[SauerCloud] Destroy structure is ./start.sh destroy missionX-aaaaaaaaaa."
 		exit 2
 	fi
 
@@ -209,6 +209,6 @@ then
 	# shellcheck disable=SC1090
 	source "$mission-destroy.sh"
 else #User can't use a keyboard to save their lives
-	echo "[AWS-Secgame] Invalid command. Command should either be create or destroy. See ./start.sh help for further information."
+	echo "[SauerCloud] Invalid command. Command should either be create or destroy. See ./start.sh help for further information."
 	exit 2
 fi

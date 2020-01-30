@@ -32,7 +32,7 @@ $ `sudo su`
 The current user is sudoer.
 
 
-$ `cd /home/ec2-user; chmod 400 AWS-secgame-mission2-keypair-Evilcorp-Evilkeypair-$id`
+$ `cd /home/ec2-user; chmod 400 SauerCloud-mission2-keypair-Evilcorp-Evilkeypair-$id`
 
 The key is stored in the home dir.
 

