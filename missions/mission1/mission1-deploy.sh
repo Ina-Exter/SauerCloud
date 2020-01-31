@@ -2,8 +2,8 @@
 
 ##Sanity check: print user profile, id, ip
 ##May delete it afterwards
-echo "[SauerCloud] Master account profile: $SECGAME_USER_PROFILE"
-echo "[SauerCloud] Session ID: $SECGAME_USER_ID"
+echo "[SauerCloud] Master account profile: $SAUERCLOUD_USER_PROFILE"
+echo "[SauerCloud] Session ID: $SAUERCLOUD_USER_ID"
 echo "[SauerCloud] User IP: $USER_IP"
 
 #Given the extremely light nature of this script, the deployment will be fully handled with bash script and AWS cli, and not with terraform.
@@ -25,7 +25,7 @@ then
 	then
         	mkdir trash
 	fi
-	mv "./mission1-$SECGAME_USER_ID" ./trash/
+	mv "./mission1-$SAUERCLOUD_USER_ID" ./trash/
 	exit 2
 fi
 
@@ -36,7 +36,7 @@ echo "[SauerCloud] Initializing terraform."
 terraform init
 
 #Pass the required variables (profile, region?, id, key) to terraform and plan
-terraform plan -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID"
+terraform plan -var="profile=$SAUERCLOUD_USER_PROFILE" -var="id=$SAUERCLOUD_USER_ID"
 
 #IF AND ONLY IF user consents, deploy
 echo "[SauerCloud] Is this setup acceptable? (yes/no)"
@@ -51,24 +51,24 @@ then
 	then
         	mkdir trash
 	fi
-	mv "./mission1-$SECGAME_USER_ID" ./trash/
+	mv "./mission1-$SAUERCLOUD_USER_ID" ./trash/
 	exit 2
 fi
 
 #DEPLOYYYYYYYYYYYYYYYYYYYY
 #check terraform apply's return code, act depending on it. 0 is for a flawless execution, 1 means an error has arisen
-if ! terraform apply -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID"
+if ! terraform apply -auto-approve -var="profile=$SAUERCLOUD_USER_PROFILE" -var="id=$SAUERCLOUD_USER_ID"
 then
 	echo "[SauerCloud] Non-zero return code on terraform apply. Rolling back."
 	echo "[SauerCloud] If this problem happened because of s3 files being incorrectly listed in terraform or being not found, try running the \"create_s3_tf.sh\" script in mission1/resources."
-	terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID"
+	terraform destroy -auto-approve -var="profile=$SAUERCLOUD_USER_PROFILE" -var="id=$SAUERCLOUD_USER_ID"
 	cd ../../.. || exit
 	#If trash doesn't exist, make it
 	if [[ ! -d "trash" ]]
 	then
         	mkdir trash
 	fi
-	mv "./mission1-$SECGAME_USER_ID" ./trash/
+	mv "./mission1-$SAUERCLOUD_USER_ID" ./trash/
 	exit 2
 fi
 
@@ -83,9 +83,9 @@ touch briefing.txt
 echo "Greetings, agent. Our company received strange reports regarding another large-scale, multinational company called EvilCorp. \
 Word has it that they are plotting something. Something bad. However, our informants have found a lead. \
 Our guy working at Amazon Web Services reported seeing the name of Evilcorp passing by in an S3 report. There may be something to see. \
-Look up their evilcorp-evilbucket-$SECGAME_USER_ID bucket. There should be interesting files on there, and a hint regarding their plans..." >> briefing.txt
+Look up their evilcorp-evilbucket-$SAUERCLOUD_USER_ID bucket. There should be interesting files on there, and a hint regarding their plans..." >> briefing.txt
 
-echo "[SauerCloud] Mission 1 deployment complete. Mission folder is ./mission1-$SECGAME_USER_ID. Read the briefing to begin, a copy can be found in the mission folder."
+echo "[SauerCloud] Mission 1 deployment complete. Mission folder is ./mission1-$SAUERCLOUD_USER_ID. Read the briefing to begin, a copy can be found in the mission folder."
 
 echo "##############################################################################################"
 echo "#                                                                                            #"
@@ -94,7 +94,7 @@ echo "#                                                                         
 echo "##############################################################################################"
 
 cd ..
-cat "mission1-$SECGAME_USER_ID/briefing.txt"
+cat "mission1-$SAUERCLOUD_USER_ID/briefing.txt"
 
 
 

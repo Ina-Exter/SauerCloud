@@ -87,8 +87,8 @@ fi
 ############################################################
 
 #Load environment variables from files profile.txt and whitelist.txt
-SECGAME_USER_PROFILE=$(head -n 1 profile.txt)
-export SECGAME_USER_PROFILE
+SAUERCLOUD_USER_PROFILE=$(head -n 1 profile.txt)
+export SAUERCLOUD_USER_PROFILE
 USER_IP=$(head -n 1 whitelist.txt)
 export USER_IP
 
@@ -113,7 +113,7 @@ then
 fi
 
 #Check whether the provided user profile is valid, i.e. if it is not mistyped.
-if ! aws --profile "$SECGAME_USER_PROFILE" sts get-caller-identity > /dev/null 2>&1
+if ! aws --profile "$SAUERCLOUD_USER_PROFILE" sts get-caller-identity > /dev/null 2>&1
 then
 	echo "[SauerCloud] Unable to confirm validity of AWS keys, please make sure you configured the correct profile."
 	exit 2
@@ -137,8 +137,8 @@ fi
 if [[ "create" = "$1" ]] #User requests a mission deployment
 then
 	#Generate unique id for this session (only lowercase and numbers)
-	SECGAME_USER_ID=$(head /dev/urandom | tr -dc a-z0-9 | head -c 10)
-	export SECGAME_USER_ID
+	SAUERCLOUD_USER_ID=$(head /dev/urandom | tr -dc a-z0-9 | head -c 10)
+	export SAUERCLOUD_USER_ID
 	#Eliminate the trailing slash if needed
 	MISSION=$2
 	c=${MISSION: -1}
@@ -153,9 +153,9 @@ then
 		exit 2
 	fi
 	#Make a mission directory, copy the contents of the resources in it, and get in
-	mkdir "$MISSION"-"$SECGAME_USER_ID"
-	cp -r ./missions/"$MISSION"/* ./"$MISSION"-"$SECGAME_USER_ID"/
-	cd "$MISSION"-"$SECGAME_USER_ID" || exit
+	mkdir "$MISSION"-"$SAUERCLOUD_USER_ID"
+	cp -r ./missions/"$MISSION"/* ./"$MISSION"-"$SAUERCLOUD_USER_ID"/
+	cd "$MISSION"-"$SAUERCLOUD_USER_ID" || exit
 	#Run the mission startup script from the resources folder (may have to change path ultimately)
 	# shellcheck disable=SC1090
 	source ./"$MISSION-deploy.sh"
@@ -167,12 +167,12 @@ then
 	#Extract mission name from folder name
 	mission=${folder_name%-*}
 	#Export constants for use in destroy script
-	export SECGAME_USER_ID=${folder_name##*-}
+	export SAUERCLOUD_USER_ID=${folder_name##*-}
 	#Since this gave me one hell of a headache, if the last / of the folder name remains, remove it.
-	c=${SECGAME_USER_ID: -1}
+	c=${SAUERCLOUD_USER_ID: -1}
 	if [[ "$c" = "/" ]]
 	then
-		export SECGAME_USER_ID=${SECGAME_USER_ID::-1}
+		export SAUERCLOUD_USER_ID=${SAUERCLOUD_USER_ID::-1}
 	fi
 	#Check if the folder actually exists
 	if [[ ! -e $folder_name ]]
@@ -187,7 +187,7 @@ then
 		exit 2
 	fi
 	#Check that the user is not trying to run it on the mission (resource) folder
-	if [[ "$mission" = "$SECGAME_USER_ID" ]]
+	if [[ "$mission" = "$SAUERCLOUD_USER_ID" ]]
 	then
 		echo "[SauerCloud] Invalid session ID, please do not attempt to destroy any folder."
 		echo "[SauerCloud] Destroy structure is ./start.sh destroy missionX-aaaaaaaaaa."

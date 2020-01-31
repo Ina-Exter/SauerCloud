@@ -53,9 +53,9 @@ resource "aws_iam_instance_profile" "SauerCloud-mission4-ec2-instanceprofile" {
 }
 
 #SG
-resource "aws_security_group" "SauerCloud-mission4-sg-evilcorp-allow" { #Standard access SG
+resource "aws_security_group" "SauerCloud-mission4-sg-evilcorp-allow" { 
   name        = "SauerCloud-mission4-sg-evilcorp-allow-${var.id}"
-  description = "Allow whitelisted IP in, Evil Manager insisted on being able to connect from his mistress' home..."
+  description = "Allow whitelisted IP in Evil Manager insisted on being able to connect from the house of his mistress"
   vpc_id      = aws_vpc.SauerCloud-mission4-vpc.id
 
   ingress {

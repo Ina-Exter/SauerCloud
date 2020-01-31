@@ -21,11 +21,13 @@ You need to configure your default profile and IP address for the program to wor
 
 `./config.sh`
 
-and follow the instructions. Once this is done, any mission can be started using:
+and follow the instructions. The AWS profile you use must also be configured to use the region `us-east-1`. 
+Once this is done, any mission can be started using:
 
 `./start.sh create missionX`
 
 A briefing will be displayed. You can find relevant files in the `missionX-id` directory that will be created (the id is a 10-character random string). You may use only what can be found in this directory, and **not in the subdirectories, nor may you use your "profile" access keys.**
+
 If you need help, cheat sheets are available in the `/help/cheat-sheets/` folder.
 
 Once you are done, destroy your infrastructure with:
@@ -50,6 +52,7 @@ Most of the time, there are one (or two) go-to ways to go through each mission, 
 ### Inspirations and acknowledgements
 
 This program was inspired by flaws.cloud, which was created by Summit Route. It is a great learning resource, for which I thank them.
+
 I would also like to thank CloudGoat by Rhino Security Labs, for the inspiration and the valuable learning tool it is.
 I recommend those two learning resources warmly.
 
@@ -121,9 +124,11 @@ Paying for servers is expensive. Setting them up is a doozy. It takes room, heat
 AWS (Amazon Web Services) is a cloud computing provider. They "rent" granular pieces of their servers for you to setup VMs across the internet and use them in a way you want, rather than having to buy a server.
 
 This, in turn, gives rise to a host of services hosted "on the cloud" (i.e. on gigantic data centers on some key locations rather than on smaller-but-still-big data centers on premises), but those services may be rendered vulnerable in their own way.
+
 And that "way" usually involves the biggest flaw in the system, usually located between the chair and the screen, i.e. the user.
 
 So in layman's term, this program is an automated way to request virtual machines on a remote AWS server for you to then experiment with trying to break them or break into them. The vulnerabilities you will learn of here are very specialized, and will mostly only work on AWS infrastructure.
+
 Given, however, that AWS has around 70% of the market in cloud computing, and that cloud computing is ever on the rise, knowing how to make appliances secure is a very useful skill.
 
 #### How do I make one?

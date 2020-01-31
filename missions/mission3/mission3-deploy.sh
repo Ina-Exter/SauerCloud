@@ -2,15 +2,15 @@
 
 ##Sanity check: print user profile, id, ip
 ##May delete it afterwards
-echo "[SauerCloud] Master account profile: $SECGAME_USER_PROFILE"
-echo "[SauerCloud] Session ID: $SECGAME_USER_ID"
+echo "[SauerCloud] Master account profile: $SAUERCLOUD_USER_PROFILE"
+echo "[SauerCloud] Session ID: $SAUERCLOUD_USER_ID"
 echo "[SauerCloud] User IP: $USER_IP"
 
 #ALWAYS assume that this script will run in the mission folder mission2-user_id
 
 #A ssh private key should also be generated and passed as parameter.
 echo "[SauerCloud] Generating ssh key for ec2"
-if ! aws --profile "$SECGAME_USER_PROFILE" ec2 create-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID" --query 'KeyMaterial' --output text >> resources/ssh_key.pem
+if ! aws --profile "$SAUERCLOUD_USER_PROFILE" ec2 create-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SAUERCLOUD_USER_ID" --query 'KeyMaterial' --output text >> resources/ssh_key.pem
 then
 	echo "[SauerCloud] Non-zero return code on operation. Abort."
 	cd .. || exit
@@ -19,7 +19,7 @@ then
 	then
 	       	mkdir trash
 	fi
-	mv "mission3-$SECGAME_USER_ID" ./trash/
+	mv "mission3-$SAUERCLOUD_USER_ID" ./trash/
 	exit 2
 fi
 sshkey=$(<resources/ssh_key.pem)
@@ -31,7 +31,7 @@ echo "[SauerCloud] Initializing terraform."
 terraform init
 
 #Pass the required variables (profile, region?, id, key) to terraform and plan
-terraform plan -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
+terraform plan -var="profile=$SAUERCLOUD_USER_PROFILE" -var="id=$SAUERCLOUD_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 
 #IF AND ONLY IF user consents, deploy
 echo "[SauerCloud] Is this setup acceptable? (yes/no)"
@@ -46,25 +46,25 @@ then
 	then
         	mkdir trash
 	fi
-	mv "./mission3-$SECGAME_USER_ID" ./trash/
-	aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+	mv "./mission3-$SAUERCLOUD_USER_ID" ./trash/
+	aws --profile "$SAUERCLOUD_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SAUERCLOUD_USER_ID"
 	exit 2
 fi
 
 #DEPLOYYYYYYYYYYYYYYYYYYYY
 #check terraform apply's return code, act depending on it. 0 is for a flawless execution, 1 means an error has arisen
-if ! terraform apply -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
+if ! terraform apply -auto-approve -var="profile=$SAUERCLOUD_USER_PROFILE" -var="id=$SAUERCLOUD_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 then
 	echo "[SauerCloud] Non-zero return code on terraform apply. Rolling back."
-	terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
+	terraform destroy -auto-approve -var="profile=$SAUERCLOUD_USER_PROFILE" -var="id=$SAUERCLOUD_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 	cd ../../.. || exit
 	#If trash doesn't exist, make it
 	if [[ ! -d "trash" ]]
 	then
         	mkdir trash
 	fi
-	mv "./mission3-$SECGAME_USER_ID" ./trash/
-	aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+	mv "./mission3-$SAUERCLOUD_USER_ID" ./trash/
+	aws --profile "$SAUERCLOUD_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SAUERCLOUD_USER_ID"
 	exit 2
 fi
 
@@ -89,15 +89,15 @@ then
 	then
 		echo "[SauerCloud] Unable to safely copy files on instance (second attempt). Check your internet connection. Abort."
 		cd terraform || exit
-		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
+		terraform destroy -auto-approve -var="profile=$SAUERCLOUD_USER_PROFILE" -var="id=$SAUERCLOUD_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 		cd ../../.. || exit
 		#If trash doesn't exist, make it
 		if [[ ! -d "trash" ]]
 		then
    		    mkdir trash
 		fi
-		mv "./mission3-$SECGAME_USER_ID" ./trash/
-		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+		mv "./mission3-$SAUERCLOUD_USER_ID" ./trash/
+		aws --profile "$SAUERCLOUD_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SAUERCLOUD_USER_ID"
 		exit 2
 	fi
 fi
@@ -109,15 +109,15 @@ then
 	then
 		echo "[SauerCloud] Unable to safely copy files on instance (second attempt). Check your internet connection. Abort."
 		cd terraform || exit
-		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
+		terraform destroy -auto-approve -var="profile=$SAUERCLOUD_USER_PROFILE" -var="id=$SAUERCLOUD_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 		cd ../../.. || exit
 		#If trash doesn't exist, make it
 		if [[ ! -d "trash" ]]
 		then
         	mkdir trash
 		fi
-		mv "./mission3-$SECGAME_USER_ID" ./trash/
-		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+		mv "./mission3-$SAUERCLOUD_USER_ID" ./trash/
+		aws --profile "$SAUERCLOUD_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SAUERCLOUD_USER_ID"
 		exit 2
 	fi
 fi
@@ -129,15 +129,15 @@ then
 	then
 		echo "[SauerCloud] Unable to safely copy files on instance (second attempt). Check your internet connection. Abort."
 		cd terraform || exit
-		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
+		terraform destroy -auto-approve -var="profile=$SAUERCLOUD_USER_PROFILE" -var="id=$SAUERCLOUD_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 		cd ../../.. || exit
 		#If trash doesn't exist, make it
 		if [[ ! -d "trash" ]]
 		then
 				mkdir trash
 		fi
-		mv "./mission3-$SECGAME_USER_ID" ./trash/
-		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+		mv "./mission3-$SAUERCLOUD_USER_ID" ./trash/
+		aws --profile "$SAUERCLOUD_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SAUERCLOUD_USER_ID"
 		exit 2
 	fi
 fi
@@ -145,23 +145,23 @@ fi
 
 #Snapshot
 echo "[SauerCloud] Snapshotting instance."
-volumeID=$(aws --profile "$SECGAME_USER_PROFILE" ec2 describe-instance-attribute --attribute blockDeviceMapping --instance-id "$ec2_id" --query 'BlockDeviceMappings[0].Ebs.VolumeId' --output text)
-if ! snapshotID=$(aws --profile "$SECGAME_USER_PROFILE" ec2 create-snapshot --volume-id "$volumeID" --query 'SnapshotId' --output text)
+volumeID=$(aws --profile "$SAUERCLOUD_USER_PROFILE" ec2 describe-instance-attribute --attribute blockDeviceMapping --instance-id "$ec2_id" --query 'BlockDeviceMappings[0].Ebs.VolumeId' --output text)
+if ! snapshotID=$(aws --profile "$SAUERCLOUD_USER_PROFILE" ec2 create-snapshot --volume-id "$volumeID" --query 'SnapshotId' --output text)
 then
 	echo "[SauerCloud] Unable to generate instance snapshot. Retrying."
-	if ! snapshotID=$(aws --profile "$SECGAME_USER_PROFILE" ec2 create-snapshot --volume-id "$volumeID" --query 'SnapshotId' --output text)
+	if ! snapshotID=$(aws --profile "$SAUERCLOUD_USER_PROFILE" ec2 create-snapshot --volume-id "$volumeID" --query 'SnapshotId' --output text)
 	then
 		echo "[SauerCloud] Unable to generate instance snapshot (second attempt). Abort."
 		cd terraform || exit
-		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
+		terraform destroy -auto-approve -var="profile=$SAUERCLOUD_USER_PROFILE" -var="id=$SAUERCLOUD_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 		cd ../../.. || exit
 		#If trash doesn't exist, make it
 		if [[ ! -d "trash" ]]
 		then
 				mkdir trash
 		fi
-		mv "./mission3-$SECGAME_USER_ID" ./trash/
-		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
+		mv "./mission3-$SAUERCLOUD_USER_ID" ./trash/
+		aws --profile "$SAUERCLOUD_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SAUERCLOUD_USER_ID"
 		exit 2
 	fi
 fi
@@ -177,16 +177,16 @@ then
 	then
 		echo "[SauerCloud] Unable to safely send cleanup_script.sh to instance (second attempt). Abort."
 		cd terraform || exit
-		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
+		terraform destroy -auto-approve -var="profile=$SAUERCLOUD_USER_PROFILE" -var="id=$SAUERCLOUD_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 		cd ../../.. || exit
 		#If trash doesn't exist, make it
 		if [[ ! -d "trash" ]]
 		then
 				mkdir trash
 		fi
-		mv "./mission3-$SECGAME_USER_ID" ./trash/
-		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
-		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-snapshot --snapshot-id "$snapshotID"
+		mv "./mission3-$SAUERCLOUD_USER_ID" ./trash/
+		aws --profile "$SAUERCLOUD_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SAUERCLOUD_USER_ID"
+		aws --profile "$SAUERCLOUD_USER_PROFILE" ec2 delete-snapshot --snapshot-id "$snapshotID"
 		exit 2
 	fi
 fi
@@ -198,16 +198,16 @@ then
 	then	
 		echo "[SauerCloud] Unable to start remote cleanup script (second attempt). Abort."
 		cd terraform || exit
-		terraform destroy -auto-approve -var="profile=$SECGAME_USER_PROFILE" -var="id=$SECGAME_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
+		terraform destroy -auto-approve -var="profile=$SAUERCLOUD_USER_PROFILE" -var="id=$SAUERCLOUD_USER_ID" -var="ip=$USER_IP" -var="sshprivatekey=$sshkey"
 		cd ../../.. || exit
 		#If trash doesn't exist, make it
 		if [[ ! -d "trash" ]]
 		then
 				mkdir trash
 		fi
-		mv "./mission3-$SECGAME_USER_ID" ./trash/
-		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SECGAME_USER_ID"
-		aws --profile "$SECGAME_USER_PROFILE" ec2 delete-snapshot --snapshot-id "$snapshotID"
+		mv "./mission3-$SAUERCLOUD_USER_ID" ./trash/
+		aws --profile "$SAUERCLOUD_USER_PROFILE" ec2 delete-key-pair --key-name "SauerCloud-mission3-keypair-Evilcorp-Evilkeypair-$SAUERCLOUD_USER_ID"
+		aws --profile "$SAUERCLOUD_USER_PROFILE" ec2 delete-snapshot --snapshot-id "$snapshotID"
 		exit 2
 	fi
 fi
@@ -230,13 +230,13 @@ It was also brought to our attention that the instance contained sensitive data,
 We have provided you with leaked AWS keys to their account, but they have little to no privilege. Your job is to access the instance, then escalate your privileges and do some forensics on it in order to get the sensitive data out, and after that, you are free to do with the server as you please. Shutting it down would be wiser.
 We have great hopes for you.
 
-The ssh key you need is in mission3-$SECGAME_USER_ID/ssh_key.pem.
+The ssh key you need is in mission3-$SAUERCLOUD_USER_ID/ssh_key.pem.
 Instance ip address: $ec2_ip
 
 PS: Remember, agent. If you create any resources yourself, delete them before deleting the mission. Terraform will not be able to handle them.
 " >> briefing.txt
 
-echo "[SauerCloud] Mission 3 deployment complete. Mission folder is ./mission3-$SECGAME_USER_ID. Read the briefing to begin, a copy can be found in the mission folder."
+echo "[SauerCloud] Mission 3 deployment complete. Mission folder is ./mission3-$SAUERCLOUD_USER_ID. Read the briefing to begin, a copy can be found in the mission folder."
 
 echo "##############################################################################################"
 echo "#                                                                                            #"
@@ -245,6 +245,6 @@ echo "#                                                                         
 echo "##############################################################################################"
 
 cd .. || exit
-cat "mission3-$SECGAME_USER_ID/briefing.txt"
+cat "mission3-$SAUERCLOUD_USER_ID/briefing.txt"
 
 
