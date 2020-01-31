@@ -1,8 +1,8 @@
 #!/bin/bash
 
 echo "[SauerCloud] Enter the name of your default AWS profile that will create all challenges:"
-read -r SECGAME_USER_PROFILE
-if [[ -z "$SECGAME_USER_PROFILE" ]]
+read -r SAUERCLOUD_USER_PROFILE
+if [[ -z "$SAUERCLOUD_USER_PROFILE" ]]
 then
 	echo "[SauerCloud] Error, no profile specified."
 	echo "[SauerCloud] Abort."
@@ -16,13 +16,13 @@ then
 	then
 		rm profile.txt
 		touch profile.txt
-		echo "$SECGAME_USER_PROFILE" >> profile.txt
+		echo "$SAUERCLOUD_USER_PROFILE" >> profile.txt
 	fi
 else
 	touch profile.txt
-	echo  "$SECGAME_USER_PROFILE" >> profile.txt
+	echo  "$SAUERCLOUD_USER_PROFILE" >> profile.txt
 fi
-echo "[SauerCloud] $SECGAME_USER_PROFILE will be your default profile."
+echo "[SauerCloud] $SAUERCLOUD_USER_PROFILE will be your default profile."
 echo "[SauerCloud] SauerCloud can fetch your IP address directly and add it to the whitelist by cURL-ing \"icanhazip.com\". Do you wish to proceed? (y/N)"
 read -r ans
 if [[ ! "$ans" == "y" ]]
