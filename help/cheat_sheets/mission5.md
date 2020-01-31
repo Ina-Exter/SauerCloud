@@ -171,7 +171,7 @@ $ `aws --profile emmyselly logs describe-log-streams --log-group-name <lambda-du
 List the log streams and note the log stream name. **CAUTION**, you will have to escape the "$LATEST" when calling the name in the command-line interface. Write "\$LATEST" to do this.
 
 
-$ `aws --profile secgame_test logs get-log-events --log-group-name <lambda-dump-logs log group> --log-stream-name <lambda-dump-logs latest log stream>`
+$ `aws --profile emmyselly logs get-log-events --log-group-name <lambda-dump-logs log group> --log-stream-name <lambda-dump-logs latest log stream>`
 
 List the log events. Notice the username and password in the logs...
 

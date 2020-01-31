@@ -1,10 +1,10 @@
 #S3
 resource "aws_s3_bucket" "SauerCloud-mission4-final-s3" {
-  bucket        = "secgame-mission4-final-s3-${var.id}"
+  bucket        = "sauercloud-mission4-final-s3-${var.id}"
   acl           = "private"
   force_destroy = true
   tags = {
-    Name = "secgame-mission4-final-s3-${var.id}"
+    Name = "sauercloud-mission4-final-s3-${var.id}"
   }
 }
 
