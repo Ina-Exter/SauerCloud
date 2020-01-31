@@ -16,7 +16,8 @@ An offensive security game for use with AWS
 
 ## Quick Start Guide
 
-Pull the repository and change to the 
+Clone the repository and open the created folder.
+ 
 You need to configure your default profile and IP address for the program to work properly. For this, run:
 
 `./config.sh`
