@@ -50,7 +50,7 @@ Most of the time, there are one (or two) go-to ways to go through each mission, 
 ### Inspirations and acknowledgements
 
 This program was inspired by flaws.cloud, which was created by Summit Route. It is a great learning resource, for which I thank them.
-I would also like to thank CloudGoat, by RhinoSecurityLabs, which inspired the format of this program, and is a fantastic way to delve into AWS misconfigurations.
+I would also like to thank CloudGoat by Rhino Security Labs, for the inspiration and the valuable learning tool it is.
 I recommend those two learning resources warmly.
 
 ### How do I use it?
