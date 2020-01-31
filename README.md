@@ -50,7 +50,7 @@ Most of the time, there are one (or two) go-to ways to go through each mission, 
 ### Inspirations and acknowledgements
 
 This program was inspired by flaws.cloud, which was created by Summit Route. It is a great learning resource, for which I thank them.
-I would also like to thank CloudGoat, by RhinoSecurityLabs, which inspired the format of this program, and is a fantastic way to delve into AWS misconfigurations.
+I would also like to thank CloudGoat by Rhino Security Labs, for the inspiration and the valuable learning tool it is.
 I recommend those two learning resources warmly.
 
 ### How do I use it?
@@ -103,6 +103,8 @@ Please note that if you create resources yourself during a mission, the program 
 
 
 Once you have created a mission, you will be prompted to read the briefing in the newly created mission folder. Then, you are all set.
+
+In missions, when you are done, you may find a "flag". Simply run ./flagchecker.sh.x and answer the quesions accordingly to check that you indeed completed the mission!
 
 Nb: Most of the time, using anything else than bash and the CLI is considered cheating. ;) You may also use only what I provide you with, not your own administrator AWS keys.
 
